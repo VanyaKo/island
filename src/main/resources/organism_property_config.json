@@ -1,0 +1,92 @@
+{
+  "wolf": {
+    "weight": 50,
+    "maxCountOnCell": 30,
+    "maxSpeed": 3,
+    "kilogramsForFullSaturation": 8
+  },
+  "python": {
+    "weight": 15,
+    "maxCountOnCell": 30,
+    "maxSpeed": 1,
+    "kilogramsForFullSaturation": 3
+  },
+  "fox": {
+    "weight": 8,
+    "maxCountOnCell": 30,
+    "maxSpeed": 2,
+    "kilogramsForFullSaturation": 2
+  },
+  "bear": {
+    "weight": 500,
+    "maxCountOnCell": 5,
+    "maxSpeed": 2,
+    "kilogramsForFullSaturation": 80
+  },
+  "eagle": {
+    "weight": 6,
+    "maxCountOnCell": 20,
+    "maxSpeed": 3,
+    "kilogramsForFullSaturation": 1
+  },
+  "horse": {
+    "weight": 400,
+    "maxCountOnCell": 20,
+    "maxSpeed": 4,
+    "kilogramsForFullSaturation": 60
+  },
+  "deer": {
+    "weight": 300,
+    "maxCountOnCell": 20,
+    "maxSpeed": 4,
+    "kilogramsForFullSaturation": 50
+  },
+  "rabbit": {
+    "weight": 2,
+    "maxCountOnCell": 150,
+    "maxSpeed": 2,
+    "kilogramsForFullSaturation": 0.45
+  },
+  "mouse": {
+    "weight": 0.05,
+    "maxCountOnCell": 500,
+    "maxSpeed": 1,
+    "kilogramsForFullSaturation": 0.01
+  },
+  "goat": {
+    "weight": 70,
+    "maxCountOnCell": 140,
+    "maxSpeed": 3,
+    "kilogramsForFullSaturation": 15
+  },
+  "hog": {
+    "weight": 400,
+    "maxCountOnCell": 50,
+    "maxSpeed": 2,
+    "kilogramsForFullSaturation": 50
+  },
+  "buffalo": {
+    "weight": 70,
+    "maxCountOnCell": 10,
+    "maxSpeed": 3,
+    "kilogramsForFullSaturation": 100
+  },
+  "duck": {
+    "weight": 1,
+    "maxCountOnCell": 200,
+    "maxSpeed": 4,
+    "kilogramsForFullSaturation": 0.15
+  },
+  "caterpillar": {
+    "weight": 0.01,
+    "maxCountOnCell": 1000,
+    "maxSpeed": 0,
+    "kilogramsForFullSaturation": 0
+  },
+  "plants": {
+    "weight": 1,
+    "maxCountOnCell": 200,
+    "maxSpeed": -1,
+    "kilogramsForFullSaturation": -1
+  }
+}
