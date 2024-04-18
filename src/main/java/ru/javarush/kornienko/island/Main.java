@@ -16,6 +16,11 @@ import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.impls.ChooseDirectionService;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +31,13 @@ import java.util.stream.IntStream;
 public class Main {
     public static void main(String[] args) {
         ObjectMapper objectMapper = new ObjectMapper();
-        OrganismPropertyConfig organismPropertyConfig = new OrganismPropertyConfig(objectMapper, "resources/organism_property_config.json");
+        OrganismPropertyConfig organismPropertyConfig = new OrganismPropertyConfig(objectMapper, "src/main/resources/organism_property_config.json");
         ProbabilityOfBeingEatenConfig probabilityOfBeingEatenConfig =
-                new ProbabilityOfBeingEatenConfig(objectMapper, "resources/probability_of_being_eaten.json");
+                new ProbabilityOfBeingEatenConfig(objectMapper, "src/main/resources/probability_of_being_eaten.json");
         IslandSizeConfig islandSizeConfig = new IslandSizeConfig(100, 20); // TODO: import from json or .properties
+
+
+
         Random random = new Random();
         ChooseDirectionService chooseDirectionService = new ChooseDirectionService(random);
         Island island = createIslandArea(islandSizeConfig);

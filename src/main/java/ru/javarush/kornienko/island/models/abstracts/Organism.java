@@ -2,7 +2,7 @@ package ru.javarush.kornienko.island.models.abstracts;
 
 import ru.javarush.kornienko.island.services.AnimalAction;
 
-public class Organism {
+public abstract class Organism {
     protected final double weight;
     protected final int maxCountOnCell;
     protected final byte maxSpeed;
