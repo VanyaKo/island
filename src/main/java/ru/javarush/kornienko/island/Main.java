@@ -10,17 +10,12 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.enums.Direction;
 import ru.javarush.kornienko.island.models.enums.OrganismType;
 import ru.javarush.kornienko.island.models.island.Cell;
-import ru.javarush.kornienko.island.models.plants.Grass;
+import ru.javarush.kornienko.island.models.plants.Plants;
 import ru.javarush.kornienko.island.models.predators.Wolf;
 import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.impls.ChooseDirectionService;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,8 +77,8 @@ public class Main {
     }
 
     // TODO: avoid creation by hand - update with reflection
-    private static Grass createGrass(OrganismPropertyConfig organismPropertyConfig) {
-        return new Grass(organismPropertyConfig.getOrganismMap().get(OrganismType.GRASS));
+    private static Plants createGrass(OrganismPropertyConfig organismPropertyConfig) {
+        return new Plants(organismPropertyConfig.getOrganismMap().get(OrganismType.GRASS));
     }
 
     private static Wolf createWolf(OrganismPropertyConfig organismPropertyConfig) {
