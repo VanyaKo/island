@@ -24,7 +24,7 @@ public enum OrganismType {
     PYTHON("python", Python.class),
     FOX("fox", Fox.class),
     BEAR("bear", Bear.class),
-    EAGLE("eagle", Eagle.class),
+    EAGLE("eagle.json", Eagle.class),
     HORSE("horse", Horse.class),
     DEER("deer", Deer.class),
     RABBIT("rabbit", Rabbit.class),
@@ -48,5 +48,9 @@ public enum OrganismType {
         return Arrays.stream(values())
                 .filter(value -> name.equals(value.name)).findFirst()
                 .orElse(null);
+    }
+
+    public Class<? extends Organism> getClazz() {
+        return clazz;
     }
 }

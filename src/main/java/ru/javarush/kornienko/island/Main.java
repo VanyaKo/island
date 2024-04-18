@@ -16,10 +16,12 @@ import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.impls.ChooseDirectionService;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -30,15 +32,14 @@ public class Main {
         ProbabilityOfBeingEatenConfig probabilityOfBeingEatenConfig =
                 new ProbabilityOfBeingEatenConfig(objectMapper, "src/main/resources/probability_of_being_eaten.json");
         IslandSizeConfig islandSizeConfig = new IslandSizeConfig(100, 20); // TODO: import from json or .properties
-
-
+        readProperties();
 
         Random random = new Random();
         ChooseDirectionService chooseDirectionService = new ChooseDirectionService(random);
         Island island = createIslandArea(islandSizeConfig);
         MoveService moveService = new MoveServiceImpl(island);
 
-        int maxPlantsOnCell = getMaxOrganismsOnCell(organismPropertyConfig, OrganismType.GRASS);
+        int maxPlantsOnCell = getMaxOrganismsOnCell(organismPropertyConfig, OrganismType.PLANTS);
 //        int maxWolvesOnCell = getMaxOrganismsOnCell(organismPropertyConfig, OrganismType.WOLF);
 
         //fill plants
@@ -76,9 +77,26 @@ public class Main {
         System.out.println(islandSizeConfig);
     }
 
+    private static void readProperties() {
+        Properties prop = new Properties();
+        try {
+            //load a properties file from class path, inside static method
+            prop.load(Main.class.getClassLoader().getResourceAsStream("src/main/resources/island.properties"));
+
+            //get the property value and print it out
+            System.out.println(prop.getProperty("database"));
+            System.out.println(prop.getProperty("dbuser"));
+            System.out.println(prop.getProperty("dbpassword"));
+
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     // TODO: avoid creation by hand - update with reflection
     private static Plants createGrass(OrganismPropertyConfig organismPropertyConfig) {
-        return new Plants(organismPropertyConfig.getOrganismMap().get(OrganismType.GRASS));
+        return new Plants(organismPropertyConfig.getOrganismMap().get(OrganismType.PLANTS));
     }
 
     private static Wolf createWolf(OrganismPropertyConfig organismPropertyConfig) {

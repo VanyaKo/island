@@ -1,7 +1,9 @@
 package ru.javarush.kornienko.island.services;
 
+import ru.javarush.kornienko.island.models.abstracts.Organism;
+
 public interface AnimalAction {
     void eat();
-    void reproduce();
+    Organism reproduce();
     void move();
 }

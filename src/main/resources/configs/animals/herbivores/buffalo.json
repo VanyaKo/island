@@ -1,0 +1,6 @@
+{
+  "weight": 70,
+  "maxCountOnCell": 10,
+  "maxSpeed": 3,
+  "kilogramsForFullSaturation": 100
+}

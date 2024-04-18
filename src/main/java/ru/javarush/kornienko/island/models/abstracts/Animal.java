@@ -13,8 +13,8 @@ public abstract class Animal extends Organism implements AnimalAction {
     }
 
     @Override
-    public void reproduce() {
-
+    public Organism reproduce() {
+        return null;
     }
 
     @Override

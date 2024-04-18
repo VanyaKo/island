@@ -5,9 +5,11 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.enums.OrganismType;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class OrganismPropertyConfig {
@@ -31,12 +33,20 @@ public class OrganismPropertyConfig {
         try {
             Map<String, Organism> inputs =
                     objectMapper.readValue(new URL("file:" + pathToJson), Map.class);
-            for(Map.Entry<String, Organism> entry : inputs.entrySet()) {
-                organismMap.put(OrganismType.getOrganismTypeByName(entry.getKey()), entry.getValue());
-            }
+            System.out.println();
+//            for(Map.Entry<String, Organism> entry : inputs.entrySet()) {
+//                OrganismType organismType = OrganismType.getOrganismTypeByName(entry.getKey());
+//                Class<? extends Organism> organismClass = organismType.getClazz();
+//                LinkedHashMap<String, > value = entry.getValue();
+//                organismClass.getConstructor(double.class, int.class, byte.class, double.class)
+//                        .newInstance(value.ge(), value.getMaxCountOnCell(), value.getMaxSpeed(), value.getKilogramsForFullSaturation());
+//                organismMap.put(organismType, value);
+//            }
         } catch(IOException e) {
             e.printStackTrace();
-        }
+        } /*catch(InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }*/
         return organismMap;
     }
 

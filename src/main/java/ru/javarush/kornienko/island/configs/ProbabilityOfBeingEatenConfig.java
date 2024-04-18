@@ -26,7 +26,7 @@ public class ProbabilityOfBeingEatenConfig {
             return new HashSet<>(Arrays.asList(inputProbabilityPairs));
         } catch(IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 }
