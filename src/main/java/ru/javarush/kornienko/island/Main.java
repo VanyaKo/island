@@ -29,13 +29,12 @@ import java.util.stream.IntStream;
 public class Main {
     public static void main(String[] args) {
         ObjectMapper objectMapper = new ObjectMapper();
-//        ProbabilityOfBeingEatenConfig probabilityOfBeingEatenConfig =
-//                new ProbabilityOfBeingEatenConfig(objectMapper, "src/main/resources/probability_of_being_eaten.json");
+        ProbabilityOfBeingEatenConfig probabilityOfBeingEatenConfig =
+                new ProbabilityOfBeingEatenConfig(objectMapper, "configs/probability_of_being_eaten.json");
 
         Properties properties = new Properties();
         IslandSizeConfig islandSizeConfig = new IslandSizeConfig(properties, "configs/map/island.properties");
         PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
-
         Random random = new Random();
         ChooseDirectionService chooseDirectionService = new ChooseDirectionService(random);
         Island island = createIslandArea(islandSizeConfig);

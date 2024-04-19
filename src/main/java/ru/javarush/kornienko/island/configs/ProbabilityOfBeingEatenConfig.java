@@ -1,6 +1,7 @@
 package ru.javarush.kornienko.island.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.javarush.kornienko.island.models.abstracts.Organism;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,9 +21,10 @@ public class ProbabilityOfBeingEatenConfig {
     }
 
     public Set<ProbabilityPair> parseFileToSet() {
+        URL resource = Organism.class.getClassLoader().getResource(pathToJson);
         try {
             ProbabilityPair[] inputProbabilityPairs =
-                    objectMapper.readValue(new URL("file:" + pathToJson), ProbabilityPair[].class);
+                    objectMapper.readValue(resource, ProbabilityPair[].class);
             return new HashSet<>(Arrays.asList(inputProbabilityPairs));
         } catch(IOException e) {
             e.printStackTrace();

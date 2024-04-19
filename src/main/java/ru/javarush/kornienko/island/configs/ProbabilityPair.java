@@ -1,42 +1,33 @@
 package ru.javarush.kornienko.island.configs;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class ProbabilityPair implements Serializable {
-    private String from;
-    private String to;
-    private byte percent;
+    private String eater;
+    private Map<String, Byte> eatable;
 
     public ProbabilityPair() {
     }
 
-    public ProbabilityPair(String from, String to, byte percent) {
-        this.from = from;
-        this.to = to;
-        this.percent = percent;
+    public ProbabilityPair(String eater, Map<String, Byte> eatable) {
+        this.eater = eater;
+        this.eatable = eatable;
     }
 
-    public byte getPercent() {
-        return percent;
+    public String getEater() {
+        return eater;
     }
 
-    public void setPercent(byte percent) {
-        this.percent = percent;
+    public void setEater(String eater) {
+        this.eater = eater;
     }
 
-    public String getTo() {
-        return to;
+    public Map<String, Byte> getEatable() {
+        return eatable;
     }
 
-    public void setTo(String to) {
-        this.to = to;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
+    public void setEatable(Map<String, Byte> eatable) {
+        this.eatable = eatable;
     }
 }

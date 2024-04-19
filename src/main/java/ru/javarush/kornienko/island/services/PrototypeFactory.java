@@ -13,6 +13,7 @@ import ru.javarush.kornienko.island.models.herbivores.Hog;
 import ru.javarush.kornienko.island.models.herbivores.Horse;
 import ru.javarush.kornienko.island.models.herbivores.Mouse;
 import ru.javarush.kornienko.island.models.herbivores.Rabbit;
+import ru.javarush.kornienko.island.models.herbivores.Sheep;
 import ru.javarush.kornienko.island.models.plants.Plants;
 import ru.javarush.kornienko.island.models.predators.Bear;
 import ru.javarush.kornienko.island.models.predators.Eagle;
@@ -47,6 +48,7 @@ public class PrototypeFactory {
         types.add(Rabbit.class);
         types.add(Mouse.class);
         types.add(Goat.class);
+        types.add(Sheep.class);
         types.add(Hog.class);
         types.add(Buffalo.class);
         types.add(Duck.class);

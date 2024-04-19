@@ -1,7 +1,122 @@
 [
   {
-    "from": "wolf",
-    "to": "mouse",
-    "percent": 80
+    "eater": "wolf",
+    "eatable": {
+      "horse": 10,
+      "deer": 15,
+      "rabbit": 60,
+      "mouse": 80,
+      "goat": 60,
+      "sheep": 70,
+      "hog": 15,
+      "buffalo": 10,
+      "duck": 40
+    }
+  },
+  {
+    "eater": "python",
+    "eatable": {
+      "fox": 15,
+      "rabbit": 20,
+      "mouse": 40,
+      "duck": 10
+    }
+  },
+  {
+    "eater": "fox",
+    "eatable": {
+      "rabbit": 70,
+      "mouse": 90,
+      "duck": 60,
+      "caterpillar": 40
+    }
+  },
+  {
+    "eater": "bear",
+    "eatable": {
+      "python": 80,
+      "horse": 40,
+      "deer": 80,
+      "rabbit": 80,
+      "mouse": 90,
+      "goat": 70,
+      "sheep": 70,
+      "hog": 50,
+      "buffalo": 20,
+      "duck": 10
+    }
+  },
+  {
+    "eater": "eagle",
+    "eatable": {
+      "fox": 10,
+      "rabbit": 90,
+      "mouse": 90,
+      "duck": 80
+    }
+  },
+  {
+    "eater": "horse",
+    "eatable": {
+      "plants": 100
+    }
+  },
+  {
+    "eater": "deer",
+    "eatable": {
+      "plants": 100
+    }
+  },
+  {
+    "eater": "rabbit",
+    "eatable": {
+      "plants": 100
+    }
+  },
+  {
+    "eater": "mouse",
+    "eatable": {
+      "caterpillar": 90,
+      "plants": 100
+    }
+  },
+  {
+    "eater": "goat",
+    "eatable": {
+      "plants": 100
+    }
+  },
+  {
+    "eater": "sheep",
+    "eatable": {
+      "plants": 100
+    }
+  },
+  {
+    "eater": "hog",
+    "eatable": {
+      "mouse": 50,
+      "caterpillar": 90,
+      "plants": 100
+    }
+  },
+  {
+    "eater": "buffalo",
+    "eatable": {
+      "plants": 100
+    }
+  },
+  {
+    "eater": "duck",
+    "eatable": {
+      "caterpillar": 90,
+      "plants": 100
+    }
+  },
+  {
+    "eater": "caterpillar",
+    "eatable": {
+      "plants": 100
+    }
   }
 ]
