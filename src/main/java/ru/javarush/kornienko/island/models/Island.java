@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Island {
-    private Map<Cell, List<Organism>> islandMap;
+    private final Map<Cell, List<Organism>> islandMap;
 
     public Island(Map<Cell, List<Organism>> islandMap) {
         this.islandMap = islandMap;

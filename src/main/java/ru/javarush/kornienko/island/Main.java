@@ -13,6 +13,7 @@ import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.plants.Plants;
 import ru.javarush.kornienko.island.models.predators.Wolf;
 import ru.javarush.kornienko.island.services.MoveService;
+import ru.javarush.kornienko.island.services.PrototypeFactory;
 import ru.javarush.kornienko.island.services.impls.ChooseDirectionService;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
 
@@ -28,35 +29,36 @@ import java.util.stream.IntStream;
 public class Main {
     public static void main(String[] args) {
         ObjectMapper objectMapper = new ObjectMapper();
-        OrganismPropertyConfig organismPropertyConfig = new OrganismPropertyConfig(objectMapper, "src/main/resources/organism_property_config.json");
-        ProbabilityOfBeingEatenConfig probabilityOfBeingEatenConfig =
-                new ProbabilityOfBeingEatenConfig(objectMapper, "src/main/resources/probability_of_being_eaten.json");
-        IslandSizeConfig islandSizeConfig = new IslandSizeConfig(100, 20); // TODO: import from json or .properties
-        readProperties();
+//        ProbabilityOfBeingEatenConfig probabilityOfBeingEatenConfig =
+//                new ProbabilityOfBeingEatenConfig(objectMapper, "src/main/resources/probability_of_being_eaten.json");
+
+        Properties properties = new Properties();
+        IslandSizeConfig islandSizeConfig = new IslandSizeConfig(properties, "configs/map/island.properties");
+        PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
 
         Random random = new Random();
         ChooseDirectionService chooseDirectionService = new ChooseDirectionService(random);
         Island island = createIslandArea(islandSizeConfig);
         MoveService moveService = new MoveServiceImpl(island);
 
-        int maxPlantsOnCell = getMaxOrganismsOnCell(organismPropertyConfig, OrganismType.PLANTS);
+//        int maxPlantsOnCell = getMaxOrganismsOnCell(organismPropertyConfig, OrganismType.PLANTS);
 //        int maxWolvesOnCell = getMaxOrganismsOnCell(organismPropertyConfig, OrganismType.WOLF);
 
         //fill plants
-        island.getIslandMap().values()
-                .forEach(
-                        organisms -> IntStream.range(0, random.nextInt(maxPlantsOnCell))
-                                .mapToObj(i -> createGrass(organismPropertyConfig))
-                                .forEach(organisms::add)
-                );
-
-        //fill wolves
-        island.getIslandMap().values()
-                .forEach(
-                        organisms -> IntStream.range(0, random.nextInt(maxPlantsOnCell))
-                                .mapToObj(i -> createWolf(organismPropertyConfig))
-                                .forEach(organisms::add)
-                );
+//        island.getIslandMap().values()
+//                .forEach(
+//                        organisms -> IntStream.range(0, random.nextInt(maxPlantsOnCell))
+//                                .mapToObj(i -> createGrass(organismPropertyConfig))
+//                                .forEach(organisms::add)
+//                );
+//
+//        //fill wolves
+//        island.getIslandMap().values()
+//                .forEach(
+//                        organisms -> IntStream.range(0, random.nextInt(maxPlantsOnCell))
+//                                .mapToObj(i -> createWolf(organismPropertyConfig))
+//                                .forEach(organisms::add)
+//                );
 
         // move wolf
 
@@ -67,31 +69,14 @@ public class Main {
                     .filter(organism -> organism instanceof Animal)
                     .map(organism -> (Animal) organism)
                     .toList();
-            for(Animal animal : animals) {
-                byte wolfMaxSpeed = getMaxSpeed(organismPropertyConfig, OrganismType.WOLF); // 3 хода
-                Direction direction = chooseDirectionService.chooseDirection(); // LEFT
-                moveService.move(animal, cell, direction, wolfMaxSpeed);
-            }
+//            for(Animal animal : animals) {
+//                byte wolfMaxSpeed = getMaxSpeed(organismPropertyConfig, OrganismType.WOLF); // 3 хода
+//                Direction direction = chooseDirectionService.chooseDirection(); // LEFT
+//                moveService.move(animal, cell, direction, wolfMaxSpeed);
+//            }
         }
 
         System.out.println(islandSizeConfig);
-    }
-
-    private static void readProperties() {
-        Properties prop = new Properties();
-        try {
-            //load a properties file from class path, inside static method
-            prop.load(Main.class.getClassLoader().getResourceAsStream("src/main/resources/island.properties"));
-
-            //get the property value and print it out
-            System.out.println(prop.getProperty("database"));
-            System.out.println(prop.getProperty("dbuser"));
-            System.out.println(prop.getProperty("dbpassword"));
-
-        }
-        catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     // TODO: avoid creation by hand - update with reflection

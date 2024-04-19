@@ -1,7 +1,8 @@
-package ru.javarush.kornienko.island.configs;
+package ru.javarush.kornienko.island.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
+import ru.javarush.kornienko.island.configs.Config;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.herbivores.Buffalo;
 import ru.javarush.kornienko.island.models.herbivores.Caterpillar;
@@ -55,7 +56,7 @@ public class PrototypeFactory {
     }
 
     public Organism cloneOrganism(Class<? extends Organism> type) {
-        return prototypes.get(type).clone();
+        throw new RuntimeException();
     }
 
     private void init() {
