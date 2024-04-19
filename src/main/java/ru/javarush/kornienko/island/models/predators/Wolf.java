@@ -9,6 +9,10 @@ public class Wolf extends Predator{
         super(weight, maxCountOnCell, maxSpeed, kilogramsForFullSaturation);
     }
 
+    public Wolf() {
+        super();
+    }
+
     //TODO: move this constructor logic to main
     public Wolf(Organism organism) {
         super(organism.getWeight(), organism.getMaxCountOnCell(), organism.getMaxSpeed(), organism.getKilogramsForFullSaturation());
