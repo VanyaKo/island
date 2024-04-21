@@ -4,7 +4,7 @@ import ru.javarush.kornienko.island.services.AnimalAction;
 
 import java.io.Serializable;
 
-public abstract class Organism implements Serializable {
+public abstract class Organism implements Serializable, Cloneable {
     protected final double weight;
     protected final int maxCountOnCell;
     protected final byte maxSpeed;
@@ -22,6 +22,11 @@ public abstract class Organism implements Serializable {
         this.maxCountOnCell = maxCountOnCell;
         this.maxSpeed = maxSpeed;
         this.kilogramsForFullSaturation = kilogramsForFullSaturation;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public double getWeight() {

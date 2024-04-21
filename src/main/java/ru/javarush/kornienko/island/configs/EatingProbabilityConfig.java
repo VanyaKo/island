@@ -9,12 +9,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ProbabilityOfBeingEatenConfig {
+public class EatingProbabilityConfig {
     private final ObjectMapper objectMapper;
     private final String pathToJson;
     private final Set<ProbabilityPair> probabilityPairs;
 
-    public ProbabilityOfBeingEatenConfig(ObjectMapper objectMapper, String pathToJson) {
+    public EatingProbabilityConfig(ObjectMapper objectMapper, String pathToJson) {
         this.objectMapper = objectMapper;
         this.pathToJson = pathToJson;
         this.probabilityPairs = parseFileToSet();

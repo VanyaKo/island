@@ -19,6 +19,7 @@ import ru.javarush.kornienko.island.models.predators.Wolf;
 
 import java.util.Arrays;
 
+@Deprecated
 public enum OrganismType {
     WOLF("wolf", Wolf.class),
     PYTHON("python", Python.class),

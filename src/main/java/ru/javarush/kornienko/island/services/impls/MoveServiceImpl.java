@@ -1,8 +1,7 @@
 package ru.javarush.kornienko.island.services.impls;
 
-import ru.javarush.kornienko.island.models.Island;
+import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.enums.Direction;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.services.MoveService;

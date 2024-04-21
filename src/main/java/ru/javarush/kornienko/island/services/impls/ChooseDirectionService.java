@@ -3,15 +3,10 @@ package ru.javarush.kornienko.island.services.impls;
 import ru.javarush.kornienko.island.models.enums.Direction;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ChooseDirectionService {
-    private final Random random;
-
-    public ChooseDirectionService(Random random) {
-        this.random = random;
-    }
-
     public Direction chooseDirection() {
-        return Direction.values()[random.nextInt(Direction.values().length)];
+        return Direction.values()[ThreadLocalRandom.current().nextInt(Direction.values().length)];
     }
 }
