@@ -24,17 +24,17 @@ public class Island implements IslandAction {
     private int maxPlantsPerCell = DEFAULT_PROPERTY_VALUE;
     private int maxAnimalsPerCell = DEFAULT_PROPERTY_VALUE;
 
+    public Island(IslandConfig islandConfig, PrototypeFactory prototypeFactory) {
+        this.islandConfig = islandConfig;
+        this.prototypeFactory = prototypeFactory;
+    }
+
     public int getMaxPlantsPerCell() {
         return maxPlantsPerCell;
     }
 
     public int getMaxAnimalsPerCell() {
         return maxAnimalsPerCell;
-    }
-
-    public Island(IslandConfig islandConfig, PrototypeFactory prototypeFactory) {
-        this.islandConfig = islandConfig;
-        this.prototypeFactory = prototypeFactory;
     }
 
     public int getHeight() {
@@ -58,11 +58,19 @@ public class Island implements IslandAction {
     }
 
     public void initEmptyIsland() {
+        extractProperties();
+        initEmptyMap();
+    }
+
+    private void extractProperties() {
         width = islandConfig.getProperty("width");
         height = islandConfig.getProperty("height");
         maxPlantsPerCell = islandConfig.getProperty("maxPlantsPerCell");
         maxAnimalsPerCell = islandConfig.getProperty("maxAnimalsPerCell");
-        Map<Cell, List<Organism>> islandMap = new HashMap<>();
+    }
+
+    private void initEmptyMap() {
+        islandMap = new HashMap<>();
         for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
                 Cell cell = new Cell(i, j);
@@ -72,35 +80,43 @@ public class Island implements IslandAction {
     }
 
     public void placeOrganisms() {
-        for(Map.Entry<Cell, List<Organism>> entry : islandMap.entrySet()) {
-            List<Organism> cellOrganisms = entry.getValue();
+        for(List<Organism> cellOrganisms : islandMap.values()) {
             placePlantsOnCell(cellOrganisms);
             placeAnimalsPerCell(cellOrganisms);
         }
     }
 
     private void placePlantsOnCell(List<Organism> cellOrganisms) {
+        int currentPlants = getCurrentOrganismsOnCell(cellOrganisms, Plant.class);
         for(Organism prototype : prototypeFactory.getPrototypes()) {
             if(prototype instanceof Plant) {
-                int prototypesPerCell = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
-                if(cellOrganisms.size() + prototypesPerCell > maxPlantsPerCell) {
+                int prototypesToAdd = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
+                if(currentPlants + prototypesToAdd > maxPlantsPerCell) {
                     break;
                 }
-                fillCellWithOrganisms(cellOrganisms, prototype, prototypesPerCell);
+                fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
+                currentPlants += prototypesToAdd;
             }
         }
     }
 
     private void placeAnimalsPerCell(List<Organism> cellOrganisms) {
+        int currentAnimals = getCurrentOrganismsOnCell(cellOrganisms, Animal.class);
         for(Organism prototype : prototypeFactory.getPrototypes()) {
             if(prototype instanceof Animal) {
-                int prototypesPerCell = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
-                if(cellOrganisms.size() + prototypesPerCell > maxAnimalsPerCell) {
+                int prototypesToAdd = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
+                if(currentAnimals + prototypesToAdd > maxAnimalsPerCell) {
                     break;
                 }
-                fillCellWithOrganisms(cellOrganisms, prototype, prototypesPerCell);
+                fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
+                currentAnimals += prototypesToAdd;
             }
         }
+    }
+
+    private int getCurrentOrganismsOnCell(List<Organism> cellOrganisms, Class<? extends Organism> targetClass) {
+        return (int) cellOrganisms.stream()
+                .filter(organism -> organism.getClass() == targetClass).count();
     }
 
     private void fillCellWithOrganisms(List<Organism> cellOrganisms, Organism prototype, int prototypesPerCell) {
