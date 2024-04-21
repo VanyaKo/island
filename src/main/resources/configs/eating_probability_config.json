@@ -1,122 +1,122 @@
 [
   {
-    "eater": "wolf",
+    "eater": "ru.javarush.kornienko.island.models.predators.Wolf",
     "eatable": {
-      "horse": 10,
-      "deer": 15,
-      "rabbit": 60,
-      "mouse": 80,
-      "goat": 60,
-      "sheep": 70,
-      "hog": 15,
-      "buffalo": 10,
-      "duck": 40
+      "ru.javarush.kornienko.island.models.herbivores.Horse": 10,
+      "ru.javarush.kornienko.island.models.herbivores.Deer": 15,
+      "ru.javarush.kornienko.island.models.herbivores.Rabbit": 60,
+      "ru.javarush.kornienko.island.models.herbivores.Mouse": 80,
+      "ru.javarush.kornienko.island.models.herbivores.Goat": 60,
+      "ru.javarush.kornienko.island.models.herbivores.Sheep": 70,
+      "ru.javarush.kornienko.island.models.herbivores.Hog": 15,
+      "ru.javarush.kornienko.island.models.herbivores.Buffalo": 10,
+      "ru.javarush.kornienko.island.models.herbivores.Duck": 40
     }
   },
   {
-    "eater": "python",
+    "eater": "ru.javarush.kornienko.island.models.predators.Python",
     "eatable": {
-      "fox": 15,
-      "rabbit": 20,
-      "mouse": 40,
-      "duck": 10
+      "ru.javarush.kornienko.island.models.predators.Fox": 15,
+      "ru.javarush.kornienko.island.models.herbivores.Rabbit": 20,
+      "ru.javarush.kornienko.island.models.herbivores.Mouse": 40,
+      "ru.javarush.kornienko.island.models.herbivores.Duck": 10
     }
   },
   {
-    "eater": "fox",
+    "eater": "ru.javarush.kornienko.island.models.predators.Fox",
     "eatable": {
-      "rabbit": 70,
-      "mouse": 90,
-      "duck": 60,
-      "caterpillar": 40
+      "ru.javarush.kornienko.island.models.herbivores.Rabbit": 70,
+      "ru.javarush.kornienko.island.models.herbivores.Mouse": 90,
+      "ru.javarush.kornienko.island.models.herbivores.Duck": 60,
+      "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 40
     }
   },
   {
-    "eater": "bear",
+    "eater": "ru.javarush.kornienko.island.models.predators.Bear",
     "eatable": {
-      "python": 80,
-      "horse": 40,
-      "deer": 80,
-      "rabbit": 80,
-      "mouse": 90,
-      "goat": 70,
-      "sheep": 70,
-      "hog": 50,
-      "buffalo": 20,
-      "duck": 10
+      "ru.javarush.kornienko.island.models.predators.Python": 80,
+      "ru.javarush.kornienko.island.models.herbivores.Horse": 40,
+      "ru.javarush.kornienko.island.models.herbivores.Deer": 80,
+      "ru.javarush.kornienko.island.models.herbivores.Rabbit": 80,
+      "ru.javarush.kornienko.island.models.herbivores.Mouse": 90,
+      "ru.javarush.kornienko.island.models.herbivores.Goat": 70,
+      "ru.javarush.kornienko.island.models.herbivores.Sheep": 70,
+      "ru.javarush.kornienko.island.models.herbivores.Hog": 50,
+      "ru.javarush.kornienko.island.models.herbivores.Buffalo": 20,
+      "ru.javarush.kornienko.island.models.herbivores.Duck": 10
     }
   },
   {
-    "eater": "eagle",
+    "eater": "ru.javarush.kornienko.island.models.predators.Eagle",
     "eatable": {
-      "fox": 10,
-      "rabbit": 90,
-      "mouse": 90,
-      "duck": 80
+      "ru.javarush.kornienko.island.models.predators.Fox": 10,
+      "ru.javarush.kornienko.island.models.herbivores.Rabbit": 90,
+      "ru.javarush.kornienko.island.models.herbivores.Mouse": 90,
+      "ru.javarush.kornienko.island.models.herbivores.Duck": 80
     }
   },
   {
-    "eater": "horse",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Horse",
     "eatable": {
-      "plants": 100
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "deer",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Deer",
     "eatable": {
-      "plants": 100
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "rabbit",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Rabbit",
     "eatable": {
-      "plants": 100
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "mouse",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Mouse",
     "eatable": {
-      "caterpillar": 90,
-      "plants": 100
+      "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "goat",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Goat",
     "eatable": {
-      "plants": 100
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "sheep",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Sheep",
     "eatable": {
-      "plants": 100
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "hog",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Hog",
     "eatable": {
-      "mouse": 50,
-      "caterpillar": 90,
-      "plants": 100
+      "ru.javarush.kornienko.island.models.herbivores.Mouse": 50,
+      "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "buffalo",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Buffalo",
     "eatable": {
-      "plants": 100
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "duck",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Duck",
     "eatable": {
-      "caterpillar": 90,
-      "plants": 100
+      "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
-    "eater": "caterpillar",
+    "eater": "ru.javarush.kornienko.island.models.herbivores.Caterpillar",
     "eatable": {
-      "plants": 100
+      "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   }
 ]

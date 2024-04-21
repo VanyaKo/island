@@ -2,6 +2,8 @@ package ru.javarush.kornienko.island.models.abstracts;
 
 import ru.javarush.kornienko.island.services.AnimalAction;
 
+import java.util.Collection;
+
 public abstract class Animal extends Organism implements AnimalAction {
     private byte healthPercent;
 
@@ -18,9 +20,13 @@ public abstract class Animal extends Organism implements AnimalAction {
         this.healthPercent = 100;
     }
 
+    /**
+     * Tries to eat only one time.
+     * @param eatableOrganisms
+     */
     @Override
-    public void eat() {
-
+    public void eat(Collection<Organism> eatableOrganisms) {
+        
     }
 
     @Override

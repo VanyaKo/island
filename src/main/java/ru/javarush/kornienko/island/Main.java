@@ -1,14 +1,15 @@
 package ru.javarush.kornienko.island;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.EatingProbabilityConfig;
+import ru.javarush.kornienko.island.configs.IslandConfig;
+import ru.javarush.kornienko.island.configs.ProbabilityPair;
 import ru.javarush.kornienko.island.consts.Consts;
-import ru.javarush.kornienko.island.models.enums.Direction;
-import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
+import ru.javarush.kornienko.island.models.enums.Direction;
 import ru.javarush.kornienko.island.models.island.Cell;
+import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.PrototypeFactory;
 import ru.javarush.kornienko.island.services.impls.ChooseDirectionService;
@@ -24,9 +25,10 @@ public class Main {
         ObjectMapper objectMapper = new ObjectMapper();
         PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
         EatingProbabilityConfig eatingProbabilityConfig = new EatingProbabilityConfig(objectMapper, Consts.EATING_PROBABILITY_CONFIG);
+        ProbabilityPair[] probabilityPairs = eatingProbabilityConfig.readEatingProbability();
 
         Properties properties = new Properties();
-        IslandConfig islandConfig = new IslandConfig( properties, Consts.ISLAND_CONFIG);
+        IslandConfig islandConfig = new IslandConfig(properties, Consts.ISLAND_CONFIG);
         Island island = new Island(islandConfig, prototypeFactory);
 
         System.out.println(prototypeFactory.getPrototypes().stream()
@@ -35,6 +37,20 @@ public class Main {
 
         island.initEmptyIsland();
         island.placeOrganisms();
+
+        //eat
+        for(Map.Entry<Cell, List<Organism>> cellListEntry : island.getIslandMap().entrySet()) {
+            //process single cell
+            for(Organism organism : cellListEntry.getValue()) {
+                if(organism instanceof Animal animal) {
+                    List<Organism> eatableOrganisms = cellListEntry.getValue().stream()
+                            .filter(eatableOrganism -> eatableOrganism != organism)
+                            .filter(eatableOrganism -> eatableOrganism.getClass() != organism.getClass())
+                            .toList();
+                    animal.eat(eatableOrganisms);
+                }
+            }
+        }
 
 
         doStep(island);
