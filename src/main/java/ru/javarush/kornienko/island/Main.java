@@ -13,15 +13,14 @@ import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.PrototypeFactory;
 import ru.javarush.kornienko.island.services.impls.ChooseDirectionService;
-import ru.javarush.kornienko.island.services.impls.EatingService;
+import ru.javarush.kornienko.island.services.impls.EatService;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
-import ru.javarush.kornienko.island.services.impls.RemovingEatenOrganismService;
+import ru.javarush.kornienko.island.services.impls.RemoveEatenOrganismService;
+import ru.javarush.kornienko.island.services.impls.ReproduceService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
@@ -42,12 +41,16 @@ public class Main {
         island.initEmptyIsland();
         island.placeOrganisms();
 
-        EatingService eatingService = new EatingService();
-        Map<Cell, List<Organism>> islandMap = island.getIslandMap();
-        Map<Cell, List<Organism>> eatenOrganisms = eatingService.eat(islandMap, probabilityPairs);
-        RemovingEatenOrganismService removingEatenOrganismService = new RemovingEatenOrganismService();
-        removingEatenOrganismService.removeEatenOrganisms(islandMap, eatenOrganisms);
+        EatService eatService = new EatService();
 
+        Map<Cell, List<Organism>> islandMap = island.getIslandMap();
+        Map<Cell, List<Organism>> eatenOrganisms = eatService.eat(islandMap, probabilityPairs);
+
+        RemoveEatenOrganismService removeEatenOrganismService = new RemoveEatenOrganismService();
+        removeEatenOrganismService.removeEatenOrganisms(islandMap, eatenOrganisms);
+
+        ReproduceService reproduceService = new ReproduceService();
+        reproduceService.reproduceAnimalsOnIsland(islandMap, island.getMaxAnimalsPerCell());
 
         doStep(island);
     }
@@ -56,8 +59,8 @@ public class Main {
 
     private static void doStep(Island island) {
         eat();
-        move(island);
         reproduce();
+        move(island);
     }
 
     private static void reproduce() {

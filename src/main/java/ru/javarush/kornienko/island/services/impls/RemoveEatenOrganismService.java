@@ -6,7 +6,7 @@ import ru.javarush.kornienko.island.models.island.Cell;
 import java.util.List;
 import java.util.Map;
 
-public class RemovingEatenOrganismService {
+public class RemoveEatenOrganismService {
     public void removeEatenOrganisms(Map<Cell, List<Organism>> islandMap, Map<Cell, List<Organism>> organismsToRemove) {
         for(Map.Entry<Cell, List<Organism>> islandEntry : islandMap.entrySet()) {
             List<Organism> organismsToRemoveOnCell = organismsToRemove.get(islandEntry.getKey());

@@ -4,16 +4,14 @@ import ru.javarush.kornienko.island.configs.ProbabilityPair;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
-import ru.javarush.kornienko.island.models.island.Island;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class EatingService {
+public class EatService {
     /**
      * @param probabilityPairs
      * @return map of eaten organisms to remove
