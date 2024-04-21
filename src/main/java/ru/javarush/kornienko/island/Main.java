@@ -13,11 +13,15 @@ import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.PrototypeFactory;
 import ru.javarush.kornienko.island.services.impls.ChooseDirectionService;
+import ru.javarush.kornienko.island.services.impls.EatingService;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
+import ru.javarush.kornienko.island.services.impls.RemovingEatenOrganismService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
@@ -38,23 +42,17 @@ public class Main {
         island.initEmptyIsland();
         island.placeOrganisms();
 
-        //eat
-        for(Map.Entry<Cell, List<Organism>> cellListEntry : island.getIslandMap().entrySet()) {
-            //process single cell
-            for(Organism organism : cellListEntry.getValue()) {
-                if(organism instanceof Animal animal) {
-                    List<Organism> eatableOrganisms = cellListEntry.getValue().stream()
-                            .filter(eatableOrganism -> eatableOrganism != organism)
-                            .filter(eatableOrganism -> eatableOrganism.getClass() != organism.getClass())
-                            .toList();
-                    animal.eat(eatableOrganisms);
-                }
-            }
-        }
+        EatingService eatingService = new EatingService();
+        Map<Cell, List<Organism>> islandMap = island.getIslandMap();
+        Map<Cell, List<Organism>> eatenOrganisms = eatingService.eat(islandMap, probabilityPairs);
+        RemovingEatenOrganismService removingEatenOrganismService = new RemovingEatenOrganismService();
+        removingEatenOrganismService.removeEatenOrganisms(islandMap, eatenOrganisms);
 
 
         doStep(island);
     }
+
+
 
     private static void doStep(Island island) {
         eat();

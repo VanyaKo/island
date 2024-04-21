@@ -2,6 +2,8 @@ package ru.javarush.kornienko.island.configs;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -9,19 +11,19 @@ public final class ProbabilityPair implements Serializable {
     @Serial
     private static final long serialVersionUID = 0L;
     private final Class<?> eater;
-    private final Map<Class<?>, Byte> eatable;
+    private final Map<Class<?>, Byte> eatables;
 
-    public ProbabilityPair(Class<?> eater, Map<Class<?>, Byte> eatable) {
+    public ProbabilityPair(Class<?> eater, Map<Class<?>, Byte> eatables) {
         this.eater = eater;
-        this.eatable = eatable;
+        this.eatables = Collections.unmodifiableMap(eatables);
     }
 
-    public Class<?> eater() {
+    public Class<?> getEater() {
         return eater;
     }
 
-    public Map<Class<?>, Byte> eatable() {
-        return eatable;
+    public Map<Class<?>, Byte> getEatables() {
+        return eatables;
     }
 
     @Override
@@ -30,19 +32,19 @@ public final class ProbabilityPair implements Serializable {
         if(obj == null || obj.getClass() != this.getClass()) return false;
         var that = (ProbabilityPair) obj;
         return Objects.equals(this.eater, that.eater) &&
-               Objects.equals(this.eatable, that.eatable);
+               Objects.equals(this.eatables, that.eatables);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eater, eatable);
+        return Objects.hash(eater, eatables);
     }
 
     @Override
     public String toString() {
         return "ProbabilityPair[" +
                "eater=" + eater + ", " +
-               "eatable=" + eatable + ']';
+               "eatable=" + eatables + ']';
     }
 
 }
