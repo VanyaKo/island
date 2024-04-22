@@ -1,5 +1,6 @@
 package ru.javarush.kornienko.island.models.abstracts;
 
+import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.services.AnimalAction;
 
 import java.util.Optional;
@@ -29,8 +30,8 @@ public abstract class Animal extends Organism implements AnimalAction {
      */
     @Override
     public boolean eat(Organism eatableOrganism, byte minEatingProbability) {
-        int currentEatingProbability = ThreadLocalRandom.current().nextInt(100);
-        if(currentEatingProbability >= minEatingProbability) {
+        int currentEatingProbability = ThreadLocalRandom.current().nextInt(101);
+        if(currentEatingProbability <= minEatingProbability) {
             healthPercent += getAddedSaturation(eatableOrganism);
             if(healthPercent > 100) {
                 healthPercent = 100;
@@ -55,7 +56,7 @@ public abstract class Animal extends Organism implements AnimalAction {
     }
 
     @Override
-    public void move() {
-
+    public Cell move(Cell[] cells) {
+        return cells[ThreadLocalRandom.current().nextInt(cells.length)];
     }
 }
