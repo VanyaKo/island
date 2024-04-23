@@ -8,7 +8,7 @@ import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.EatService;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,27 +17,29 @@ import java.util.concurrent.ThreadLocalRandom;
 public class EatServiceImpl implements EatService {
     private final Island island;
     private final ProbabilityPair[] probabilityPairs;
+    private Map<Class<? extends Organism>, Long> eatenOrganismClassCount;
 
     public EatServiceImpl(Island island, ProbabilityPair[] probabilityPairs) {
         this.island = island;
         this.probabilityPairs = probabilityPairs;
     }
 
+    public Map<Class<? extends Organism>, Long> getEatenOrganismClassCount() {
+        return new HashMap<>(eatenOrganismClassCount);
+    }
+
     /**
      *
      * @return map of eaten organisms to remove
      */
-    public long eatIslandOrganisms() {
-        long eatenOrganismCount = 0;
-        Map<Cell, List<Organism>> eatenIslandOrganisms = Collections.emptyMap();
+    public void eatIslandOrganisms() {
+        eatenOrganismClassCount = new HashMap<>();
         for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
-            eatenOrganismCount += eatCellAnimals(cellOrganismsEntry);
+            eatCellAnimals(cellOrganismsEntry);
         }
-        return eatenOrganismCount;
     }
 
-    private long eatCellAnimals(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
-        long eatenOrganismCount = 0;
+    private void eatCellAnimals(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
         List<Class<? extends Animal>> eaterClasses = new ArrayList<>();
         List<Organism> eatenOrganisms = new ArrayList<>();
         List<Organism> organisms = cellOrganismsEntry.getValue();
@@ -55,12 +57,12 @@ public class EatServiceImpl implements EatService {
                 if(animal.eat(randomEatableOrganism, eatingProbability)) {
                     eaterClasses.add(animal.getClass());
                     eatenOrganisms.add(randomEatableOrganism);
-                    eatenOrganismCount++;
+                    eatenOrganismClassCount.putIfAbsent(randomEatableOrganism.getClass(), 0L);
+                    eatenOrganismClassCount.put(randomEatableOrganism.getClass(), eatenOrganismClassCount.get(randomEatableOrganism.getClass()) + 1);
                 }
             }
         }
         eatenOrganisms.forEach(organism -> island.removeOrganismFromCell(organism, cellOrganismsEntry.getKey()));
-        return eatenOrganismCount;
     }
 
     private Organism getRandomEatableOrganism(List<Organism> eatableOrganisms) {
