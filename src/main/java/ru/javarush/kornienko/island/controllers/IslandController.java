@@ -16,10 +16,12 @@ import ru.javarush.kornienko.island.services.DieService;
 import ru.javarush.kornienko.island.services.EatService;
 import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.ReproduceService;
+import ru.javarush.kornienko.island.services.StatisticsService;
 import ru.javarush.kornienko.island.services.impls.DieServiceImpl;
 import ru.javarush.kornienko.island.services.impls.EatServiceImpl;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
 import ru.javarush.kornienko.island.services.impls.ReproduceServiceImpl;
+import ru.javarush.kornienko.island.services.impls.StatisticsServiceImpl;
 
 import java.util.Map;
 import java.util.Properties;
@@ -41,21 +43,12 @@ public class IslandController {
     }
 
     private void startGameCycle(PrototypeFactory prototypeFactory, Island island, ProbabilityPair[] probabilityPairs) {
+        StatisticsServiceImpl statisticsService = new StatisticsServiceImpl();
         // eat
         EatService eatService = new EatServiceImpl(island, probabilityPairs);
         eatService.eatIslandOrganisms();
         Map<Class<? extends Organism>, Long> eatenOrganismClassCount = ((EatServiceImpl) eatService).getEatenOrganismClassCount();
-        System.out.println(Wolf.class.getSuperclass() == Predator.class);
-        long eatenAnimalCount = 0;
-        long eatenPlantCount = 0;
-        for(Map.Entry<Class<? extends Organism>, Long> classCountEntry : eatenOrganismClassCount.entrySet()) {
-            Organism prototype = prototypeFactory.getPrototype(classCountEntry.getKey());
-            if(prototype instanceof Animal) {
-                eatenAnimalCount++;
-            } else if(prototype instanceof Plant) {
-                eatenPlantCount++;
-            }
-        }
+        statisticsService.printEatInfo(prototypeFactory, eatenOrganismClassCount);
 
         // reproduce
         ReproduceService reproduceService = new ReproduceServiceImpl(island);

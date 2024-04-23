@@ -24,40 +24,37 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class PrototypeFactory {
     private final Set<Class<? extends Organism>> types;
+    private final Map<Class<? extends Organism>, String> unicodes;
     private final Map<Class<? extends Organism>, Organism> prototypes;
     private final ObjectMapper objectMapper;
 
-    public PrototypeFactory(ObjectMapper objectMapper){
+    public PrototypeFactory(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
         prototypes = new HashMap<>();
-        types = new HashSet<>();
-        types.add(Wolf.class);
-        types.add(Python.class);
-        types.add(Fox.class);
-        types.add(Bear.class);
-        types.add(Eagle.class);
-        types.add(Horse.class);
-        types.add(Deer.class);
-        types.add(Rabbit.class);
-        types.add(Mouse.class);
-        types.add(Goat.class);
-        types.add(Sheep.class);
-        types.add(Hog.class);
-        types.add(Buffalo.class);
-        types.add(Duck.class);
-        types.add(Caterpillar.class);
-        types.add(Plants.class);
+        unicodes = new HashMap<>();
+        unicodes.put(Wolf.class, "\uD83D\uDC3A");
+        unicodes.put(Python.class, "\uD83D\uDC0D");
+        unicodes.put(Fox.class, "\uD83E\uDD8A");
+        unicodes.put(Bear.class, "\uD83D\uDC3B");
+        unicodes.put(Eagle.class, "\uD83E\uDD85");
+        unicodes.put(Horse.class, "\uD83D\uDC0E");
+        unicodes.put(Deer.class, "\uD83E\uDD8C");
+        unicodes.put(Rabbit.class, "\uD83D\uDC07");
+        unicodes.put(Mouse.class, "\uD83D\uDC01");
+        unicodes.put(Goat.class, "\uD83D\uDC10");
+        unicodes.put(Sheep.class, "\uD83D\uDC11");
+        unicodes.put(Hog.class, "\uD83D\uDC17");
+        unicodes.put(Buffalo.class, "\uD83D\uDC03");
+        unicodes.put(Duck.class, "\uD83E\uDD86");
+        unicodes.put(Caterpillar.class, "\uD83D\uDC1B");
+        unicodes.put(Plants.class, "\uD83C\uDF31");
+        types = unicodes.keySet();
         init();
-    }
-
-    public Organism cloneOrganism(Class<? extends Organism> type) {
-        throw new RuntimeException();
     }
 
     private void init() {
@@ -65,6 +62,10 @@ public class PrototypeFactory {
             Organism organism = createPrototype(type);
             prototypes.put(type, organism);
         }
+    }
+
+    public String getUnicodeByClass(Class<? extends Organism> clazz) {
+        return unicodes.get(clazz);
     }
 
     private Organism createPrototype(Class<? extends Organism> type) {
