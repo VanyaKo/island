@@ -34,9 +34,7 @@ public class MoveServiceImpl implements MoveService {
         Map<Animal, Cell> animalsToMove = new HashMap<>();
         for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             Cell currentCell = cellOrganismsEntry.getKey();
-            cellOrganismsEntry.getValue().stream()
-                    .filter(Animal.class::isInstance)
-                    .map(Animal.class::cast)
+            island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue())
                     .forEach(animal -> animalsToMove.put(animal, currentCell));
         }
         return animalsToMove;

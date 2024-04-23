@@ -49,9 +49,9 @@ public abstract class Animal extends Organism implements AnimalAction {
 
 
     @Override
-    public Organism reproduce() {
+    public Animal reproduce() {
         try {
-            return (Organism) clone();
+            return (Animal) clone();
         } catch(CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }

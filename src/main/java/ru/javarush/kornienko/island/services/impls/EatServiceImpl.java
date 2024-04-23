@@ -26,7 +26,7 @@ public class EatServiceImpl implements EatService {
     /**
      * @return map of eaten organisms to remove
      */
-    public void eat() {
+    public void eatIslandOrganisms() {
         Map<Cell, List<Organism>> eatenIslandOrganisms = Collections.emptyMap();
         for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             eatCellAnimals(cellOrganismsEntry);

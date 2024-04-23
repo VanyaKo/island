@@ -9,6 +9,7 @@ import ru.javarush.kornienko.island.services.IslandAction;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +59,7 @@ public class Island implements IslandAction {
     }
 
     /**
-     *
-     * @return copy of a map
+     * Get copy of a map.
      */
     public Map<Cell, List<Organism>> getIslandMap() {
         return new HashMap<>(islandMap);
@@ -154,5 +154,12 @@ public class Island implements IslandAction {
 
     public void removeOrganismFromCell(Organism Organism, Cell cell) {
         islandMap.get(cell).remove(Organism);
+    }
+
+    public List<Animal> getAnimalListFromOrganisms(Collection<Organism> organisms) {
+        return organisms.stream()
+                .filter(Animal.class::isInstance)
+                .map(Animal.class::cast)
+                .toList();
     }
 }

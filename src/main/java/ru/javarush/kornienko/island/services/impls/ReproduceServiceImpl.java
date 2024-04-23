@@ -3,37 +3,35 @@ package ru.javarush.kornienko.island.services.impls;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
+import ru.javarush.kornienko.island.models.island.Island;
+import ru.javarush.kornienko.island.services.ReproduceService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ReproduceService {
-    /**
-     * Each king of animals can reproduce only one child per move (за один ход игры)
-     * @param islandMap
-     * @param maxAnimalsPerCell
-     */
-    public void reproduceAnimalsOnIsland(Map<Cell, List<Organism>> islandMap, int maxAnimalsPerCell) {
-        for(Map.Entry<Cell, List<Organism>> islandEntry : islandMap.entrySet()) {
-            List<Animal> animalsOnCell = getAnimalsOnCell(islandEntry.getValue());
-            int animalsOnCellNumber = animalsOnCell.size();
-            if(animalsOnCellNumber < maxAnimalsPerCell) {
-                Map<Class<? extends Animal>, Animal> classAnimals = getMapFromList(animalsOnCell);
-                reproduceAnimalsOnCell(classAnimals, animalsOnCellNumber, maxAnimalsPerCell);
-            }
+public class ReproduceServiceImpl implements ReproduceService {
+    private static final int MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE = 2;
+    private final Island island;
+
+    public ReproduceServiceImpl(Island island) {
+        this.island = island;
+    }
+
+    public void reproduceIslandAnimals() {
+        for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
+            processCell(cellOrganismsEntry);
         }
     }
 
-    private void reproduceAnimalsOnCell(Map<Class<? extends Animal>, Animal> classAnimals, int animalsOnCellNumber, int maxAnimalsPerCell) {
-        for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
-            Organism reproduce = classAnimalEntry.getValue().reproduce(); // TODO
-            if(++animalsOnCellNumber >= maxAnimalsPerCell) {
-                return;
-            }
+    private void processCell(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
+        List<Animal> animals = island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue());
+        int currentAnimalsCount = animals.size();
+        if(currentAnimalsCount < island.getMaxAnimalsPerCell()) {
+            Map<Class<? extends Animal>, Animal> classAnimals = getMapFromList(animals);
+            reproduceAnimals(classAnimals, cellOrganismsEntry.getKey(), currentAnimalsCount);
         }
     }
 
@@ -46,7 +44,7 @@ public class ReproduceService {
         Map<Class<? extends Animal>, List<Animal>> classAnimals = getClassAnimals(animals);
         Map<Class<? extends Animal>, Animal> reproducibleClassAnimals = new HashMap<>();
         for(Map.Entry<Class<? extends Animal>, List<Animal>> classAnimalsEntry : classAnimals.entrySet()) {
-            if(classAnimalsEntry.getValue().size() < 2) {
+            if(classAnimalsEntry.getValue().size() >= MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE) {
                 int randomAnimalIndex = ThreadLocalRandom.current().nextInt(classAnimalsEntry.getValue().size());
                 reproducibleClassAnimals.put(classAnimalsEntry.getKey(), classAnimalsEntry.getValue().get(randomAnimalIndex));
             }
@@ -70,10 +68,13 @@ public class ReproduceService {
         return classAnimals;
     }
 
-    private List<Animal> getAnimalsOnCell(List<Organism> organismsOnCell) {
-        return organismsOnCell.stream()
-                .filter(organism -> organism instanceof Animal)
-                .map(organism -> (Animal) organism)
-                .toList();
+    private void reproduceAnimals(Map<Class<? extends Animal>, Animal> classAnimals, Cell cell, int currentAnimalCount) {
+        for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
+            Animal newborn = classAnimalEntry.getValue().reproduce();
+            island.addAnimalToCell(newborn, cell);
+            if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
+                return;
+            }
+        }
     }
 }
