@@ -6,7 +6,7 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.plants.Plant;
 import ru.javarush.kornienko.island.models.plants.Plants;
 import ru.javarush.kornienko.island.services.IslandAction;
-import ru.javarush.kornienko.island.services.PrototypeFactory;
+import ru.javarush.kornienko.island.configs.PrototypeFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,7 +152,7 @@ public class Island implements IslandAction {
         islandMap.get(cell).add(animal);
     }
 
-    public void removeAnimalFromCell(Animal animal, Cell cell) {
-        islandMap.get(cell).remove(animal);
+    public void removeOrganismFromCell(Organism Organism, Cell cell) {
+        islandMap.get(cell).remove(Organism);
     }
 }

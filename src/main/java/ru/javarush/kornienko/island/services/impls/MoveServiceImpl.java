@@ -49,7 +49,7 @@ public class MoveServiceImpl implements MoveService {
             if(!availableCells.isEmpty()) {
                 Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
                 island.addAnimalToCell(animal, destinationCell);
-                island.removeAnimalFromCell(animal, startCell);
+                island.removeOrganismFromCell(animal, startCell);
                 startCell = destinationCell;
             }
         }

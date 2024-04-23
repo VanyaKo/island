@@ -7,6 +7,7 @@ import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.EatService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,65 +16,69 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class EatServiceImpl implements EatService {
     private final Island island;
+    private final ProbabilityPair[] probabilityPairs;
 
-    public EatServiceImpl(Island island) {
+    public EatServiceImpl(Island island, ProbabilityPair[] probabilityPairs) {
         this.island = island;
+        this.probabilityPairs = probabilityPairs;
     }
 
     /**
-     * @param probabilityPairs
      * @return map of eaten organisms to remove
      */
-    public void eat(ProbabilityPair[] probabilityPairs) {
+    public void eat() {
         Map<Cell, List<Organism>> eatenIslandOrganisms = Collections.emptyMap();
-        for(Map.Entry<Cell, List<Organism>> cellOrganismListEntry : island.getIslandMap().entrySet()) {
-            List<Organism> eatenOrganismPerCell = Collections.emptyList();
-            for(Organism organism : cellOrganismListEntry.getValue()) {
-                if(organism instanceof Animal animal) {
-                    Map<Class<?>, Byte> eatableClasses = getEatableClassesByEater(probabilityPairs, animal.getClass());
-                    List<Organism> eatableOrganisms = cellOrganismListEntry.getValue().stream()
-                            .filter(eatableOrganism -> eatableClasses.containsKey(eatableOrganism.getClass()))
-                            .toList();
+        for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
+            eatCellAnimals(cellOrganismsEntry);
+        }
+    }
 
-                    Organism randomEatableOrganism = getRandomEatableOrganism(eatableOrganisms, eatableClasses);
-                    byte eatingProbability = getEatingProbabilityByOrganism(randomEatableOrganism, eatableClasses);
-                    if(animal.eat(randomEatableOrganism, eatingProbability)) {
-                        eatenOrganismPerCell.add(randomEatableOrganism);
-                    }
+    private void eatCellAnimals(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
+        List<Class<? extends Animal>> eaterClasses = new ArrayList<>();
+        List<Organism> eatenOrganisms = new ArrayList<>();
+        List<Organism> organisms = cellOrganismsEntry.getValue();
+        for(Organism organism : organisms) {
+            if(organism instanceof Animal animal && !eaterClasses.contains(animal.getClass()) && !eatenOrganisms.contains(animal)) {
+                Map<Class<?>, Byte> eatableClasses = getEatablesByEaterClass(animal.getClass());
+                List<Organism> eatableOrganisms = organisms.stream()
+                        .filter(cellOrganism -> eatableClasses.containsKey(cellOrganism.getClass()))
+                        .toList();
+                Organism randomEatableOrganism = getRandomEatableOrganism(eatableOrganisms, eatableClasses);
+                byte eatingProbability = getEatingProbabilityByOrganism(randomEatableOrganism, eatableClasses);
+                if(animal.eat(randomEatableOrganism, eatingProbability)) {
+                    eaterClasses.add(animal.getClass());
+                    eatenOrganisms.add(randomEatableOrganism);
                 }
             }
-            eatenIslandOrganisms.put(cellOrganismListEntry.getKey(), eatenOrganismPerCell); // TODO
         }
+        eatenOrganisms.forEach(organism -> island.removeOrganismFromCell(organism, cellOrganismsEntry.getKey()));
     }
 
-    private  byte getEatingProbabilityByOrganism(Organism randomEatableOrganism, Map<Class<?>, Byte> eatableClasses) {
-        for(Map.Entry<Class<?>, Byte> classByteEntry : eatableClasses.entrySet()) {
-            if(classByteEntry.getKey() == randomEatableOrganism.getClass()) {
-                return classByteEntry.getValue();
-            }
-        }
-        throw new RuntimeException("KEK");
-    }
-
-    private  Organism getRandomEatableOrganism(List<Organism> eatableOrganisms, Map<Class<?>, Byte> eatableClasses) {
+    private Organism getRandomEatableOrganism(List<Organism> eatableOrganisms, Map<Class<?>, Byte> eatableClasses) {
         Class<?> randomEatableClass = getRandomEatableClass(eatableClasses.keySet());
-        return getRandomEatableEntryByClass(randomEatableClass, eatableOrganisms);
+        return getRandomEatableOrganismByClass(randomEatableClass, eatableOrganisms);
     }
 
-    private  Organism getRandomEatableEntryByClass(Class<?> randomEatableClass, List<Organism> eatableOrganisms) {
-        for(Organism eatableOrganism : eatableOrganisms) {
-            if(eatableOrganism.getClass() == randomEatableClass) {
-                return eatableOrganism;
-            }
-        }
-        throw new RuntimeException("No eatable organisms with " + randomEatableClass + " class");
-    }
-
-    private  Class<?> getRandomEatableClass(Set<Class<?>> eatableClasses) {
+    private Class<?> getRandomEatableClass(Set<Class<?>> eatableClasses) {
         return (Class<?>) eatableClasses.toArray()[ThreadLocalRandom.current().nextInt(eatableClasses.size())];
     }
 
-    private  Map<Class<?>, Byte> getEatableClassesByEater(ProbabilityPair[] probabilityPairs, Class<? extends Animal> eaterClass) {
+    private Organism getRandomEatableOrganismByClass(Class<?> clazz, List<Organism> organisms) {
+        return organisms.stream()
+                .filter(organism -> organism.getClass() == clazz)
+                .findAny()
+                .orElseThrow(() -> new RuntimeException("No eatable organisms with " + clazz + " class"));
+    }
+
+    private byte getEatingProbabilityByOrganism(Organism organism, Map<Class<?>, Byte> eatableClasses) {
+        return eatableClasses.entrySet().stream()
+                .filter(classByteEntry -> classByteEntry.getKey() == organism.getClass())
+                .findAny()
+                .map(Map.Entry::getValue)
+                .orElseThrow(() -> new RuntimeException("Cannot find probability of being eaten for " + organism + " organism."));
+    }
+
+    private Map<Class<?>, Byte> getEatablesByEaterClass(Class<? extends Animal> eaterClass) {
         for(ProbabilityPair probabilityPair : probabilityPairs) {
             if(probabilityPair.getEater() == eaterClass) {
                 return probabilityPair.getEatables();

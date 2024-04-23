@@ -1,8 +1,7 @@
-package ru.javarush.kornienko.island.services;
+package ru.javarush.kornienko.island.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
-import ru.javarush.kornienko.island.configs.Config;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.herbivores.Buffalo;
 import ru.javarush.kornienko.island.models.herbivores.Caterpillar;

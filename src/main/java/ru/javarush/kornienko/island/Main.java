@@ -9,7 +9,7 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.MoveService;
-import ru.javarush.kornienko.island.services.PrototypeFactory;
+import ru.javarush.kornienko.island.configs.PrototypeFactory;
 import ru.javarush.kornienko.island.services.impls.EatServiceImpl;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
 import ru.javarush.kornienko.island.services.impls.RemoveEatenOrganismService;
@@ -38,14 +38,14 @@ public class Main {
         island.initEmptyIsland();
         island.placeOrganisms();
 
-        EatServiceImpl eatServiceImpl = new EatServiceImpl();
+        EatServiceImpl eatServiceImpl = new EatServiceImpl(island, probabilityPairs);
 
         Map<Cell, List<Organism>> islandMap = island.getIslandMap();
-        Map<Cell, List<Organism>> eatenOrganisms = eatServiceImpl.eat(probabilityPairs);
+        eatServiceImpl.eat();
 
         // eat
         RemoveEatenOrganismService removeEatenOrganismService = new RemoveEatenOrganismService();
-        removeEatenOrganismService.removeEatenOrganisms(islandMap, eatenOrganisms);
+//        removeEatenOrganismService.removeEatenOrganisms(islandMap, eatenOrganisms);
 
         // reproduce
         ReproduceService reproduceService = new ReproduceService();

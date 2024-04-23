@@ -4,7 +4,7 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 
 public interface AnimalAction {
-    boolean eat(Organism eatableOrganism, byte minEatingProbability);
+    boolean eat(Organism eatableOrganism, byte maxEatingProbability);
 
     Organism reproduce();
 
