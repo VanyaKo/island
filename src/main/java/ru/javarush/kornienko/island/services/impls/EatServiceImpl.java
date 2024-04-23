@@ -24,16 +24,20 @@ public class EatServiceImpl implements EatService {
     }
 
     /**
+     *
      * @return map of eaten organisms to remove
      */
-    public void eatIslandOrganisms() {
+    public long eatIslandOrganisms() {
+        long eatenOrganismCount = 0;
         Map<Cell, List<Organism>> eatenIslandOrganisms = Collections.emptyMap();
         for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
-            eatCellAnimals(cellOrganismsEntry);
+            eatenOrganismCount += eatCellAnimals(cellOrganismsEntry);
         }
+        return eatenOrganismCount;
     }
 
-    private void eatCellAnimals(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
+    private long eatCellAnimals(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
+        long eatenOrganismCount = 0;
         List<Class<? extends Animal>> eaterClasses = new ArrayList<>();
         List<Organism> eatenOrganisms = new ArrayList<>();
         List<Organism> organisms = cellOrganismsEntry.getValue();
@@ -43,20 +47,24 @@ public class EatServiceImpl implements EatService {
                 List<Organism> eatableOrganisms = organisms.stream()
                         .filter(cellOrganism -> eatableClasses.containsKey(cellOrganism.getClass()))
                         .toList();
-                Organism randomEatableOrganism = getRandomEatableOrganism(eatableOrganisms, eatableClasses);
+                if(eatableOrganisms.isEmpty()) {
+                    continue;
+                }
+                Organism randomEatableOrganism = getRandomEatableOrganism(eatableOrganisms);
                 byte eatingProbability = getEatingProbabilityByOrganism(randomEatableOrganism, eatableClasses);
                 if(animal.eat(randomEatableOrganism, eatingProbability)) {
                     eaterClasses.add(animal.getClass());
                     eatenOrganisms.add(randomEatableOrganism);
+                    eatenOrganismCount++;
                 }
             }
         }
         eatenOrganisms.forEach(organism -> island.removeOrganismFromCell(organism, cellOrganismsEntry.getKey()));
+        return eatenOrganismCount;
     }
 
-    private Organism getRandomEatableOrganism(List<Organism> eatableOrganisms, Map<Class<?>, Byte> eatableClasses) {
-        Class<?> randomEatableClass = getRandomEatableClass(eatableClasses.keySet());
-        return getRandomEatableOrganismByClass(randomEatableClass, eatableOrganisms);
+    private Organism getRandomEatableOrganism(List<Organism> eatableOrganisms) {
+        return eatableOrganisms.get(ThreadLocalRandom.current().nextInt(eatableOrganisms.size()));
     }
 
     private Class<?> getRandomEatableClass(Set<Class<?>> eatableClasses) {
@@ -67,7 +75,8 @@ public class EatServiceImpl implements EatService {
         return organisms.stream()
                 .filter(organism -> organism.getClass() == clazz)
                 .findAny()
-                .orElseThrow(() -> new RuntimeException("No eatable organisms with " + clazz + " class"));
+                .orElse(null);
+//                .orElseThrow(() -> new RuntimeException("No eatable organisms with " + clazz + " class"));
     }
 
     private byte getEatingProbabilityByOrganism(Organism organism, Map<Class<?>, Byte> eatableClasses) {

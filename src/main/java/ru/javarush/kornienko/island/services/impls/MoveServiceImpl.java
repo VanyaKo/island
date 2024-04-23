@@ -21,13 +21,16 @@ public class MoveServiceImpl implements MoveService {
     }
 
     @Override
-    public void moveIslandAnimals() {
+    public long moveIslandAnimals() {
+        long movedAnimalCount = 0;
         Map<Animal, Cell> animalsToMove = getAnimalsToMove();
+        int counter = 0;
         for(Map.Entry<Animal, Cell> animalCellEntry : animalsToMove.entrySet()) {
             Animal animal = animalCellEntry.getKey();
             Cell startCell = animalCellEntry.getValue();
-            moveAnimal(animal, startCell);
+            movedAnimalCount += moveAnimal(animal, startCell);
         }
+        return movedAnimalCount;
     }
 
     private Map<Animal, Cell> getAnimalsToMove() {
@@ -40,7 +43,8 @@ public class MoveServiceImpl implements MoveService {
         return animalsToMove;
     }
 
-    private void moveAnimal(Animal animal, Cell startCell) {
+    private long moveAnimal(Animal animal, Cell startCell) {
+        long movedAnimalCount = 0;
         for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed() + 1); i++) {
             Map<Cell, List<Organism>> neighborCells = getNeighborCells(startCell);
             Set<Cell> availableCells = getAvailableCells(neighborCells);
@@ -49,8 +53,10 @@ public class MoveServiceImpl implements MoveService {
                 island.addAnimalToCell(animal, destinationCell);
                 island.removeOrganismFromCell(animal, startCell);
                 startCell = destinationCell;
+                movedAnimalCount++;
             }
         }
+        return movedAnimalCount;
     }
 
     private Map<Cell, List<Organism>> getNeighborCells(Cell currentCell) {

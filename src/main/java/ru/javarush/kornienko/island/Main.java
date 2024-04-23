@@ -8,8 +8,12 @@ import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
+import ru.javarush.kornienko.island.services.DieService;
+import ru.javarush.kornienko.island.services.EatService;
 import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
+import ru.javarush.kornienko.island.services.ReproduceService;
+import ru.javarush.kornienko.island.services.impls.DieServiceImpl;
 import ru.javarush.kornienko.island.services.impls.EatServiceImpl;
 import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
 import ru.javarush.kornienko.island.services.impls.ReproduceServiceImpl;
@@ -21,6 +25,7 @@ import java.util.Properties;
 public class Main {
 
     public static void main(String[] args) {
+        Main main = new Main();
         ObjectMapper objectMapper = new ObjectMapper();
         PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
         EatingProbabilityConfig eatingProbabilityConfig = new EatingProbabilityConfig(objectMapper, Consts.EATING_PROBABILITY_CONFIG);
@@ -29,52 +34,33 @@ public class Main {
         Properties properties = new Properties();
         IslandConfig islandConfig = new IslandConfig(properties, Consts.ISLAND_CONFIG);
         Island island = new Island(islandConfig, prototypeFactory);
-
-        System.out.println(prototypeFactory.getPrototypes().stream()
-                .mapToInt(Organism::getMaxCountOnCell)
-                .sum());
-
         island.initEmptyIsland();
         island.placeOrganisms();
-        Map<Cell, List<Organism>> islandMap = island.getIslandMap();
 
+        main.doStep(island, probabilityPairs);
+    }
+
+
+
+    private void doStep(Island island, ProbabilityPair[] probabilityPairs) {
         // eat
-        EatServiceImpl eatServiceImpl = new EatServiceImpl(island, probabilityPairs);
-        eatServiceImpl.eatIslandOrganisms();
+        EatService eatService = new EatServiceImpl(island, probabilityPairs);
+        long eatenOrganismCount = eatService.eatIslandOrganisms();
+        System.out.println("Всего поело " + eatenOrganismCount + " животных.");
 
         // reproduce
-        ReproduceServiceImpl reproduceServiceImpl = new ReproduceServiceImpl(island);
-        reproduceServiceImpl.reproduceIslandAnimals();
+        ReproduceService reproduceService = new ReproduceServiceImpl(island);
+        long newbornAnimalCount = reproduceService.reproduceIslandAnimals();
+        System.out.println("Все размножилось " + newbornAnimalCount + " животных.");
 
         // move
         MoveService moveService = new MoveServiceImpl(island);
-        moveService.moveIslandAnimals();
-        doStep(island);
+        long movedAnimalCount = moveService.moveIslandAnimals();
+        System.out.println("Все переместилось " + movedAnimalCount + " животных.");
+
+        // die if hungry
+        DieService dieService = new DieServiceImpl(island);
+        long diedFromHungerAnimalCount = dieService.killHungryIslandAnimals();
+        System.out.println("Умерло от голода " + diedFromHungerAnimalCount + " животных.");
     }
-
-
-
-    private static void doStep(Island island) {
-//        eat();
-//        reproduce();
-//        move(island);
-    }
-
-//    private static void move(Island island) {
-//        ChooseDirectionService chooseDirectionService = new ChooseDirectionService();
-//        MoveService moveService = new MoveServiceImpl(island);
-//        for(Map.Entry<Cell, List<Organism>> cellListEntry : island.getIslandMap().entrySet()) {
-//            Cell cell = cellListEntry.getKey();
-//            List<Animal> animals = cellListEntry.getValue()
-//                    .stream()
-//                    .filter(organism -> organism instanceof Animal)
-//                    .map(organism -> (Animal) organism)
-//                    .toList();
-//            for(Animal animal : animals) {
-//                byte maxSpeed = animal.getMaxSpeed();
-//                Direction direction = chooseDirectionService.chooseDirection();
-//                moveService.move(animal, cell, direction, maxSpeed);
-//            }
-//        }
-//    }
 }

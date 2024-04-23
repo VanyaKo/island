@@ -1,12 +1,11 @@
 package ru.javarush.kornienko.island.models.island;
 
 import ru.javarush.kornienko.island.configs.IslandConfig;
+import ru.javarush.kornienko.island.configs.PrototypeFactory;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.plants.Plant;
-import ru.javarush.kornienko.island.models.plants.Plants;
 import ru.javarush.kornienko.island.services.IslandAction;
-import ru.javarush.kornienko.island.configs.PrototypeFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,8 +16,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Island implements IslandAction {
     private static final int DEFAULT_PROPERTY_VALUE = -1;
-    private IslandConfig islandConfig;
-    private PrototypeFactory prototypeFactory;
+    private final IslandConfig islandConfig;
+    private final PrototypeFactory prototypeFactory;
     private Map<Cell, List<Organism>> islandMap;
     private int width = DEFAULT_PROPERTY_VALUE;
     private int height = DEFAULT_PROPERTY_VALUE;
@@ -42,10 +41,6 @@ public class Island implements IslandAction {
         return height;
     }
 
-    public void setIslandMap(Map<Cell, List<Organism>> islandMap) {
-        this.islandMap = islandMap;
-    }
-
     public void setHeight(int height) {
         this.height = height;
     }
@@ -63,6 +58,10 @@ public class Island implements IslandAction {
      */
     public Map<Cell, List<Organism>> getIslandMap() {
         return new HashMap<>(islandMap);
+    }
+
+    public void setIslandMap(Map<Cell, List<Organism>> islandMap) {
+        this.islandMap = islandMap;
     }
 
     public void initEmptyIsland() {
@@ -134,17 +133,6 @@ public class Island implements IslandAction {
             } catch(CloneNotSupportedException e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-
-
-    private int getMaxOrganismsPerCell(Organism prototype) {
-        if(prototype instanceof Plants) {
-            return maxPlantsPerCell;
-        } else if(prototype instanceof Animal) {
-            return maxAnimalsPerCell;
-        } else {
-            throw new RuntimeException("UNKNOWN_ORGANISM");
         }
     }
 

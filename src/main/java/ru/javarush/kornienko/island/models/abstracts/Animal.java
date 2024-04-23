@@ -1,14 +1,13 @@
 package ru.javarush.kornienko.island.models.abstracts;
 
+import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.services.AnimalAction;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal extends Organism implements AnimalAction {
-    public static final int HUNDRED_PERCENT = 100;
     private double healthPercent;
     private Map<String, Byte> eatable;
 
@@ -22,14 +21,11 @@ public abstract class Animal extends Organism implements AnimalAction {
         this.healthPercent = 100;
     }
 
-    public void decreaseHealth(byte amount) {
+    public double decreaseHealth(double amount) {
         healthPercent -= amount;
+        return healthPercent;
     }
 
-    /**
-     * Tries to eat only one time.
-     * @return true if eating successful, false otherwise;
-     */
     @Override
     public boolean eat(Organism eatableOrganism, byte maxEatingProbability) {
         int currentEatingProbability = ThreadLocalRandom.current().nextInt(101);
@@ -44,7 +40,7 @@ public abstract class Animal extends Organism implements AnimalAction {
     }
 
     private double getAddedSaturation(Organism eatableOrganism) {
-        return eatableOrganism.weight * HUNDRED_PERCENT / kilogramsForFullSaturation;
+        return eatableOrganism.weight * Consts.HUNDRED_PERCENT / kilogramsForFullSaturation;
     }
 
 
