@@ -4,6 +4,8 @@ import ru.javarush.kornienko.island.configs.ProbabilityPair;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
+import ru.javarush.kornienko.island.models.island.Island;
+import ru.javarush.kornienko.island.services.EatService;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,14 +13,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class EatService {
+public class EatServiceImpl implements EatService {
+    private final Island island;
+
+    public EatServiceImpl(Island island) {
+        this.island = island;
+    }
+
     /**
      * @param probabilityPairs
      * @return map of eaten organisms to remove
      */
-    public Map<Cell, List<Organism>> eat(Map<Cell, List<Organism>> islandOrganisms, ProbabilityPair[] probabilityPairs) {
+    public void eat(ProbabilityPair[] probabilityPairs) {
         Map<Cell, List<Organism>> eatenIslandOrganisms = Collections.emptyMap();
-        for(Map.Entry<Cell, List<Organism>> cellOrganismListEntry : islandOrganisms.entrySet()) {
+        for(Map.Entry<Cell, List<Organism>> cellOrganismListEntry : island.getIslandMap().entrySet()) {
             List<Organism> eatenOrganismPerCell = Collections.emptyList();
             for(Organism organism : cellOrganismListEntry.getValue()) {
                 if(organism instanceof Animal animal) {
@@ -36,7 +44,6 @@ public class EatService {
             }
             eatenIslandOrganisms.put(cellOrganismListEntry.getKey(), eatenOrganismPerCell); // TODO
         }
-        return eatenIslandOrganisms;
     }
 
     private  byte getEatingProbabilityByOrganism(Organism randomEatableOrganism, Map<Class<?>, Byte> eatableClasses) {
