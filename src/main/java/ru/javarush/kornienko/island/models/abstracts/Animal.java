@@ -55,6 +55,11 @@ public abstract class Animal extends Organism implements AnimalAction {
         }
     }
 
+    /**
+     *
+     * @param cells
+     * @return destination cell
+     */
     @Override
     public Cell move(Cell[] cells) {
         return cells[ThreadLocalRandom.current().nextInt(cells.length)];

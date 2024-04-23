@@ -52,8 +52,8 @@ public class Main {
         reproduceService.reproduceAnimalsOnIsland(islandMap, island.getMaxAnimalsPerCell());
 
         // move
-        MoveService moveService = new MoveServiceImpl();
-        moveService.moveIslandAnimals(island);
+        MoveService moveService = new MoveServiceImpl(island);
+        moveService.moveIslandAnimals();
         doStep(island);
     }
 

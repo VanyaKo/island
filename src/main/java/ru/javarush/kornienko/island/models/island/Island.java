@@ -41,6 +41,10 @@ public class Island implements IslandAction {
         return height;
     }
 
+    public void setIslandMap(Map<Cell, List<Organism>> islandMap) {
+        this.islandMap = islandMap;
+    }
+
     public void setHeight(int height) {
         this.height = height;
     }
@@ -53,6 +57,10 @@ public class Island implements IslandAction {
         this.width = width;
     }
 
+    /**
+     *
+     * @return copy of a map
+     */
     public Map<Cell, List<Organism>> getIslandMap() {
         return new HashMap<>(islandMap);
     }
@@ -140,11 +148,11 @@ public class Island implements IslandAction {
         }
     }
 
-    public void refillPlants(int maxCountPerCell) {
-
+    public void addAnimalToCell(Animal animal, Cell cell) {
+        islandMap.get(cell).add(animal);
     }
 
-    public void removeDeathAnimal() {
-
+    public void removeAnimalFromCell(Animal animal, Cell cell) {
+        islandMap.get(cell).remove(animal);
     }
 }
