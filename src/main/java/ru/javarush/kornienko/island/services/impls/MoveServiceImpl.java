@@ -5,7 +5,6 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.MoveService;
-import ru.javarush.kornienko.island.services.OrganismService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,16 +47,20 @@ public class MoveServiceImpl implements MoveService {
     }
 
     private void moveAnimal(Animal animal, Cell startCell) {
+        boolean isMoved = false;
         for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed() + 1); i++) {
             Map<Cell, List<Organism>> neighborCells = getNeighborCells(startCell);
             Set<Cell> availableCells = getAvailableCells(neighborCells);
             if(!availableCells.isEmpty()) {
                 Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
-                putDuplicateClassCount(movedOrganismClassToCount, animal.getClass());
                 island.addAnimalToCell(animal, destinationCell);
                 island.removeOrganismFromCell(animal, startCell);
                 startCell = destinationCell;
+                isMoved = true;
             }
+        }
+        if(isMoved) {
+            putDuplicateValueCount(movedOrganismClassToCount, animal.getClass());
         }
     }
 

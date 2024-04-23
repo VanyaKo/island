@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Island implements IslandAction {
@@ -86,37 +87,28 @@ public class Island implements IslandAction {
         }
     }
 
-    public void placeOrganisms() {
+    public void placePlants() {
         for(List<Organism> cellOrganisms : islandMap.values()) {
-            placePlantsOnCell(cellOrganisms);
-            placeAnimalsPerCell(cellOrganisms);
+            placeOrganismsOnCell(cellOrganisms, Plant.class, maxPlantsPerCell);
         }
     }
 
-    private void placePlantsOnCell(List<Organism> cellOrganisms) {
-        int currentPlants = getCurrentOrganismsOnCell(cellOrganisms, Plant.class);
-        for(Organism prototype : prototypeFactory.getPrototypes()) {
-            if(prototype instanceof Plant) {
-                int prototypesToAdd = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
-                if(currentPlants + prototypesToAdd > maxPlantsPerCell) {
-                    break;
-                }
-                fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
-                currentPlants += prototypesToAdd;
-            }
+    public void placeAnimals() {
+        for(List<Organism> cellOrganisms : islandMap.values()) {
+            placeOrganismsOnCell(cellOrganisms, Animal.class, maxAnimalsPerCell);
         }
     }
 
-    private void placeAnimalsPerCell(List<Organism> cellOrganisms) {
-        int currentAnimals = getCurrentOrganismsOnCell(cellOrganisms, Animal.class);
+    private void placeOrganismsOnCell(List<Organism> cellOrganisms, Class<? extends Organism> clazz, int maxOrganismsPerCell) {
+        int currentOrganisms = getCurrentOrganismsOnCell(cellOrganisms, clazz);
         for(Organism prototype : prototypeFactory.getPrototypes()) {
-            if(prototype instanceof Animal) {
+            if(clazz.isAssignableFrom(prototype.getClass())) {
                 int prototypesToAdd = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
-                if(currentAnimals + prototypesToAdd > maxAnimalsPerCell) {
+                if(currentOrganisms + prototypesToAdd > maxOrganismsPerCell) {
                     break;
                 }
                 fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
-                currentAnimals += prototypesToAdd;
+                currentOrganisms += prototypesToAdd;
             }
         }
     }
@@ -140,8 +132,8 @@ public class Island implements IslandAction {
         islandMap.get(cell).add(animal);
     }
 
-    public void removeOrganismFromCell(Organism Organism, Cell cell) {
-        islandMap.get(cell).remove(Organism);
+    public void removeOrganismFromCell(Organism organism, Cell cell) {
+        islandMap.get(cell).remove(organism);
     }
 
     public List<Animal> getAnimalListFromOrganisms(Collection<Organism> organisms) {

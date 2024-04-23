@@ -20,8 +20,29 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public void printCurrentOrganismInfo() {
+    public void printCurrentOrganismInfo(Map<Class<? extends Organism>, Long> organismClassesToCount) {
+        Map<Class<? extends Organism>, Long> plantClassCount = filterBySuperclass(organismClassesToCount, Plant.class);
+        Map<Class<? extends Organism>, Long> animalClassCount = filterBySuperclass(organismClassesToCount, Animal.class);
 
+        long organismCount = getValueCount(organismClassesToCount.values());
+        long plantCount = getValueCount(plantClassCount.values());
+        long animalCount = getValueCount(animalClassCount.values());
+
+        if(organismCount <= 0) {
+            System.out.println("На острове никого нет.");
+            return;
+        }
+        System.out.println("Всего на острове " + organismCount + " организмов: "
+                           + plantCount + " растений и " + animalCount + " животных.");
+        if(plantCount > 0) {
+            System.out.print("Растения: ");
+            printUnicodes(plantClassCount.entrySet());
+        }
+        if(animalCount > 0) {
+            System.out.print("Животные: ");
+            printUnicodes(animalClassCount.entrySet());
+        }
+        System.out.println();
     }
 
     @Override
@@ -80,7 +101,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     public void printDieInfo(Map<Class<? extends Organism>, Long> organismClassesToCount) {
         long diedAnimalCount = getValueCount(organismClassesToCount.values());
         if(diedAnimalCount <= 0) {
-            System.out.println("Никто не умер от голода.");
+            System.out.println("Никто не умер от голода.\n");
             return;
         }
         System.out.println("Всего умерло от голода " + diedAnimalCount + " животных.");

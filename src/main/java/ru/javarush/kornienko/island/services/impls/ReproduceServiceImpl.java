@@ -5,7 +5,6 @@ import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
-import ru.javarush.kornienko.island.services.OrganismService;
 import ru.javarush.kornienko.island.services.ReproduceService;
 
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ public class ReproduceServiceImpl implements ReproduceService {
         for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
             Animal newborn = classAnimalEntry.getValue().reproduce();
             island.addAnimalToCell(newborn, cell);
-            putDuplicateClassCount(newbornAnimalClassCount, newborn.getClass());
+            putDuplicateValueCount(newbornAnimalClassCount, newborn.getClass());
             if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
                 return;
             }

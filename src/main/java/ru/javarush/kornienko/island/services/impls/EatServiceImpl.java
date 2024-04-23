@@ -6,13 +6,11 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.EatService;
-import ru.javarush.kornienko.island.services.OrganismService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EatServiceImpl implements EatService {
@@ -42,14 +40,15 @@ public class EatServiceImpl implements EatService {
     }
 
     private void eatCellAnimals(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
-        List<Class<? extends Animal>> eaterClasses = new ArrayList<>();
+        List<Animal> eaters = new ArrayList<>();
         List<Organism> eatenOrganisms = new ArrayList<>();
         List<Organism> organisms = cellOrganismsEntry.getValue();
         for(Organism organism : organisms) {
-            if(organism instanceof Animal animal && !eaterClasses.contains(animal.getClass()) && !eatenOrganisms.contains(animal)) {
+            if(organism instanceof Animal animal && !eaters.contains(animal) && !eatenOrganisms.contains(animal)) {
                 Map<Class<?>, Byte> eatableClasses = getEatablesByEaterClass(animal.getClass());
                 List<Organism> eatableOrganisms = organisms.stream()
                         .filter(cellOrganism -> eatableClasses.containsKey(cellOrganism.getClass()))
+                        .filter(cellOrganism -> !eatenOrganisms.contains(cellOrganism))
                         .toList();
                 if(eatableOrganisms.isEmpty()) {
                     continue;
@@ -57,9 +56,9 @@ public class EatServiceImpl implements EatService {
                 Organism randomEatableOrganism = getRandomEatableOrganism(eatableOrganisms);
                 byte eatingProbability = getEatingProbabilityByOrganism(randomEatableOrganism, eatableClasses);
                 if(animal.eat(randomEatableOrganism, eatingProbability)) {
-                    eaterClasses.add(animal.getClass());
+                    eaters.add(animal);
                     eatenOrganisms.add(randomEatableOrganism);
-                    putDuplicateClassCount(eatenOrganismClassCount, randomEatableOrganism.getClass());
+                    putDuplicateValueCount(eatenOrganismClassCount, randomEatableOrganism.getClass());
                 }
             }
         }
@@ -68,18 +67,6 @@ public class EatServiceImpl implements EatService {
 
     private Organism getRandomEatableOrganism(List<Organism> eatableOrganisms) {
         return eatableOrganisms.get(ThreadLocalRandom.current().nextInt(eatableOrganisms.size()));
-    }
-
-    private Class<?> getRandomEatableClass(Set<Class<?>> eatableClasses) {
-        return (Class<?>) eatableClasses.toArray()[ThreadLocalRandom.current().nextInt(eatableClasses.size())];
-    }
-
-    private Organism getRandomEatableOrganismByClass(Class<?> clazz, List<Organism> organisms) {
-        return organisms.stream()
-                .filter(organism -> organism.getClass() == clazz)
-                .findAny()
-                .orElse(null);
-//                .orElseThrow(() -> new RuntimeException("No eatable organisms with " + clazz + " class"));
     }
 
     private byte getEatingProbabilityByOrganism(Organism organism, Map<Class<?>, Byte> eatableClasses) {
