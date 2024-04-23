@@ -5,6 +5,7 @@ import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
+import ru.javarush.kornienko.island.services.OrganismService;
 import ru.javarush.kornienko.island.services.ReproduceService;
 
 import java.util.ArrayList;
@@ -16,27 +17,31 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ReproduceServiceImpl implements ReproduceService {
     private final Island island;
 
+    public Map<Class<? extends Organism>, Long> getNewbornAnimalClassCount() {
+        return new HashMap<>(newbornAnimalClassCount);
+    }
+
+    private Map<Class<? extends Organism>, Long> newbornAnimalClassCount;
+
     public ReproduceServiceImpl(Island island) {
         this.island = island;
     }
 
-    public long reproduceIslandAnimals() {
-        long newbornAnimalCount = 0;
+    @Override
+    public void reproduceIslandAnimals() {
+        newbornAnimalClassCount = new HashMap<>();
         for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
-            newbornAnimalCount += processCell(cellOrganismsEntry);
+            processCell(cellOrganismsEntry);
         }
-        return newbornAnimalCount;
     }
 
-    private long processCell(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
-        long newbornAnimalCount = 0;
+    private void processCell(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
         List<Animal> animals = island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue());
         int currentAnimalsCount = animals.size();
         if(currentAnimalsCount < island.getMaxAnimalsPerCell()) {
             Map<Class<? extends Animal>, Animal> classAnimals = getMapFromList(animals);
-            newbornAnimalCount += reproduceAnimals(classAnimals, cellOrganismsEntry.getKey(), currentAnimalsCount);
+            reproduceAnimals(classAnimals, cellOrganismsEntry.getKey(), currentAnimalsCount);
         }
-        return newbornAnimalCount;
     }
 
     /**
@@ -69,16 +74,14 @@ public class ReproduceServiceImpl implements ReproduceService {
         return classAnimals;
     }
 
-    private long reproduceAnimals(Map<Class<? extends Animal>, Animal> classAnimals, Cell cell, int currentAnimalCount) {
-        long newbornAnimalCount = 0;
+    private void reproduceAnimals(Map<Class<? extends Animal>, Animal> classAnimals, Cell cell, int currentAnimalCount) {
         for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
             Animal newborn = classAnimalEntry.getValue().reproduce();
             island.addAnimalToCell(newborn, cell);
-            newbornAnimalCount++;
+            putDuplicateClassCount(newbornAnimalClassCount, newborn.getClass());
             if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
-                return newbornAnimalCount;
+                return;
             }
         }
-        return newbornAnimalCount;
     }
 }

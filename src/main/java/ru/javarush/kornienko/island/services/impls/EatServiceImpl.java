@@ -6,6 +6,7 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.EatService;
+import ru.javarush.kornienko.island.services.OrganismService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ public class EatServiceImpl implements EatService {
      *
      * @return map of eaten organisms to remove
      */
+    @Override
     public void eatIslandOrganisms() {
         eatenOrganismClassCount = new HashMap<>();
         for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
@@ -57,8 +59,7 @@ public class EatServiceImpl implements EatService {
                 if(animal.eat(randomEatableOrganism, eatingProbability)) {
                     eaterClasses.add(animal.getClass());
                     eatenOrganisms.add(randomEatableOrganism);
-                    eatenOrganismClassCount.putIfAbsent(randomEatableOrganism.getClass(), 0L);
-                    eatenOrganismClassCount.put(randomEatableOrganism.getClass(), eatenOrganismClassCount.get(randomEatableOrganism.getClass()) + 1);
+                    putDuplicateClassCount(eatenOrganismClassCount, randomEatableOrganism.getClass());
                 }
             }
         }

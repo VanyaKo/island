@@ -4,7 +4,7 @@ import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
 
-public interface AnimalAction {
+public interface AnimalAction extends OrganismService{
     /**
      * Trie once to eat and return if it was successful.
      * @return true if eating was successful, false otherwise.

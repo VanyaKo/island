@@ -43,26 +43,38 @@ public class IslandController {
     }
 
     private void startGameCycle(PrototypeFactory prototypeFactory, Island island, ProbabilityPair[] probabilityPairs) {
-        StatisticsServiceImpl statisticsService = new StatisticsServiceImpl();
+        int cycleCounter = 0;
+        StatisticsService statisticsService = new StatisticsServiceImpl(prototypeFactory);
+        System.out.println("НАЧАЛО ТАКТА #" + cycleCounter);
+
+        // print current organism info
+        statisticsService.
+
         // eat
         EatService eatService = new EatServiceImpl(island, probabilityPairs);
         eatService.eatIslandOrganisms();
         Map<Class<? extends Organism>, Long> eatenOrganismClassCount = ((EatServiceImpl) eatService).getEatenOrganismClassCount();
-        statisticsService.printEatInfo(prototypeFactory, eatenOrganismClassCount);
+        statisticsService.printEatInfo(eatenOrganismClassCount);
 
         // reproduce
         ReproduceService reproduceService = new ReproduceServiceImpl(island);
-        long newbornAnimalCount = reproduceService.reproduceIslandAnimals();
-        System.out.println("Все размножилось " + newbornAnimalCount + " животных.");
+        reproduceService.reproduceIslandAnimals();
+        Map<Class<? extends Organism>, Long> newbornAnimalClassToCount = ((ReproduceServiceImpl) reproduceService).getNewbornAnimalClassCount();
+        statisticsService.printReproduceInfo(newbornAnimalClassToCount);
 
         // move
         MoveService moveService = new MoveServiceImpl(island);
-        long movedAnimalCount = moveService.moveIslandAnimals();
-        System.out.println("Все переместилось " + movedAnimalCount + " животных.");
+        moveService.moveIslandAnimals();
+        Map<Class<? extends Organism>, Long> movedOrganismClassToCount = ((MoveServiceImpl) moveService).getMovedOrganismClassToCount();
+        statisticsService.printMoveInfo(movedOrganismClassToCount);
+
 
         // die if hungry
         DieService dieService = new DieServiceImpl(island);
-        long diedFromHungerAnimalCount = dieService.killHungryIslandAnimals();
-        System.out.println("Умерло от голода " + diedFromHungerAnimalCount + " животных.");
+        dieService.killHungryIslandAnimals();
+        Map<Class<? extends Organism>, Long> diedOrganismClassToCount = ((DieServiceImpl) dieService).getDiedOrganismClassToCount();
+        statisticsService.printDieInfo(diedOrganismClassToCount);
+
+        System.out.println("КОНЕЦ ТАКТА #" + cycleCounter++);
     }
 }
