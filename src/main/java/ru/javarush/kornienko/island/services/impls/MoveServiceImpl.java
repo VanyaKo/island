@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class MoveServiceImpl implements MoveService {
@@ -25,13 +26,24 @@ public class MoveServiceImpl implements MoveService {
 
     private void moveCellAnimals(Island island, Map.Entry<Cell, List<Organism>> cellOrganismsEntry, Map<Cell, List<Organism>> islandMap) {
         List<Organism> organismsToRemove = new ArrayList<>();
-        Map<Cell, List<Organism>> neighborCells = getNeighborCells(cellOrganismsEntry.getKey(), islandMap);
+        Cell initialCell = cellOrganismsEntry.getKey();
+        Map<Cell, List<Organism>> initialNeighborCells = getNeighborCells(initialCell, islandMap);
         for(Organism organism : cellOrganismsEntry.getValue()) {
             if(organism instanceof Animal animal) {
-                Set<Cell> availableCells = getAvailableCells(island, neighborCells);
-                Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
-                islandMap.get(destinationCell).add(organism);
-                organismsToRemove.add(organism);
+                Map<Cell, List<Organism>> neighborCells = new HashMap<>(initialNeighborCells);
+                try {
+                    Cell currentCell = ((Cell) initialCell.clone());
+                } catch(CloneNotSupportedException e) {
+                    throw new RuntimeException(e);
+                }
+                for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed()); i++) {
+                    Set<Cell> availableCells = getAvailableCells(island, neighborCells);
+                    if(!availableCells.isEmpty()) {
+                        Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
+                        islandMap.get(destinationCell).add(organism);
+                        organismsToRemove.add(organism);
+                    }
+                }
             }
         }
         cellOrganismsEntry.getValue().removeAll(organismsToRemove);

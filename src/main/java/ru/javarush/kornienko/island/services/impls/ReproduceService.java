@@ -30,7 +30,7 @@ public class ReproduceService {
 
     private void reproduceAnimalsOnCell(Map<Class<? extends Animal>, Animal> classAnimals, int animalsOnCellNumber, int maxAnimalsPerCell) {
         for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
-            classAnimalEntry.getValue().reproduce();
+            Organism reproduce = classAnimalEntry.getValue().reproduce(); // TODO
             if(++animalsOnCellNumber >= maxAnimalsPerCell) {
                 return;
             }

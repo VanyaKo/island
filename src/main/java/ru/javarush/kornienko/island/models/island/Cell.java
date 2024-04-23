@@ -2,7 +2,7 @@ package ru.javarush.kornienko.island.models.island;
 
 import java.util.Objects;
 
-public final class Cell {
+public final class Cell implements Cloneable {
     private final int x;
     private final int y;
 
@@ -26,6 +26,11 @@ public final class Cell {
         var that = (Cell) obj;
         return this.x == that.x &&
                this.y == that.y;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override
