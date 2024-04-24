@@ -2,7 +2,6 @@ package ru.javarush.kornienko.island.services.impls;
 
 import ru.javarush.kornienko.island.models.enums.Direction;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Deprecated

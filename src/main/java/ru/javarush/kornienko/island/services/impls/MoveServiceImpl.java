@@ -21,12 +21,8 @@ public class MoveServiceImpl implements MoveService {
         this.island = island;
     }
 
-    public Map<Class<? extends Organism>, Long> getMovedOrganismClassToCount() {
-        return new HashMap<>(movedOrganismClassToCount);
-    }
-
     @Override
-    public void moveIslandAnimals() {
+    public Map<Class<? extends Organism>, Long> moveIslandAnimals() {
         movedOrganismClassToCount = new HashMap<>();
         Map<Animal, Cell> animalsToMove = getAnimalsToMove();
         for(Map.Entry<Animal, Cell> animalCellEntry : animalsToMove.entrySet()) {
@@ -34,6 +30,7 @@ public class MoveServiceImpl implements MoveService {
             Cell startCell = animalCellEntry.getValue();
             moveAnimal(animal, startCell);
         }
+        return movedOrganismClassToCount;
     }
 
     private Map<Animal, Cell> getAnimalsToMove() {

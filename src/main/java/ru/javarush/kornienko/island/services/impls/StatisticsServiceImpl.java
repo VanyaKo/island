@@ -110,7 +110,30 @@ public class StatisticsServiceImpl implements StatisticsService {
         System.out.println();
     }
 
-    private @NotNull Map<Class<? extends Organism>, Long> filterBySuperclass(Map<Class<? extends Organism>, Long> classMap, Class<? extends Organism> clazz) {
+    @Override
+    public void printDifferenceInfo(Map<Class<? extends Organism>, Long> initialClassesToCount, Map<Class<? extends Organism>, Long> currentClassesToCount) {
+        long initialOrganismCount = getValueCount(initialClassesToCount.values());
+        long currentOrganismCount = getValueCount(currentClassesToCount.values());
+        printDifference("Всех организмов", initialOrganismCount, currentOrganismCount, ":");
+        long initialPlantCount = getValueCount(filterBySuperclass(initialClassesToCount, Plant.class).values());
+        long currentPlantCount = getValueCount(filterBySuperclass(currentClassesToCount, Plant.class).values());
+        printDifference("Растений", initialPlantCount, currentPlantCount, "");
+        long initialAnimalCount = getValueCount(filterBySuperclass(initialClassesToCount, Animal.class).values());
+        long currentAnimalCount = getValueCount(filterBySuperclass(currentClassesToCount, Animal.class).values());
+        printDifference("Животных", initialAnimalCount, currentAnimalCount, "");
+        System.out.println();
+    }
+
+    private void printDifference(String object, long initialCount, long currentCount, String suffix) {
+        long difference = initialCount - currentCount;
+        if(difference == 0) {
+            System.out.println("Количество " + object.toLowerCase() + " не изменилось");
+            return;
+        }
+        System.out.println(object + " стало " + (difference > 0 ? "меньше" : "больше") + " на " + difference + suffix);
+    }
+
+    private @NotNull <V> Map<Class<? extends Organism>, V> filterBySuperclass(Map<Class<? extends Organism>, V> classMap, Class<? extends Organism> clazz) {
         return classMap.entrySet().stream()
                 .filter(entry -> clazz.isAssignableFrom(entry.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

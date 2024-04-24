@@ -7,6 +7,7 @@ public class Python extends Predator {
     public Python() {
         super();
     }
+
     public Python(double weight, int maxCountOnCell, byte maxSpeed, double kilogramsForFullSaturation) {
         super(weight, maxCountOnCell, maxSpeed, kilogramsForFullSaturation);
     }

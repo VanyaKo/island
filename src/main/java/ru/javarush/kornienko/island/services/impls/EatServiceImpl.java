@@ -23,20 +23,16 @@ public class EatServiceImpl implements EatService {
         this.probabilityPairs = probabilityPairs;
     }
 
-    public Map<Class<? extends Organism>, Long> getEatenOrganismClassCount() {
-        return new HashMap<>(eatenOrganismClassCount);
-    }
-
     /**
-     *
      * @return map of eaten organisms to remove
      */
     @Override
-    public void eatIslandOrganisms() {
+    public Map<Class<? extends Organism>, Long> eatIslandOrganisms() {
         eatenOrganismClassCount = new HashMap<>();
         for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             eatCellAnimals(cellOrganismsEntry);
         }
+        return eatenOrganismClassCount;
     }
 
     private void eatCellAnimals(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {

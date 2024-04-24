@@ -3,7 +3,7 @@ package ru.javarush.kornienko.island.models.predators;
 import ru.javarush.kornienko.island.configs.Config;
 
 @Config(fileName = "configs/animals/predators/eagle.json")
-public class Eagle extends Predator{
+public class Eagle extends Predator {
     public Eagle() {
         super();
     }

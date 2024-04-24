@@ -8,6 +8,7 @@ public class Plants extends Plant {
     public Plants() {
         super();
     }
+
     public Plants(double weight, int maxCountOnCell, byte maxSpeed, double kilogramsForFullSaturation) {
         super(weight, maxCountOnCell, maxSpeed, kilogramsForFullSaturation);
     }

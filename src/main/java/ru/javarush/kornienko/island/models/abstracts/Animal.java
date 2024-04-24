@@ -4,12 +4,10 @@ import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.services.AnimalAction;
 
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal extends Organism implements AnimalAction {
     private double healthPercent;
-    private Map<String, Byte> eatable;
 
     protected Animal(double weight, int maxCountOnCell, byte maxSpeed, double kilogramsForFullSaturation) {
         super(weight, maxCountOnCell, maxSpeed, kilogramsForFullSaturation);

@@ -1,7 +1,5 @@
 package ru.javarush.kornienko.island.models.abstracts;
 
-import ru.javarush.kornienko.island.services.AnimalAction;
-
 import java.io.Serializable;
 
 public abstract class Organism implements Serializable, Cloneable {

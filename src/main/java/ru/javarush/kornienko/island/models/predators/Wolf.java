@@ -4,7 +4,7 @@ import ru.javarush.kornienko.island.configs.Config;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 
 @Config(fileName = "configs/animals/predators/wolf.json")
-public class Wolf extends Predator{
+public class Wolf extends Predator {
     public Wolf(double weight, int maxCountOnCell, byte maxSpeed, double kilogramsForFullSaturation) {
         super(weight, maxCountOnCell, maxSpeed, kilogramsForFullSaturation);
     }

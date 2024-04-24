@@ -6,6 +6,6 @@ public enum Action {
     MULTIPLY;
 
     public static void getRandomAction() {
-        
+
     }
 }

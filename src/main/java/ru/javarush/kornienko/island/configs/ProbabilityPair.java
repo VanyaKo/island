@@ -3,7 +3,6 @@ package ru.javarush.kornienko.island.configs;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 

@@ -6,6 +6,7 @@ public abstract class Plant extends Organism {
     protected Plant() {
         super();
     }
+
     protected Plant(double weight, int maxCountOnCell, byte maxSpeed, double kilogramsForFullSaturation) {
         super(weight, maxCountOnCell, maxSpeed, kilogramsForFullSaturation);
     }

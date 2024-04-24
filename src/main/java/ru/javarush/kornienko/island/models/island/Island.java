@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Island implements IslandAction {
@@ -87,19 +86,23 @@ public class Island implements IslandAction {
         }
     }
 
-    public void placePlants() {
+    public long placePlants() {
+        long organismCount = 0;
         for(List<Organism> cellOrganisms : islandMap.values()) {
-            placeOrganismsOnCell(cellOrganisms, Plant.class, maxPlantsPerCell);
+            organismCount += placeOrganismsOnCell(cellOrganisms, Plant.class, maxPlantsPerCell);
         }
+        return organismCount;
     }
 
-    public void placeAnimals() {
+    public long placeAnimals() {
+        long organismCount = 0;
         for(List<Organism> cellOrganisms : islandMap.values()) {
             placeOrganismsOnCell(cellOrganisms, Animal.class, maxAnimalsPerCell);
         }
+        return organismCount;
     }
 
-    private void placeOrganismsOnCell(List<Organism> cellOrganisms, Class<? extends Organism> clazz, int maxOrganismsPerCell) {
+    private int placeOrganismsOnCell(List<Organism> cellOrganisms, Class<? extends Organism> clazz, int maxOrganismsPerCell) {
         int currentOrganisms = getCurrentOrganismsOnCell(cellOrganisms, clazz);
         for(Organism prototype : prototypeFactory.getPrototypes()) {
             if(clazz.isAssignableFrom(prototype.getClass())) {
@@ -111,6 +114,7 @@ public class Island implements IslandAction {
                 currentOrganisms += prototypesToAdd;
             }
         }
+        return currentOrganisms;
     }
 
     private int getCurrentOrganismsOnCell(List<Organism> cellOrganisms, Class<? extends Organism> targetClass) {

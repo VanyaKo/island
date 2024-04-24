@@ -1,12 +1,14 @@
 package ru.javarush.kornienko.island.configs;
 
+import ru.javarush.kornienko.island.exceptions.AppException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class IslandConfig {
-    private String pathToConfigFile;
-    private Properties properties;
+    private final String pathToConfigFile;
+    private final Properties properties;
 
     public IslandConfig(Properties properties, String pathToConfigFile) {
         this.properties = properties;
@@ -18,9 +20,9 @@ public class IslandConfig {
         InputStream inputStream = classLoader.getResourceAsStream(pathToConfigFile);
         try {
             properties.load(inputStream);
-            return Integer.parseInt(properties.getProperty(property));
         } catch(IOException e) {
-            throw new RuntimeException(e);
+            throw new AppException("Cannot load island properties", e);
         }
+        return Integer.parseInt(properties.getProperty(property));
     }
 }

@@ -1,5 +1,9 @@
 package ru.javarush.kornienko.island.services;
 
-public interface ReproduceService extends OrganismService{
-    void reproduceIslandAnimals();
+import ru.javarush.kornienko.island.models.abstracts.Organism;
+
+import java.util.Map;
+
+public interface ReproduceService extends OrganismService {
+    Map<Class<? extends Organism>, Long> reproduceIslandAnimals();
 }

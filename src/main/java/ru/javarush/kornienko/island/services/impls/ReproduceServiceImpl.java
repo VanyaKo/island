@@ -16,10 +16,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ReproduceServiceImpl implements ReproduceService {
     private final Island island;
 
-    public Map<Class<? extends Organism>, Long> getNewbornAnimalClassCount() {
-        return new HashMap<>(newbornAnimalClassCount);
-    }
-
     private Map<Class<? extends Organism>, Long> newbornAnimalClassCount;
 
     public ReproduceServiceImpl(Island island) {
@@ -27,11 +23,12 @@ public class ReproduceServiceImpl implements ReproduceService {
     }
 
     @Override
-    public void reproduceIslandAnimals() {
+    public Map<Class<? extends Organism>, Long> reproduceIslandAnimals() {
         newbornAnimalClassCount = new HashMap<>();
         for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             processCell(cellOrganismsEntry);
         }
+        return newbornAnimalClassCount;
     }
 
     private void processCell(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
