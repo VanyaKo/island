@@ -32,9 +32,10 @@ public class ReproduceProbabilityConfig {
             String reproducer = stringReproduceProbabilities[i].reproducer;
             int couplingProbability = stringReproduceProbabilities[i].couplingProbability;
             int birthProbability = stringReproduceProbabilities[i].birthProbability;
+            int maxCubs = stringReproduceProbabilities[i].maxCubs;
             try {
                 ReproduceProbabilityEntry reproduceProbabilityEntry = new ReproduceProbabilityEntry(
-                        Class.forName(reproducer), couplingProbability, birthProbability
+                        Class.forName(reproducer), couplingProbability, birthProbability, maxCubs
                 );
                 reproduceProbabilityEntries[i] = reproduceProbabilityEntry;
             } catch(ClassNotFoundException e) {
@@ -49,6 +50,7 @@ public class ReproduceProbabilityConfig {
         private String reproducer;
         private int couplingProbability;
         private int birthProbability;
+        private int maxCubs;
 
         public StringReproduceProbability() {
         }
@@ -63,6 +65,10 @@ public class ReproduceProbabilityConfig {
 
         public void setBirthProbability(int birthProbability) {
             this.birthProbability = birthProbability;
+        }
+
+        public void setMaxCubs(int maxCubs) {
+            this.maxCubs = maxCubs;
         }
     }
 }

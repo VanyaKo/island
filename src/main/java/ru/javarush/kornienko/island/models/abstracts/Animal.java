@@ -4,6 +4,8 @@ import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.services.AnimalAction;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal extends Organism implements AnimalAction {
@@ -43,9 +45,14 @@ public abstract class Animal extends Organism implements AnimalAction {
 
 
     @Override
-    public Animal reproduce() {
+    public Set<Animal> reproduce(int maxCubs) {
         try {
-            return (Animal) clone();
+            Set<Animal> cubs = new HashSet<>();
+            int cubNumber = ThreadLocalRandom.current().nextInt(1, maxCubs + 1);
+            for(int i = 0; i < cubNumber; i++) {
+                cubs.add((Animal) clone());
+            }
+            return cubs;
         } catch(CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }

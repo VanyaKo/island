@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ReproduceServiceImpl implements ReproduceService {
@@ -78,9 +79,11 @@ public class ReproduceServiceImpl implements ReproduceService {
         for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
             ReproduceProbabilityEntry reproduceProbabilityEntry = getEntryByClass(classAnimalEntry.getKey());
             if(isSuccessProbabilityToReproduce(reproduceProbabilityEntry)) {
-                Animal newborn = classAnimalEntry.getValue().reproduce();
-                island.addAnimalToCell(newborn, cell);
-                putDuplicateValueCount(newbornAnimalClassCount, newborn.getClass());
+                Set<Animal> newborns = classAnimalEntry.getValue().reproduce(reproduceProbabilityEntry.getMaxCubs());
+                for(Animal newborn : newborns) {
+                    island.addAnimalToCell(newborn, cell);
+                    putDuplicateValueCount(newbornAnimalClassCount, newborn.getClass());
+                }
                 if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
                     return;
                 }
