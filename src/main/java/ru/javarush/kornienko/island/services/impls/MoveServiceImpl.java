@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 public class MoveServiceImpl implements MoveService {
     private final Island island;
     private Map<Class<? extends Organism>, Long> movedOrganismClassToCount;
+    private final Map<Class<?>, Integer> classToMoveProbability;
 
-    public MoveServiceImpl(Island island) {
+    public MoveServiceImpl(Island island, Map<Class<?>, Integer> classToMoveProbability) {
         this.island = island;
+        this.classToMoveProbability = classToMoveProbability;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class MoveServiceImpl implements MoveService {
         for(Map.Entry<Animal, Cell> animalCellEntry : animalsToMove.entrySet()) {
             Animal animal = animalCellEntry.getKey();
             Cell startCell = animalCellEntry.getValue();
-            moveAnimal(animal, startCell);
+            moveAnimal(animal, startCell, classToMoveProbability.get(animal.getClass()));
         }
         return movedOrganismClassToCount;
     }
@@ -43,12 +45,13 @@ public class MoveServiceImpl implements MoveService {
         return animalsToMove;
     }
 
-    private void moveAnimal(Animal animal, Cell startCell) {
+    private void moveAnimal(Animal animal, Cell startCell, int maxMoveProbability) {
         boolean isMoved = false;
         for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed() + 1); i++) {
             Map<Cell, List<Organism>> neighborCells = getNeighborCells(startCell);
             Set<Cell> availableCells = getAvailableCells(neighborCells);
-            if(!availableCells.isEmpty()) {
+            int currentMoveProbability = ThreadLocalRandom.current().nextInt(maxMoveProbability + 1);
+            if(!availableCells.isEmpty() && currentMoveProbability <= maxMoveProbability) {
                 Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
                 island.addAnimalToCell(animal, destinationCell);
                 island.removeOrganismFromCell(animal, startCell);

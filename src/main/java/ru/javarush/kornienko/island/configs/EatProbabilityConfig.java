@@ -10,16 +10,16 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EatingProbabilityConfig {
+public class EatProbabilityConfig {
     private final ObjectMapper objectMapper;
     private final String pathToJson;
 
-    public EatingProbabilityConfig(ObjectMapper objectMapper, String pathToJson) {
+    public EatProbabilityConfig(ObjectMapper objectMapper, String pathToJson) {
         this.objectMapper = objectMapper;
         this.pathToJson = pathToJson;
     }
 
-    public ProbabilityPair[] readEatingProbability() {
+    public EatProbabilityPair[] readEatingProbability() {
         URL resource = Organism.class.getClassLoader().getResource(pathToJson);
         try {
             StringProbabilityPair[] stringProbabilityPairs =
@@ -30,15 +30,15 @@ public class EatingProbabilityConfig {
         }
     }
 
-    private ProbabilityPair[] readProbabilityPairs(StringProbabilityPair[] stringProbabilityPairs) throws ClassNotFoundException {
-        ProbabilityPair[] probabilityPairs = new ProbabilityPair[stringProbabilityPairs.length];
+    private EatProbabilityPair[] readProbabilityPairs(StringProbabilityPair[] stringProbabilityPairs) throws ClassNotFoundException {
+        EatProbabilityPair[] eatProbabilityPairs = new EatProbabilityPair[stringProbabilityPairs.length];
         for(int i = 0; i < stringProbabilityPairs.length; i++) {
             StringProbabilityPair stringProbabilityPair = stringProbabilityPairs[i];
             Class<?> eaterClass = Class.forName(stringProbabilityPair.eater);
             Map<Class<?>, Byte> eatables = getEatableClasses(stringProbabilityPair);
-            probabilityPairs[i] = new ProbabilityPair(eaterClass, eatables);
+            eatProbabilityPairs[i] = new EatProbabilityPair(eaterClass, eatables);
         }
-        return probabilityPairs;
+        return eatProbabilityPairs;
     }
 
     private @NotNull Map<Class<?>, Byte> getEatableClasses(StringProbabilityPair stringProbabilityPair) throws ClassNotFoundException {

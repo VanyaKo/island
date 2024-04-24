@@ -3,9 +3,10 @@ package ru.javarush.kornienko.island.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.javarush.kornienko.island.conditions.Handler;
 import ru.javarush.kornienko.island.conditions.enums.HandlerType;
-import ru.javarush.kornienko.island.configs.EatingProbabilityConfig;
+import ru.javarush.kornienko.island.configs.EatProbabilityConfig;
+import ru.javarush.kornienko.island.configs.EatProbabilityPair;
 import ru.javarush.kornienko.island.configs.IslandConfig;
-import ru.javarush.kornienko.island.configs.ProbabilityPair;
+import ru.javarush.kornienko.island.configs.MoveProbabilityConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
 import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
@@ -32,8 +33,12 @@ public class IslandController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
-        EatingProbabilityConfig eatingProbabilityConfig = new EatingProbabilityConfig(objectMapper, Consts.EATING_PROBABILITY_CONFIG);
-        ProbabilityPair[] probabilityPairs = eatingProbabilityConfig.readEatingProbability();
+
+        EatProbabilityConfig eatProbabilityConfig = new EatProbabilityConfig(objectMapper, Consts.EAT_PROBABILITY_CONFIG);
+        EatProbabilityPair[] eatProbabilityPairs = eatProbabilityConfig.readEatingProbability();
+
+        MoveProbabilityConfig moveProbabilityConfig = new MoveProbabilityConfig(objectMapper, Consts.MOVE_PROBABILITY_CONFIG);
+        Map<Class<?>, Integer> classToMoveProbability = moveProbabilityConfig.readMoveProbability();
 
         Properties properties = new Properties();
         IslandConfig islandConfig = new IslandConfig(properties, Consts.ISLAND_CONFIG);
@@ -41,10 +46,11 @@ public class IslandController {
         island.initEmptyIsland();
         island.placeAnimals();
 
-        startGameCycle(handler, prototypeFactory, island, probabilityPairs);
+        startGameCycle(handler, prototypeFactory, island, eatProbabilityPairs, classToMoveProbability);
     }
 
-    private void startGameCycle(Handler handler, PrototypeFactory prototypeFactory, Island island, ProbabilityPair[] probabilityPairs) {
+    private void startGameCycle(Handler handler, PrototypeFactory prototypeFactory, Island island,
+                                EatProbabilityPair[] eatProbabilityPairs, Map<Class<?>, Integer> classToMoveProbability) {
         int cycleCounter = 0;
         while(!handler.isConditionSatisfied(island)) {
             StatisticsService statisticsService = new StatisticsServiceImpl(prototypeFactory);
@@ -58,7 +64,7 @@ public class IslandController {
             statisticsService.printCurrentOrganismInfo(initialClassesToCount);
 
             // eat
-            EatService eatService = new EatServiceImpl(island, probabilityPairs);
+            EatService eatService = new EatServiceImpl(island, eatProbabilityPairs);
             Map<Class<? extends Organism>, Long> eatenOrganismClassCount = eatService.eatIslandOrganisms();
             statisticsService.printEatInfo(eatenOrganismClassCount);
 
@@ -68,7 +74,7 @@ public class IslandController {
             statisticsService.printReproduceInfo(newbornAnimalClassToCount);
 
             // move
-            MoveService moveService = new MoveServiceImpl(island);
+            MoveService moveService = new MoveServiceImpl(island, classToMoveProbability);
             Map<Class<? extends Organism>, Long> movedOrganismClassToCount = moveService.moveIslandAnimals();
             statisticsService.printMoveInfo(movedOrganismClassToCount);
 

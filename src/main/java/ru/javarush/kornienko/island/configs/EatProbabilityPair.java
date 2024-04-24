@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-public final class ProbabilityPair implements Serializable {
+public final class EatProbabilityPair implements Serializable {
     @Serial
     private static final long serialVersionUID = 0L;
     private final Class<?> eater;
     private final Map<Class<?>, Byte> eatables;
 
-    public ProbabilityPair(Class<?> eater, Map<Class<?>, Byte> eatables) {
+    public EatProbabilityPair(Class<?> eater, Map<Class<?>, Byte> eatables) {
         this.eater = eater;
         this.eatables = Collections.unmodifiableMap(eatables);
     }
@@ -29,7 +29,7 @@ public final class ProbabilityPair implements Serializable {
     public boolean equals(Object obj) {
         if(obj == this) return true;
         if(obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (ProbabilityPair) obj;
+        var that = (EatProbabilityPair) obj;
         return Objects.equals(this.eater, that.eater) &&
                Objects.equals(this.eatables, that.eatables);
     }
