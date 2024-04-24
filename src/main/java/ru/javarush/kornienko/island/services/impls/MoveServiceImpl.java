@@ -1,5 +1,6 @@
 package ru.javarush.kornienko.island.services.impls;
 
+import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
@@ -50,8 +51,7 @@ public class MoveServiceImpl implements MoveService {
         for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed() + 1); i++) {
             Map<Cell, List<Organism>> neighborCells = getNeighborCells(startCell);
             Set<Cell> availableCells = getAvailableCells(neighborCells);
-            int currentMoveProbability = ThreadLocalRandom.current().nextInt(maxMoveProbability + 1);
-            if(!availableCells.isEmpty() && currentMoveProbability <= maxMoveProbability) {
+            if(!availableCells.isEmpty() && isSuccessMoveProbability(maxMoveProbability)) {
                 Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
                 island.addAnimalToCell(animal, destinationCell);
                 island.removeOrganismFromCell(animal, startCell);
@@ -62,6 +62,10 @@ public class MoveServiceImpl implements MoveService {
         if(isMoved) {
             putDuplicateValueCount(movedOrganismClassToCount, animal.getClass());
         }
+    }
+
+    private boolean isSuccessMoveProbability(int maxMoveProbability) {
+        return ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1) <= maxMoveProbability;
     }
 
     private Map<Cell, List<Organism>> getNeighborCells(Cell currentCell) {

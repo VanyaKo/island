@@ -1,13 +1,16 @@
 package ru.javarush.kornienko.island.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jetbrains.annotations.NotNull;
 import ru.javarush.kornienko.island.conditions.Handler;
 import ru.javarush.kornienko.island.conditions.enums.HandlerType;
-import ru.javarush.kornienko.island.configs.EatProbabilityConfig;
-import ru.javarush.kornienko.island.configs.EatProbabilityPair;
+import ru.javarush.kornienko.island.configs.action.EatProbabilityConfig;
+import ru.javarush.kornienko.island.configs.action.EatProbabilityPair;
 import ru.javarush.kornienko.island.configs.IslandConfig;
-import ru.javarush.kornienko.island.configs.MoveProbabilityConfig;
+import ru.javarush.kornienko.island.configs.action.MoveProbabilityConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
+import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityConfig;
+import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityEntry;
 import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Island;
@@ -34,23 +37,35 @@ public class IslandController {
         ObjectMapper objectMapper = new ObjectMapper();
         PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
 
-        EatProbabilityConfig eatProbabilityConfig = new EatProbabilityConfig(objectMapper, Consts.EAT_PROBABILITY_CONFIG);
+        EatProbabilityConfig eatProbabilityConfig = new EatProbabilityConfig(objectMapper, 
+                Consts.EAT_PROBABILITY_CONFIG_JSON);
         EatProbabilityPair[] eatProbabilityPairs = eatProbabilityConfig.readEatingProbability();
 
-        MoveProbabilityConfig moveProbabilityConfig = new MoveProbabilityConfig(objectMapper, Consts.MOVE_PROBABILITY_CONFIG);
+        MoveProbabilityConfig moveProbabilityConfig = new MoveProbabilityConfig(objectMapper, 
+                Consts.MOVE_PROBABILITY_CONFIG_JSON);
         Map<Class<?>, Integer> classToMoveProbability = moveProbabilityConfig.readMoveProbability();
 
+        ReproduceProbabilityConfig reproduceProbabilityConfig = new ReproduceProbabilityConfig(objectMapper, 
+                Consts.REPRODUCE_PROBABILITY_CONFIG_JSON);
+        ReproduceProbabilityEntry[] reproduceProbabilityEntries = reproduceProbabilityConfig.readReproduceProbability();
+
+        Island island = getIsland(prototypeFactory);
+
+        startGameCycle(handler, prototypeFactory, island, eatProbabilityPairs, classToMoveProbability, reproduceProbabilityEntries);
+    }
+
+    private static @NotNull Island getIsland(PrototypeFactory prototypeFactory) {
         Properties properties = new Properties();
         IslandConfig islandConfig = new IslandConfig(properties, Consts.ISLAND_CONFIG);
         Island island = new Island(islandConfig, prototypeFactory);
         island.initEmptyIsland();
         island.placeAnimals();
-
-        startGameCycle(handler, prototypeFactory, island, eatProbabilityPairs, classToMoveProbability);
+        return island;
     }
 
     private void startGameCycle(Handler handler, PrototypeFactory prototypeFactory, Island island,
-                                EatProbabilityPair[] eatProbabilityPairs, Map<Class<?>, Integer> classToMoveProbability) {
+                                EatProbabilityPair[] eatProbabilityPairs, Map<Class<?>, Integer> classToMoveProbability,
+                                ReproduceProbabilityEntry[] reproduceProbabilityEntries) {
         int cycleCounter = 0;
         while(!handler.isConditionSatisfied(island)) {
             StatisticsService statisticsService = new StatisticsServiceImpl(prototypeFactory);
@@ -69,7 +84,7 @@ public class IslandController {
             statisticsService.printEatInfo(eatenOrganismClassCount);
 
             // reproduce
-            ReproduceService reproduceService = new ReproduceServiceImpl(island);
+            ReproduceService reproduceService = new ReproduceServiceImpl(island, reproduceProbabilityEntries);
             Map<Class<? extends Organism>, Long> newbornAnimalClassToCount = reproduceService.reproduceIslandAnimals();
             statisticsService.printReproduceInfo(newbornAnimalClassToCount);
 

@@ -1,0 +1,77 @@
+[
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.predators.Wolf",
+    "couplingProbability": 100,
+    "birthProbability": 86
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.predators.Python",
+    "couplingProbability": 99,
+    "birthProbability": 87
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.predators.Fox",
+    "couplingProbability": 98,
+    "birthProbability": 88
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.predators.Bear",
+    "couplingProbability": 97,
+    "birthProbability": 89
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.predators.Eagle",
+    "couplingProbability": 96,
+    "birthProbability": 90
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Horse",
+    "couplingProbability": 95,
+    "birthProbability": 91
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Deer",
+    "couplingProbability": 94,
+    "birthProbability": 92
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Rabbit",
+    "couplingProbability": 93,
+    "birthProbability": 93
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Mouse",
+    "couplingProbability": 92,
+    "birthProbability": 94
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Goat",
+    "couplingProbability": 91,
+    "birthProbability": 95
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Sheep",
+    "couplingProbability": 90,
+    "birthProbability": 96
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Hog",
+    "couplingProbability": 89,
+    "birthProbability": 97
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Buffalo",
+    "couplingProbability": 88,
+    "birthProbability": 98
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Duck",
+    "couplingProbability": 87,
+    "birthProbability": 99
+  },
+  {
+    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Caterpillar",
+    "couplingProbability": 86,
+    "birthProbability": 100
+  }
+]

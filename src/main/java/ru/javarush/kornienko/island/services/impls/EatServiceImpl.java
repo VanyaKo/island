@@ -1,6 +1,7 @@
 package ru.javarush.kornienko.island.services.impls;
 
-import ru.javarush.kornienko.island.configs.EatProbabilityPair;
+import ru.javarush.kornienko.island.configs.action.EatProbabilityPair;
+import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
@@ -70,7 +71,7 @@ public class EatServiceImpl implements EatService {
                 .filter(classByteEntry -> classByteEntry.getKey() == organism.getClass())
                 .findAny()
                 .map(Map.Entry::getValue)
-                .orElseThrow(() -> new RuntimeException("Cannot find probability of being eaten for " + organism + " organism."));
+                .orElseThrow(() -> new AppException("Cannot find probability of being eaten for " + organism + " organism."));
     }
 
     private Map<Class<?>, Byte> getEatablesByEaterClass(Class<? extends Animal> eaterClass) {
@@ -79,6 +80,6 @@ public class EatServiceImpl implements EatService {
                 return eatProbabilityPair.getEatables();
             }
         }
-        throw new RuntimeException(eaterClass + "is not eater!");
+        throw new AppException(eaterClass + "is not eater");
     }
 }

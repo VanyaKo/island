@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.configs;
+package ru.javarush.kornienko.island.configs.action;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.javarush.kornienko.island.exceptions.AppException;

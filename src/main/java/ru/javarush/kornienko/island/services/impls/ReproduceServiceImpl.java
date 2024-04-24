@@ -1,6 +1,8 @@
 package ru.javarush.kornienko.island.services.impls;
 
+import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityEntry;
 import ru.javarush.kornienko.island.consts.Consts;
+import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Cell;
@@ -8,6 +10,7 @@ import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.ReproduceService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +18,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ReproduceServiceImpl implements ReproduceService {
     private final Island island;
-
+    private final ReproduceProbabilityEntry[] reproduceProbabilityEntries;
     private Map<Class<? extends Organism>, Long> newbornAnimalClassCount;
 
-    public ReproduceServiceImpl(Island island) {
+    public ReproduceServiceImpl(Island island, ReproduceProbabilityEntry[] reproduceProbabilityEntries) {
         this.island = island;
+        this.reproduceProbabilityEntries = reproduceProbabilityEntries;
     }
 
     @Override
@@ -72,12 +76,29 @@ public class ReproduceServiceImpl implements ReproduceService {
 
     private void reproduceAnimals(Map<Class<? extends Animal>, Animal> classAnimals, Cell cell, int currentAnimalCount) {
         for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
-            Animal newborn = classAnimalEntry.getValue().reproduce();
-            island.addAnimalToCell(newborn, cell);
-            putDuplicateValueCount(newbornAnimalClassCount, newborn.getClass());
-            if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
-                return;
+            ReproduceProbabilityEntry reproduceProbabilityEntry = getEntryByClass(classAnimalEntry.getKey());
+            if(isSuccessProbabilityToReproduce(reproduceProbabilityEntry)) {
+                Animal newborn = classAnimalEntry.getValue().reproduce();
+                island.addAnimalToCell(newborn, cell);
+                putDuplicateValueCount(newbornAnimalClassCount, newborn.getClass());
+                if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
+                    return;
+                }
             }
         }
+    }
+
+    private boolean isSuccessProbabilityToReproduce(ReproduceProbabilityEntry reproduceProbabilityEntry) {
+        int currentCouplingProbability = ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1);
+        int currentBirthProbability = ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1);
+        return currentCouplingProbability <= reproduceProbabilityEntry.getCouplingProbability()
+               && currentBirthProbability <= reproduceProbabilityEntry.getBirthProbability();
+    }
+
+    private ReproduceProbabilityEntry getEntryByClass(Class<? extends Animal> clazz) {
+        return Arrays.stream(reproduceProbabilityEntries)
+                .filter(entry -> entry.getReproducer() == clazz)
+                .findAny()
+                .orElseThrow(() -> new AppException("No reproducer for " + clazz + " class"));
     }
 }

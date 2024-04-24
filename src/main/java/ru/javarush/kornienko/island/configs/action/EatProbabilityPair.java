@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.configs;
+package ru.javarush.kornienko.island.configs.action;
 
 import java.io.Serial;
 import java.io.Serializable;
