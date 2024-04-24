@@ -6,8 +6,8 @@ import ru.javarush.kornienko.island.conditions.Handler;
 import ru.javarush.kornienko.island.conditions.enums.HandlerType;
 import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
-import ru.javarush.kornienko.island.configs.action.EatProbabilityConfig;
-import ru.javarush.kornienko.island.configs.action.EatProbabilityPair;
+import ru.javarush.kornienko.island.configs.action.EatConfigDeserializer;
+import ru.javarush.kornienko.island.configs.action.EatConfig;
 import ru.javarush.kornienko.island.configs.action.MoveProbabilityConfig;
 import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityConfig;
 import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityEntry;
@@ -29,6 +29,9 @@ import ru.javarush.kornienko.island.services.impls.StatisticsServiceImpl;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class IslandController {
     private static @NotNull Island getIsland(PrototypeFactory prototypeFactory) {
@@ -46,9 +49,9 @@ public class IslandController {
         ObjectMapper objectMapper = new ObjectMapper();
         PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
 
-        EatProbabilityConfig eatProbabilityConfig = new EatProbabilityConfig(objectMapper,
+        EatConfigDeserializer eatConfigDeserializer = new EatConfigDeserializer(objectMapper,
                 Consts.EAT_PROBABILITY_CONFIG_JSON);
-        EatProbabilityPair[] eatProbabilityPairs = eatProbabilityConfig.readEatingProbability();
+        EatConfig[] eatConfigs = eatConfigDeserializer.readEatingProbability();
 
         MoveProbabilityConfig moveProbabilityConfig = new MoveProbabilityConfig(objectMapper,
                 Consts.MOVE_PROBABILITY_CONFIG_JSON);
@@ -60,11 +63,11 @@ public class IslandController {
 
         Island island = getIsland(prototypeFactory);
 
-        startGameCycle(handler, prototypeFactory, island, eatProbabilityPairs, classToMoveProbability, reproduceProbabilityEntries);
+        startGameCycle(handler, prototypeFactory, island, eatConfigs, classToMoveProbability, reproduceProbabilityEntries);
     }
 
     private void startGameCycle(Handler handler, PrototypeFactory prototypeFactory, Island island,
-                                EatProbabilityPair[] eatProbabilityPairs, Map<Class<?>, Integer> classToMoveProbability,
+                                EatConfig[] eatConfigs, Map<Class<?>, Integer> classToMoveProbability,
                                 ReproduceProbabilityEntry[] reproduceProbabilityEntries) {
         int cycleCounter = 0;
         do {
@@ -72,7 +75,10 @@ public class IslandController {
             System.out.println(Consts.LINE_DELIMITER);
             System.out.println();
             System.out.println("ТАКТ " + cycleCounter++ + "\n");
+            int cycleSeconds = 5;
 
+            ExecutorService placePlantsExecutor = Executors.newSingleThreadExecutor();
+            Future<Long> placePlantsFuture = placePlantsExecutor.submit(island::placePlants);
             System.out.println("Выросло " + island.placePlants() + " растений.\n");
 
             // print current organism info
@@ -81,7 +87,7 @@ public class IslandController {
             statisticsService.printCurrentOrganismInfo(initialClassesToCount);
 
             // eat
-            EatService eatService = new EatServiceImpl(island, eatProbabilityPairs);
+            EatService eatService = new EatServiceImpl(island, eatConfigs);
             Map<Class<? extends Organism>, Long> eatenOrganismClassCount = eatService.eatIslandOrganisms();
             statisticsService.printEatInfo(eatenOrganismClassCount);
 

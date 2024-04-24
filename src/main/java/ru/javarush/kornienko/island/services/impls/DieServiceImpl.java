@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class DieServiceImpl implements DieService {
     private final Island island;
@@ -22,7 +24,7 @@ public class DieServiceImpl implements DieService {
     @Override
     public Map<Class<? extends Organism>, Long> killHungryIslandAnimals() {
         Map<Class<? extends Organism>, Long> diedOrganismClassToCount = new HashMap<>();
-        Map<Cell, Set<Organism>> cellToSurvivedAnimals = new HashMap<>();
+        ConcurrentMap<Cell, Set<Organism>> cellToSurvivedAnimals = new ConcurrentHashMap<>();
         for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
             Set<Organism> survivedOrganisms = new HashSet<>();
             for(Organism organism : cellToOrganismsEntry.getValue()) {

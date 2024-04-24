@@ -1,6 +1,6 @@
 package ru.javarush.kornienko.island.services.impls;
 
-import ru.javarush.kornienko.island.configs.action.EatProbabilityPair;
+import ru.javarush.kornienko.island.configs.action.EatConfig;
 import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
@@ -17,12 +17,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class EatServiceImpl implements EatService {
     private final Island island;
-    private final EatProbabilityPair[] eatProbabilityPairs;
+    private final EatConfig[] eatConfigs;
     private Map<Class<? extends Organism>, Long> eatenOrganismClassCount;
 
-    public EatServiceImpl(Island island, EatProbabilityPair[] eatProbabilityPairs) {
+    public EatServiceImpl(Island island, EatConfig[] eatConfigs) {
         this.island = island;
-        this.eatProbabilityPairs = eatProbabilityPairs;
+        this.eatConfigs = eatConfigs;
     }
 
     /**
@@ -76,9 +76,9 @@ public class EatServiceImpl implements EatService {
     }
 
     private Map<Class<?>, Byte> getEatablesByEaterClass(Class<? extends Animal> eaterClass) {
-        for(EatProbabilityPair eatProbabilityPair : eatProbabilityPairs) {
-            if(eatProbabilityPair.getEater() == eaterClass) {
-                return eatProbabilityPair.getEatables();
+        for(EatConfig eatConfig : eatConfigs) {
+            if(eatConfig.eater() == eaterClass) {
+                return eatConfig.eatables();
             }
         }
         throw new AppException(eaterClass + "is not eater");

@@ -2,24 +2,26 @@ package ru.javarush.kornienko.island.models.island;
 
 import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
+import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.plants.Plant;
 import ru.javarush.kornienko.island.services.IslandAction;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Island implements IslandAction {
     private static final int DEFAULT_PROPERTY_VALUE = -1;
     private final IslandConfig islandConfig;
     private final PrototypeFactory prototypeFactory;
-    private Map<Cell, Set<Organism>> islandMap;
+    private ConcurrentMap<Cell, Set<Organism>> islandMap;
     private int width = DEFAULT_PROPERTY_VALUE;
     private int height = DEFAULT_PROPERTY_VALUE;
     private int maxPlantsPerCell = DEFAULT_PROPERTY_VALUE;
@@ -30,38 +32,18 @@ public class Island implements IslandAction {
         this.prototypeFactory = prototypeFactory;
     }
 
-    public int getMaxPlantsPerCell() {
-        return maxPlantsPerCell;
-    }
-
     public int getMaxAnimalsPerCell() {
         return maxAnimalsPerCell;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
     }
 
     /**
      * Get copy of a map.
      */
     public Map<Cell, Set<Organism>> getIslandMap() {
-        return new HashMap<>(islandMap);
+        return new ConcurrentHashMap<>(islandMap);
     }
 
-    public void setIslandMap(Map<Cell, Set<Organism>> islandMap) {
+    public void setIslandMap(ConcurrentMap<Cell, Set<Organism>> islandMap) {
         this.islandMap = islandMap;
     }
 
@@ -78,7 +60,7 @@ public class Island implements IslandAction {
     }
 
     private void initEmptyMap() {
-        islandMap = new HashMap<Cell, Set<Organism>>();
+        islandMap = new ConcurrentHashMap<>();
         for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
                 Cell cell = new Cell(i, j);
@@ -128,7 +110,7 @@ public class Island implements IslandAction {
             try {
                 cellOrganisms.add((Organism) prototype.clone());
             } catch(CloneNotSupportedException e) {
-                throw new RuntimeException(e);
+                throw new AppException("Error with clone of " + prototype, e);
             }
         }
     }

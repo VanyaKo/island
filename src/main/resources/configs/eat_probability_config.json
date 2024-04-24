@@ -1,7 +1,7 @@
 [
   {
     "eater": "ru.javarush.kornienko.island.models.predators.Wolf",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.herbivores.Horse": 10,
       "ru.javarush.kornienko.island.models.herbivores.Deer": 15,
       "ru.javarush.kornienko.island.models.herbivores.Rabbit": 60,
@@ -15,7 +15,7 @@
   },
   {
     "eater": "ru.javarush.kornienko.island.models.predators.Python",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.predators.Fox": 15,
       "ru.javarush.kornienko.island.models.herbivores.Rabbit": 20,
       "ru.javarush.kornienko.island.models.herbivores.Mouse": 40,
@@ -24,7 +24,7 @@
   },
   {
     "eater": "ru.javarush.kornienko.island.models.predators.Fox",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.herbivores.Rabbit": 70,
       "ru.javarush.kornienko.island.models.herbivores.Mouse": 90,
       "ru.javarush.kornienko.island.models.herbivores.Duck": 60,
@@ -33,7 +33,7 @@
   },
   {
     "eater": "ru.javarush.kornienko.island.models.predators.Bear",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.predators.Python": 80,
       "ru.javarush.kornienko.island.models.herbivores.Horse": 40,
       "ru.javarush.kornienko.island.models.herbivores.Deer": 80,
@@ -48,7 +48,7 @@
   },
   {
     "eater": "ru.javarush.kornienko.island.models.predators.Eagle",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.predators.Fox": 10,
       "ru.javarush.kornienko.island.models.herbivores.Rabbit": 90,
       "ru.javarush.kornienko.island.models.herbivores.Mouse": 90,
@@ -57,44 +57,44 @@
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Horse",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Deer",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Rabbit",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Mouse",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Goat",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Sheep",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Hog",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.herbivores.Mouse": 50,
       "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
       "ru.javarush.kornienko.island.models.plants.Plants": 100
@@ -102,20 +102,20 @@
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Buffalo",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Duck",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Caterpillar",
-    "eatable": {
+    "eatables": {
       "ru.javarush.kornienko.island.models.plants.Plants": 100
     }
   }
