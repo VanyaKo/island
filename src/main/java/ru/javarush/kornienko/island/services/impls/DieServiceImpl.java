@@ -7,10 +7,10 @@ import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.DieService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class DieServiceImpl implements DieService {
     private final Island island;
@@ -22,9 +22,9 @@ public class DieServiceImpl implements DieService {
     @Override
     public Map<Class<? extends Organism>, Long> killHungryIslandAnimals() {
         Map<Class<? extends Organism>, Long> diedOrganismClassToCount = new HashMap<>();
-        Map<Cell, List<Organism>> cellToSurvivedAnimals = new HashMap<>();
-        for(Map.Entry<Cell, List<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
-            List<Organism> survivedOrganisms = new ArrayList<>();
+        Map<Cell, Set<Organism>> cellToSurvivedAnimals = new HashMap<>();
+        for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
+            Set<Organism> survivedOrganisms = new HashSet<>();
             for(Organism organism : cellToOrganismsEntry.getValue()) {
                 if(organism instanceof Animal animal && (animal.decreaseHealth(Consts.PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION) <= 0)) {
                     putDuplicateValueCount(diedOrganismClassToCount, animal.getClass());

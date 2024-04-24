@@ -6,8 +6,8 @@ import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.CollectClassesService;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CollectClassesServiceImpl implements CollectClassesService {
     private final Island island;
@@ -19,7 +19,7 @@ public class CollectClassesServiceImpl implements CollectClassesService {
     @Override
     public Map<Class<? extends Organism>, Long> getClassesToCountMap() {
         Map<Class<? extends Organism>, Long> organismClassesToCount = new HashMap<>();
-        for(Map.Entry<Cell, List<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
+        for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
             for(Organism organism : cellToOrganismsEntry.getValue()) {
                 putDuplicateValueCount(organismClassesToCount, organism.getClass());
             }

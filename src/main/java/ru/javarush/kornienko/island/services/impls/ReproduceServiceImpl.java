@@ -30,13 +30,13 @@ public class ReproduceServiceImpl implements ReproduceService {
     @Override
     public Map<Class<? extends Organism>, Long> reproduceIslandAnimals() {
         newbornAnimalClassCount = new HashMap<>();
-        for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
+        for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             processCell(cellOrganismsEntry);
         }
         return newbornAnimalClassCount;
     }
 
-    private void processCell(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
+    private void processCell(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry) {
         List<Animal> animals = island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue());
         int currentAnimalsCount = animals.size();
         if(currentAnimalsCount < island.getMaxAnimalsPerCell()) {

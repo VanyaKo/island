@@ -7,18 +7,19 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.plants.Plant;
 import ru.javarush.kornienko.island.services.IslandAction;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Island implements IslandAction {
     private static final int DEFAULT_PROPERTY_VALUE = -1;
     private final IslandConfig islandConfig;
     private final PrototypeFactory prototypeFactory;
-    private Map<Cell, List<Organism>> islandMap;
+    private Map<Cell, Set<Organism>> islandMap;
     private int width = DEFAULT_PROPERTY_VALUE;
     private int height = DEFAULT_PROPERTY_VALUE;
     private int maxPlantsPerCell = DEFAULT_PROPERTY_VALUE;
@@ -56,11 +57,11 @@ public class Island implements IslandAction {
     /**
      * Get copy of a map.
      */
-    public Map<Cell, List<Organism>> getIslandMap() {
+    public Map<Cell, Set<Organism>> getIslandMap() {
         return new HashMap<>(islandMap);
     }
 
-    public void setIslandMap(Map<Cell, List<Organism>> islandMap) {
+    public void setIslandMap(Map<Cell, Set<Organism>> islandMap) {
         this.islandMap = islandMap;
     }
 
@@ -77,18 +78,18 @@ public class Island implements IslandAction {
     }
 
     private void initEmptyMap() {
-        islandMap = new HashMap<>();
+        islandMap = new HashMap<Cell, Set<Organism>>();
         for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
                 Cell cell = new Cell(i, j);
-                islandMap.put(cell, new ArrayList<>());
+                islandMap.put(cell, new HashSet<>());
             }
         }
     }
 
     public long placePlants() {
         long organismCount = 0;
-        for(List<Organism> cellOrganisms : islandMap.values()) {
+        for(Set<Organism> cellOrganisms : islandMap.values()) {
             organismCount += placeOrganismsOnCell(cellOrganisms, Plant.class, maxPlantsPerCell);
         }
         return organismCount;
@@ -96,13 +97,13 @@ public class Island implements IslandAction {
 
     public long placeAnimals() {
         long organismCount = 0;
-        for(List<Organism> cellOrganisms : islandMap.values()) {
+        for(Set<Organism> cellOrganisms : islandMap.values()) {
             placeOrganismsOnCell(cellOrganisms, Animal.class, maxAnimalsPerCell);
         }
         return organismCount;
     }
 
-    private int placeOrganismsOnCell(List<Organism> cellOrganisms, Class<? extends Organism> clazz, int maxOrganismsPerCell) {
+    private int placeOrganismsOnCell(Set<Organism> cellOrganisms, Class<? extends Organism> clazz, int maxOrganismsPerCell) {
         int currentOrganisms = getCurrentOrganismsOnCell(cellOrganisms, clazz);
         for(Organism prototype : prototypeFactory.getPrototypes()) {
             if(clazz.isAssignableFrom(prototype.getClass())) {
@@ -117,12 +118,12 @@ public class Island implements IslandAction {
         return currentOrganisms;
     }
 
-    private int getCurrentOrganismsOnCell(List<Organism> cellOrganisms, Class<? extends Organism> targetClass) {
+    private int getCurrentOrganismsOnCell(Set<Organism> cellOrganisms, Class<? extends Organism> targetClass) {
         return (int) cellOrganisms.stream()
                 .filter(organism -> organism.getClass() == targetClass).count();
     }
 
-    private void fillCellWithOrganisms(List<Organism> cellOrganisms, Organism prototype, int prototypesPerCell) {
+    private void fillCellWithOrganisms(Set<Organism> cellOrganisms, Organism prototype, int prototypesPerCell) {
         for(int i = 0; i < prototypesPerCell; i++) {
             try {
                 cellOrganisms.add((Organism) prototype.clone());

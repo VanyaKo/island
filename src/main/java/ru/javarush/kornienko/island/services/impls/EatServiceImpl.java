@@ -8,10 +8,11 @@ import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.EatService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EatServiceImpl implements EatService {
@@ -30,16 +31,16 @@ public class EatServiceImpl implements EatService {
     @Override
     public Map<Class<? extends Organism>, Long> eatIslandOrganisms() {
         eatenOrganismClassCount = new HashMap<>();
-        for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
+        for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             eatCellAnimals(cellOrganismsEntry);
         }
         return eatenOrganismClassCount;
     }
 
-    private void eatCellAnimals(Map.Entry<Cell, List<Organism>> cellOrganismsEntry) {
-        List<Animal> eaters = new ArrayList<>();
-        List<Organism> eatenOrganisms = new ArrayList<>();
-        List<Organism> organisms = cellOrganismsEntry.getValue();
+    private void eatCellAnimals(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry) {
+        Set<Animal> eaters = new HashSet<>();
+        Set<Organism> eatenOrganisms = new HashSet<>();
+        Set<Organism> organisms = cellOrganismsEntry.getValue();
         for(Organism organism : organisms) {
             if(organism instanceof Animal animal && !eaters.contains(animal) && !eatenOrganisms.contains(animal)) {
                 Map<Class<?>, Byte> eatableClasses = getEatablesByEaterClass(animal.getClass());

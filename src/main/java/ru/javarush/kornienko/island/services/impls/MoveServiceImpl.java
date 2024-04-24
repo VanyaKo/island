@@ -7,8 +7,8 @@ import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.MoveService;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,7 +38,7 @@ public class MoveServiceImpl implements MoveService {
 
     private Map<Animal, Cell> getAnimalsToMove() {
         Map<Animal, Cell> animalsToMove = new HashMap<>();
-        for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
+        for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             Cell currentCell = cellOrganismsEntry.getKey();
             island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue())
                     .forEach(animal -> animalsToMove.put(animal, currentCell));
@@ -49,7 +49,7 @@ public class MoveServiceImpl implements MoveService {
     private void moveAnimal(Animal animal, Cell startCell, int maxMoveProbability) {
         boolean isMoved = false;
         for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed() + 1); i++) {
-            Map<Cell, List<Organism>> neighborCells = getNeighborCells(startCell);
+            Map<Cell, Set<Organism>> neighborCells = getNeighborCells(startCell);
             Set<Cell> availableCells = getAvailableCells(neighborCells);
             if(!availableCells.isEmpty() && isSuccessMoveProbability(maxMoveProbability)) {
                 Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
@@ -68,9 +68,9 @@ public class MoveServiceImpl implements MoveService {
         return ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1) <= maxMoveProbability;
     }
 
-    private Map<Cell, List<Organism>> getNeighborCells(Cell currentCell) {
-        Map<Cell, List<Organism>> neighborCells = new HashMap<>();
-        for(Map.Entry<Cell, List<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
+    private Map<Cell, Set<Organism>> getNeighborCells(Cell currentCell) {
+        Map<Cell, Set<Organism>> neighborCells = new HashMap<>();
+        for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             Cell neighborCell = cellOrganismsEntry.getKey();
             if(isDifferentCell(neighborCell, currentCell) && isNeighborNonDiagonalCell(neighborCell, currentCell)) {
                 neighborCells.put(neighborCell, cellOrganismsEntry.getValue());
@@ -83,14 +83,14 @@ public class MoveServiceImpl implements MoveService {
      *
      * @return cells with free spaces for animals
      */
-    private Set<Cell> getAvailableCells(Map<Cell, List<Organism>> neighborCells) {
+    private Set<Cell> getAvailableCells(Map<Cell, Set<Organism>> neighborCells) {
         return neighborCells.entrySet().stream()
                 .filter(entry -> getAnimalCount(entry.getValue()) < island.getMaxAnimalsPerCell())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
                 .keySet();
     }
 
-    private int getAnimalCount(List<Organism> organisms) {
+    private int getAnimalCount(Collection<Organism> organisms) {
         return (int) organisms.stream()
                 .filter(Animal.class::isInstance)
                 .count();

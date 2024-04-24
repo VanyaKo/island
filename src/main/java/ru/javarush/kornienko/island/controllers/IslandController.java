@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
 import ru.javarush.kornienko.island.conditions.Handler;
 import ru.javarush.kornienko.island.conditions.enums.HandlerType;
+import ru.javarush.kornienko.island.configs.IslandConfig;
+import ru.javarush.kornienko.island.configs.PrototypeFactory;
 import ru.javarush.kornienko.island.configs.action.EatProbabilityConfig;
 import ru.javarush.kornienko.island.configs.action.EatProbabilityPair;
-import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.action.MoveProbabilityConfig;
-import ru.javarush.kornienko.island.configs.PrototypeFactory;
 import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityConfig;
 import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityEntry;
 import ru.javarush.kornienko.island.consts.Consts;
@@ -37,15 +37,15 @@ public class IslandController {
         ObjectMapper objectMapper = new ObjectMapper();
         PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
 
-        EatProbabilityConfig eatProbabilityConfig = new EatProbabilityConfig(objectMapper, 
+        EatProbabilityConfig eatProbabilityConfig = new EatProbabilityConfig(objectMapper,
                 Consts.EAT_PROBABILITY_CONFIG_JSON);
         EatProbabilityPair[] eatProbabilityPairs = eatProbabilityConfig.readEatingProbability();
 
-        MoveProbabilityConfig moveProbabilityConfig = new MoveProbabilityConfig(objectMapper, 
+        MoveProbabilityConfig moveProbabilityConfig = new MoveProbabilityConfig(objectMapper,
                 Consts.MOVE_PROBABILITY_CONFIG_JSON);
         Map<Class<?>, Integer> classToMoveProbability = moveProbabilityConfig.readMoveProbability();
 
-        ReproduceProbabilityConfig reproduceProbabilityConfig = new ReproduceProbabilityConfig(objectMapper, 
+        ReproduceProbabilityConfig reproduceProbabilityConfig = new ReproduceProbabilityConfig(objectMapper,
                 Consts.REPRODUCE_PROBABILITY_CONFIG_JSON);
         ReproduceProbabilityEntry[] reproduceProbabilityEntries = reproduceProbabilityConfig.readReproduceProbability();
 
@@ -69,7 +69,7 @@ public class IslandController {
         int cycleCounter = 0;
         while(!handler.isConditionSatisfied(island)) {
             StatisticsService statisticsService = new StatisticsServiceImpl(prototypeFactory);
-            System.out.println("ТАКТ " + cycleCounter + "\n");
+            System.out.println("ТАКТ " + cycleCounter++ + "\n");
 
             System.out.println("Выросло " + island.placePlants() + " растений.\n");
 
