@@ -18,4 +18,9 @@ public class OnlyPredatorsHandler extends Handler {
         }
         return true;
     }
+
+    @Override
+    public String getConditionTrueMessage() {
+        return "Остались только хищники.";
+    }
 }

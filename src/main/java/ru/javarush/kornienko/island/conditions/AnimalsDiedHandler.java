@@ -8,4 +8,9 @@ public class AnimalsDiedHandler extends Handler {
     public boolean isConditionSatisfied(Island island) {
         return ifIslandHasType(island, Animal.class);
     }
+
+    @Override
+    public String getConditionTrueMessage() {
+        return "Все животные умерли \uD83D\uDC80";
+    }
 }

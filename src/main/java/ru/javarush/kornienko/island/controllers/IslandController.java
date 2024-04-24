@@ -31,6 +31,15 @@ import java.util.Map;
 import java.util.Properties;
 
 public class IslandController {
+    private static @NotNull Island getIsland(PrototypeFactory prototypeFactory) {
+        Properties properties = new Properties();
+        IslandConfig islandConfig = new IslandConfig(properties, Consts.ISLAND_CONFIG);
+        Island island = new Island(islandConfig, prototypeFactory);
+        island.initEmptyIsland();
+        island.placeAnimals();
+        return island;
+    }
+
     public void run(String condition) {
         Handler handler = HandlerType.getHandlerByName(condition);
 
@@ -54,21 +63,14 @@ public class IslandController {
         startGameCycle(handler, prototypeFactory, island, eatProbabilityPairs, classToMoveProbability, reproduceProbabilityEntries);
     }
 
-    private static @NotNull Island getIsland(PrototypeFactory prototypeFactory) {
-        Properties properties = new Properties();
-        IslandConfig islandConfig = new IslandConfig(properties, Consts.ISLAND_CONFIG);
-        Island island = new Island(islandConfig, prototypeFactory);
-        island.initEmptyIsland();
-        island.placeAnimals();
-        return island;
-    }
-
     private void startGameCycle(Handler handler, PrototypeFactory prototypeFactory, Island island,
                                 EatProbabilityPair[] eatProbabilityPairs, Map<Class<?>, Integer> classToMoveProbability,
                                 ReproduceProbabilityEntry[] reproduceProbabilityEntries) {
         int cycleCounter = 0;
-        while(!handler.isConditionSatisfied(island)) {
+        do {
             StatisticsService statisticsService = new StatisticsServiceImpl(prototypeFactory);
+            System.out.println(Consts.LINE_DELIMITER);
+            System.out.println();
             System.out.println("ТАКТ " + cycleCounter++ + "\n");
 
             System.out.println("Выросло " + island.placePlants() + " растений.\n");
@@ -101,8 +103,9 @@ public class IslandController {
             // compute difference
             // print current organism info
             statisticsService.printDifferenceInfo(initialClassesToCount, collectClassesService.getClassesToCountMap());
-
-            System.out.println();
-        }
+        } while(!handler.isConditionSatisfied(island));
+        System.out.println("\n" + Consts.LINE_DELIMITER + "\n");
+        System.out.println(handler.getConditionTrueMessage());
+        System.out.println("Симуляция \uD83C\uDFDD\uFE0F завершена!");
     }
 }

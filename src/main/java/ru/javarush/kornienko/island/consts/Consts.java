@@ -8,6 +8,7 @@ public class Consts {
     public static final int MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE = 2;
     public static final int HUNDRED_PERCENT = 100;
     public static final double PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION = (byte) 20;
+    public static final String LINE_DELIMITER = "=====================================================".repeat(3);
 
     private Consts() {
 
