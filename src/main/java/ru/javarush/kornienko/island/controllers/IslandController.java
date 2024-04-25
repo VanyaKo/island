@@ -8,7 +8,7 @@ import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
 import ru.javarush.kornienko.island.configs.animals.EatConfigDeserializer;
 import ru.javarush.kornienko.island.configs.animals.EatConfig;
-import ru.javarush.kornienko.island.configs.animals.MoveConfigDeserializer;
+import ru.javarush.kornienko.island.configs.animals.MapConfigDeserializer;
 import ru.javarush.kornienko.island.configs.animals.ReproduceConfigDeserializer;
 import ru.javarush.kornienko.island.configs.animals.ReproduceConfig;
 import ru.javarush.kornienko.island.consts.Consts;
@@ -52,9 +52,9 @@ public class IslandController {
                 Consts.EAT_CONFIG_JSON);
         EatConfig[] eatConfigs = eatConfigDeserializer.readEatConfig();
 
-        MoveConfigDeserializer moveConfigDeserializer = new MoveConfigDeserializer(objectMapper,
-                Consts.MOVE_CONFIG_JSON);
-        Map<Class<?>, Byte> moveConfig = moveConfigDeserializer.readMoveConfig();
+        MapConfigDeserializer mapConfigDeserializer = new MapConfigDeserializer();
+        Map<Class<?>, Integer> moveConfig = mapConfigDeserializer.readMoveConfig(objectMapper, Consts.MOVE_CONFIG_JSON);
+        Map<Class<?>, Integer> startAnimalNumConfig = mapConfigDeserializer.readMoveConfig(objectMapper, Consts.START_ANIMAL_NUM_CONFIG_JSON);
 
         ReproduceConfigDeserializer reproduceConfigDeserializer = new ReproduceConfigDeserializer(objectMapper,
                 Consts.REPRODUCE_CONFIG_JSON);
@@ -62,14 +62,14 @@ public class IslandController {
 
         Island island = getIsland(prototypeFactory);
         island.initEmptyIsland();
-        island.placePlants();
-        island.placeAnimals();
+        island.growPlants();
+        island.initAnimals(startAnimalNumConfig);
 
         startGameCycle(handler, prototypeFactory, island, eatConfigs, moveConfig, reproduceConfigs);
     }
 
     private void startGameCycle(Handler handler, PrototypeFactory prototypeFactory, Island island,
-                                EatConfig[] eatConfigs, Map<Class<?>, Byte> moveConfig,
+                                EatConfig[] eatConfigs, Map<Class<?>, Integer> moveConfig,
                                 ReproduceConfig[] reproduceConfigs) {
         int cycleCounter = 0;
         int cellCount = island.getCellCount();
@@ -101,7 +101,7 @@ public class IslandController {
 
                 // submit tasks
                 Future<Map<Class<? extends Organism>, Long>> initialInfoFuture = collectInfoExecutor.submit(collectClassesService::getClassesToCountMap);
-                Future<Long> placePlantsFuture = placePlantsExecutor.submit(island::placePlants);
+                Future<Long> placePlantsFuture = placePlantsExecutor.submit(island::growPlants);
                 for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
                     eatExecutor.submit(() -> eatService.eatCellAnimals(cellToOrganismsEntry));
                     reproduceExecutor.submit(() -> reproduceService.reproduceCellOrganisms(cellToOrganismsEntry));

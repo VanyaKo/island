@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 
 public class MoveService {
     private final Island island;
-    private final Map<Class<?>, Byte> classToMoveProbability;
+    private final Map<Class<?>, Integer> classToMoveProbability;
     private Map<Class<? extends Organism>, Long> movedOrganismClassToCount;
 
-    public MoveService(Island island, Map<Class<?>, Byte> classToMoveProbability) {
+    public MoveService(Island island, Map<Class<?>, Integer> classToMoveProbability) {
         this.island = island;
         this.classToMoveProbability = classToMoveProbability;
     }

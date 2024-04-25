@@ -8,6 +8,7 @@ import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.plants.Plant;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -74,27 +75,30 @@ public class Island {
         }
     }
 
-    public long placePlants() {
+    public long growPlants() {
         long organismCount = 0;
         for(Set<Organism> cellOrganisms : islandMap.values()) {
-            organismCount += placeOrganismsOnCell(cellOrganisms, Plant.class, maxPlantsPerCell);
+            organismCount += placeOrganismsOnCell(cellOrganisms, Plant.class, maxPlantsPerCell, Collections.emptyMap());
         }
         return organismCount;
     }
 
-    public long placeAnimals() {
-        long organismCount = 0;
+    public void initAnimals(Map<Class<?>, Integer> startAnimalNumConfig) {
         for(Set<Organism> cellOrganisms : islandMap.values()) {
-            placeOrganismsOnCell(cellOrganisms, Animal.class, maxAnimalsPerCell);
+            placeOrganismsOnCell(cellOrganisms, Animal.class, maxAnimalsPerCell, startAnimalNumConfig);
         }
-        return organismCount;
     }
 
-    private int placeOrganismsOnCell(Set<Organism> cellOrganisms, Class<? extends Organism> clazz, int maxOrganismsPerCell) {
+    private int placeOrganismsOnCell(Set<Organism> cellOrganisms, Class<? extends Organism> clazz, int maxOrganismsPerCell, Map<Class<?>, Integer> startAnimalNumConfig) {
         int currentOrganisms = getCurrentOrganismsOnCell(cellOrganisms, clazz);
         for(Organism prototype : prototypeFactory.getPrototypes()) {
             if(clazz.isAssignableFrom(prototype.getClass())) {
-                int prototypesToAdd = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
+                int prototypesToAdd;
+                if(startAnimalNumConfig.isEmpty()) {
+                    prototypesToAdd = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
+                } else {
+                    prototypesToAdd = startAnimalNumConfig.get(prototype.getClass());
+                }
                 if(currentOrganisms + prototypesToAdd > maxOrganismsPerCell) {
                     break;
                 }
@@ -115,7 +119,7 @@ public class Island {
             try {
                 cellOrganisms.add((Organism) prototype.clone());
             } catch(CloneNotSupportedException e) {
-                throw new AppException("Error with clone of " + prototype, e); // TODO: extract this to exception class
+                throw new AppException(e);
             }
         }
     }

@@ -4,6 +4,7 @@ public class Consts {
     public static final String EAT_CONFIG_JSON = "configs/eat_config.json";
     public static final String MOVE_CONFIG_JSON = "configs/move_config.json";
     public static final String REPRODUCE_CONFIG_JSON = "configs/reproduce_config.json";
+    public static final String START_ANIMAL_NUM_CONFIG_JSON = "configs/start_animal_num_config.json";
     public static final String ISLAND_CONFIG = "configs/island/island.properties";
     public static final int MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE = 2;
     public static final int HUNDRED_PERCENT = 100;

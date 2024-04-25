@@ -1,6 +1,7 @@
 package ru.javarush.kornienko.island.models.abstracts;
 
 import ru.javarush.kornienko.island.consts.Consts;
+import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.services.AnimalAction;
 
@@ -54,14 +55,12 @@ public abstract class Animal extends Organism implements AnimalAction {
             }
             return cubs;
         } catch(CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+            throw new AppException(e);
         }
     }
 
     /**
-     *
-     * @param cells
-     * @return destination cell
+     * Move to random cell from parameters and return it
      */
     @Override
     public Cell move(Cell[] cells) {

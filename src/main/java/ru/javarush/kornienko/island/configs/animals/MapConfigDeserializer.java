@@ -14,22 +14,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
-public class MoveConfigDeserializer extends StdDeserializer<Map<Class<?>, Byte>> {
-    private ObjectMapper objectMapper;
-    private String pathToJson;
-
-    public MoveConfigDeserializer(ObjectMapper objectMapper, String pathToJson) {
-        this(null);
-        this.objectMapper = objectMapper;
-        this.pathToJson = pathToJson;
-    }
-
-    private MoveConfigDeserializer(Class<?> vc) {
-        super(vc);
+public class MapConfigDeserializer extends StdDeserializer<Map<Class<?>, Integer>> {
+    public MapConfigDeserializer() {
+        super((Class<?>) null);
     }
 
     @SuppressWarnings("unchecked")
-    public Map<Class<?>, Byte> readMoveConfig() {
+    public Map<Class<?>, Integer> readMoveConfig(ObjectMapper objectMapper, String pathToJson) {
         URL resource = Organism.class.getClassLoader().getResource(pathToJson);
         try {
             SimpleModule module = new SimpleModule();
@@ -42,9 +33,9 @@ public class MoveConfigDeserializer extends StdDeserializer<Map<Class<?>, Byte>>
     }
 
     @Override
-    public Map<Class<?>, Byte> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public Map<Class<?>, Integer> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
-        return objectMapper.convertValue(node, new TypeReference<>() {
+        return new ObjectMapper().convertValue(node, new TypeReference<>() {
         });
     }
 }
