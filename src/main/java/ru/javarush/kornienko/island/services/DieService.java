@@ -16,26 +16,40 @@ import java.util.concurrent.ConcurrentMap;
 
 public class DieService {
     private final Island island;
+    private Map<Class<? extends Organism>, Long> diedOrganismClassToCountMap;
+    private ConcurrentMap<Cell, Set<Organism>> cellToSurvivedAnimalsMap;
 
     public DieService(Island island) {
         this.island = island;
     }
 
-    public Map<Class<? extends Organism>, Long> killHungryIslandAnimals() {
-        Map<Class<? extends Organism>, Long> diedOrganismClassToCount = new HashMap<>();
-        ConcurrentMap<Cell, Set<Organism>> cellToSurvivedAnimals = new ConcurrentHashMap<>();
-        for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
-            Set<Organism> survivedOrganisms = new HashSet<>();
-            for(Organism organism : cellToOrganismsEntry.getValue()) {
-                if(organism instanceof Animal animal && (animal.decreaseHealth(Consts.PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION) <= 0)) {
-                    MapWorker.putDuplicateValueCount(diedOrganismClassToCount, animal.getClass());
-                } else {
-                    survivedOrganisms.add(organism);
-                }
+    public void resetDiedAndSurvivedOrganisms() {
+        diedOrganismClassToCountMap = new HashMap<>();
+        cellToSurvivedAnimalsMap = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * Remove died animals from island and return them
+     * @return
+     */
+    public Map<Class<? extends Organism>, Long> getDiedAnimals() {
+        island.setIslandMap(cellToSurvivedAnimalsMap);
+        return diedOrganismClassToCountMap;
+    }
+
+    public void killCellHungryAnimals(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry) {
+        Set<Organism> survivedOrganisms = new HashSet<>();
+        for(Organism organism : cellToOrganismsEntry.getValue()) {
+            if(organism instanceof Animal animal && hasNoHealth(animal)) {
+                MapWorker.putDuplicateValueCount(diedOrganismClassToCountMap, animal.getClass());
+            } else {
+                survivedOrganisms.add(organism);
             }
-            cellToSurvivedAnimals.put(cellToOrganismsEntry.getKey(), survivedOrganisms);
         }
-        island.setIslandMap(cellToSurvivedAnimals);
-        return diedOrganismClassToCount;
+        cellToSurvivedAnimalsMap.put(cellToOrganismsEntry.getKey(), survivedOrganisms);
+    }
+
+    private boolean hasNoHealth(Animal animal) {
+        return animal.decreaseHealth(Consts.PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION) <= 0;
     }
 }

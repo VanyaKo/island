@@ -8,38 +8,36 @@ import ru.javarush.kornienko.island.models.island.Cell;
 import ru.javarush.kornienko.island.models.island.Island;
 import ru.javarush.kornienko.island.services.utils.MapWorker;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class EatService {
     private final Island island;
     private final EatConfig[] eatConfigs;
-    private Map<Class<? extends Organism>, Long> eatenOrganismClassCount;
+    private ConcurrentMap<Class<? extends Organism>, Long> eatenOrganismClassCount;
 
     public EatService(Island island, EatConfig[] eatConfigs) {
         this.island = island;
         this.eatConfigs = eatConfigs;
     }
 
-    /**
-     * @return map of eaten organisms to remove
-     */
-    public Map<Class<? extends Organism>, Long> eatIslandOrganisms() {
-        eatenOrganismClassCount = new HashMap<>();
-        for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
-            eatCellAnimals(cellOrganismsEntry);
-        }
-        return eatenOrganismClassCount;
+    public ConcurrentMap<Class<? extends Organism>, Long> getEatenOrganismClassCount() {
+        return new ConcurrentHashMap<>(eatenOrganismClassCount);
     }
 
-    private void eatCellAnimals(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry) {
+    public void resetEatenOrganismsMap() {
+        eatenOrganismClassCount = new ConcurrentHashMap<>();
+    }
+
+    public void eatCellAnimals(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry) {
         Set<Animal> eaters = new HashSet<>();
         Set<Organism> eatenOrganisms = new HashSet<>();
-        Set<Organism> organisms = cellOrganismsEntry.getValue();
+        Set<Organism> organisms = cellToOrganismsEntry.getValue();
         for(Organism organism : organisms) {
             if(organism instanceof Animal animal && !eaters.contains(animal) && !eatenOrganisms.contains(animal)) {
                 Map<Class<?>, Byte> eatableClasses = getEatablesByEaterClass(animal.getClass());
@@ -59,7 +57,7 @@ public class EatService {
                 }
             }
         }
-        eatenOrganisms.forEach(organism -> island.removeOrganismFromCell(organism, cellOrganismsEntry.getKey()));
+        eatenOrganisms.forEach(organism -> island.removeOrganismFromCell(organism, cellToOrganismsEntry.getKey()));
     }
 
     private Organism getRandomEatableOrganism(List<Organism> eatableOrganisms) {

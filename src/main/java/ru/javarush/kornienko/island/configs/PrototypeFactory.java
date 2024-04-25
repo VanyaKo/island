@@ -13,7 +13,7 @@ import ru.javarush.kornienko.island.models.herbivores.Horse;
 import ru.javarush.kornienko.island.models.herbivores.Mouse;
 import ru.javarush.kornienko.island.models.herbivores.Rabbit;
 import ru.javarush.kornienko.island.models.herbivores.Sheep;
-import ru.javarush.kornienko.island.models.plants.Plants;
+import ru.javarush.kornienko.island.models.plants.Grass;
 import ru.javarush.kornienko.island.models.predators.Bear;
 import ru.javarush.kornienko.island.models.predators.Eagle;
 import ru.javarush.kornienko.island.models.predators.Fox;
@@ -52,7 +52,7 @@ public class PrototypeFactory {
         unicodes.put(Buffalo.class, "\uD83D\uDC03");
         unicodes.put(Duck.class, "\uD83E\uDD86");
         unicodes.put(Caterpillar.class, "\uD83D\uDC1B");
-        unicodes.put(Plants.class, "\uD83C\uDF31");
+        unicodes.put(Grass.class, "\uD83C\uDF31");
         types = unicodes.keySet();
         init();
     }

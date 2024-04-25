@@ -43,6 +43,10 @@ public class StatisticsService {
         System.out.println();
     }
 
+    public void printPlantsGrownInfo(long plantsGrown) {
+        System.out.println("Выросло " + plantsGrown + " растений.\n");
+    }
+
     public void printEatInfo(Map<Class<? extends Organism>, Long> organismClassesToCount) {
         Map<Class<? extends Organism>, Long> plantClassCount = filterBySuperclass(organismClassesToCount, Plant.class);
         Map<Class<? extends Organism>, Long> animalClassCount = filterBySuperclass(organismClassesToCount, Animal.class);

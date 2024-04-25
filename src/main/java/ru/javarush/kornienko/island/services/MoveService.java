@@ -11,31 +11,36 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class MoveService {
     private final Island island;
-    private Map<Class<? extends Organism>, Long> movedOrganismClassToCount;
     private final Map<Class<?>, Byte> classToMoveProbability;
+    private Map<Class<? extends Organism>, Long> movedOrganismClassToCount;
 
     public MoveService(Island island, Map<Class<?>, Byte> classToMoveProbability) {
         this.island = island;
         this.classToMoveProbability = classToMoveProbability;
     }
 
-    public Map<Class<? extends Organism>, Long> moveIslandAnimals() {
-        movedOrganismClassToCount = new HashMap<>();
-        Map<Animal, Cell> animalsToMove = getAnimalsToMove();
-        for(Map.Entry<Animal, Cell> animalCellEntry : animalsToMove.entrySet()) {
-            Animal animal = animalCellEntry.getKey();
-            Cell startCell = animalCellEntry.getValue();
-            moveAnimal(animal, startCell, classToMoveProbability.get(animal.getClass()));
-        }
-        return movedOrganismClassToCount;
+    public ConcurrentMap<Class<? extends Organism>, Long> getMovedOrganismClassToCount() {
+        return new ConcurrentHashMap<>(movedOrganismClassToCount);
     }
 
-    private Map<Animal, Cell> getAnimalsToMove() {
+    public void resetMovedOrganismsMap() {
+        movedOrganismClassToCount = new ConcurrentHashMap<>();
+    }
+
+    public void moveCellAnimals(Map.Entry<Animal, Cell> animalToCellEntry) {
+        Animal animal = animalToCellEntry.getKey();
+        Cell startCell = animalToCellEntry.getValue();
+        moveAnimal(animal, startCell, classToMoveProbability.get(animal.getClass()));
+    }
+
+    public Map<Animal, Cell> getAnimalsToMove() {
         Map<Animal, Cell> animalsToMove = new HashMap<>();
         for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
             Cell currentCell = cellOrganismsEntry.getKey();

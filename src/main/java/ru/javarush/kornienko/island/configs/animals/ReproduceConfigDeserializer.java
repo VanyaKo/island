@@ -28,7 +28,7 @@ public class ReproduceConfigDeserializer extends StdDeserializer<ReproduceConfig
         super(vc);
     }
 
-    public ReproduceConfig[] readReproduceProbability() {
+    public ReproduceConfig[] readReproduceConfig() {
         URL resource = Organism.class.getClassLoader().getResource(pathToJson);
         try {
             SimpleModule module = new SimpleModule();

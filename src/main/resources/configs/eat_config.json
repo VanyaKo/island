@@ -58,38 +58,38 @@
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Horse",
     "eatables": {
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Deer",
     "eatables": {
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Rabbit",
     "eatables": {
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Mouse",
     "eatables": {
       "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Goat",
     "eatables": {
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Sheep",
     "eatables": {
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
@@ -97,26 +97,26 @@
     "eatables": {
       "ru.javarush.kornienko.island.models.herbivores.Mouse": 50,
       "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Buffalo",
     "eatables": {
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Duck",
     "eatables": {
       "ru.javarush.kornienko.island.models.herbivores.Caterpillar": 90,
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   },
   {
     "eater": "ru.javarush.kornienko.island.models.herbivores.Caterpillar",
     "eatables": {
-      "ru.javarush.kornienko.island.models.plants.Plants": 100
+      "ru.javarush.kornienko.island.models.plants.Grass": 100
     }
   }
 ]

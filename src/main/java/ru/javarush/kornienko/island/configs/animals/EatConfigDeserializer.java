@@ -30,7 +30,7 @@ public class EatConfigDeserializer extends StdDeserializer<EatConfig[]> {
         super(vc);
     }
 
-    public EatConfig[] readEatingProbability() {
+    public EatConfig[] readEatConfig() {
         URL resource = Organism.class.getClassLoader().getResource(pathToJson);
         try {
             SimpleModule module = new SimpleModule();

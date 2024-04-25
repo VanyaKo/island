@@ -15,27 +15,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ReproduceService {
     private final Island island;
     private final ReproduceConfig[] reproduceProbabilityEntries;
-    private Map<Class<? extends Organism>, Long> newbornAnimalClassCount;
+    private ConcurrentMap<Class<? extends Organism>, Long> newbornClassToCountMap;
 
     public ReproduceService(Island island, ReproduceConfig[] reproduceProbabilityEntries) {
         this.island = island;
         this.reproduceProbabilityEntries = reproduceProbabilityEntries;
     }
 
-    public Map<Class<? extends Organism>, Long> reproduceIslandAnimals() {
-        newbornAnimalClassCount = new HashMap<>();
-        for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
-            processCell(cellOrganismsEntry);
-        }
-        return newbornAnimalClassCount;
+    public ConcurrentMap<Class<? extends Organism>, Long> getNewbornClassToCountMap() {
+        return new ConcurrentHashMap<>(newbornClassToCountMap);
     }
 
-    private void processCell(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry) {
+    public void resetNewbornClassToCountMap() {
+        newbornClassToCountMap = new ConcurrentHashMap<>();
+    }
+
+    public void reproduceCellOrganisms(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry) {
         List<Animal> animals = island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue());
         int currentAnimalsCount = animals.size();
         if(currentAnimalsCount < island.getMaxAnimalsPerCell()) {
@@ -81,7 +83,7 @@ public class ReproduceService {
                 Set<Animal> newborns = classAnimalEntry.getValue().reproduce(reproduceConfig.getMaxCubs());
                 for(Animal newborn : newborns) {
                     island.addAnimalToCell(newborn, cell);
-                    MapWorker.putDuplicateValueCount(newbornAnimalClassCount, newborn.getClass());
+                    MapWorker.putDuplicateValueCount(newbornClassToCountMap, newborn.getClass());
                 }
                 if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
                     return;

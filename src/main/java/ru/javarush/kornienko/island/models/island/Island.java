@@ -25,10 +25,15 @@ public class Island {
     private int height = DEFAULT_PROPERTY_VALUE;
     private int maxPlantsPerCell = DEFAULT_PROPERTY_VALUE;
     private int maxAnimalsPerCell = DEFAULT_PROPERTY_VALUE;
+    private int cycleDuration = DEFAULT_PROPERTY_VALUE;
 
     public Island(IslandConfig islandConfig, PrototypeFactory prototypeFactory) {
         this.islandConfig = islandConfig;
         this.prototypeFactory = prototypeFactory;
+    }
+
+    public int getCellCount() {
+        return width * height;
     }
 
     public int getMaxAnimalsPerCell() {
@@ -56,6 +61,7 @@ public class Island {
         height = islandConfig.getProperty("height");
         maxPlantsPerCell = islandConfig.getProperty("maxPlantsPerCell");
         maxAnimalsPerCell = islandConfig.getProperty("maxAnimalsPerCell");
+        cycleDuration = islandConfig.getProperty("cycleDuration");
     }
 
     private void initEmptyMap() {
@@ -109,7 +115,7 @@ public class Island {
             try {
                 cellOrganisms.add((Organism) prototype.clone());
             } catch(CloneNotSupportedException e) {
-                throw new AppException("Error with clone of " + prototype, e);
+                throw new AppException("Error with clone of " + prototype, e); // TODO: extract this to exception class
             }
         }
     }
@@ -127,5 +133,9 @@ public class Island {
                 .filter(Animal.class::isInstance)
                 .map(Animal.class::cast)
                 .toList();
+    }
+
+    public int getCycleDuration() {
+        return cycleDuration;
     }
 }
