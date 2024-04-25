@@ -6,7 +6,6 @@ import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.plants.Plant;
-import ru.javarush.kornienko.island.services.IslandAction;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Island implements IslandAction {
+public class Island {
     private static final int DEFAULT_PROPERTY_VALUE = -1;
     private final IslandConfig islandConfig;
     private final PrototypeFactory prototypeFactory;

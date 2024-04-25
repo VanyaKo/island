@@ -1,34 +1,34 @@
-package ru.javarush.kornienko.island.configs.action;
+package ru.javarush.kornienko.island.configs.animals;
 
-public class ReproduceProbabilityEntry {
+public class ReproduceConfig {
     private Class<?> reproducer;
-    private int couplingProbability;
-    private int birthProbability;
+    private byte couplingProbability;
+    private byte birthProbability;
     private int maxCubs;
 
-    public ReproduceProbabilityEntry(Class<?> reproducer, int couplingProbability, int birthProbability, int maxCubs) {
+    public ReproduceConfig(Class<?> reproducer, byte couplingProbability, byte birthProbability, int maxCubs) {
         this.reproducer = reproducer;
         this.couplingProbability = couplingProbability;
         this.birthProbability = birthProbability;
         this.maxCubs = maxCubs;
     }
 
-    public ReproduceProbabilityEntry() {
+    public ReproduceConfig() {
     }
 
-    public int getBirthProbability() {
+    public byte getBirthProbability() {
         return birthProbability;
     }
 
-    public void setBirthProbability(int birthProbability) {
+    public void setBirthProbability(byte birthProbability) {
         this.birthProbability = birthProbability;
     }
 
-    public int getCouplingProbability() {
+    public byte getCouplingProbability() {
         return couplingProbability;
     }
 
-    public void setCouplingProbability(int couplingProbability) {
+    public void setCouplingProbability(byte couplingProbability) {
         this.couplingProbability = couplingProbability;
     }
 

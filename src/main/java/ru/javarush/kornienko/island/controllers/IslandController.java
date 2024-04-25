@@ -6,11 +6,11 @@ import ru.javarush.kornienko.island.conditions.Handler;
 import ru.javarush.kornienko.island.conditions.enums.HandlerType;
 import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
-import ru.javarush.kornienko.island.configs.action.EatConfigDeserializer;
-import ru.javarush.kornienko.island.configs.action.EatConfig;
-import ru.javarush.kornienko.island.configs.action.MoveProbabilityConfig;
-import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityConfig;
-import ru.javarush.kornienko.island.configs.action.ReproduceProbabilityEntry;
+import ru.javarush.kornienko.island.configs.animals.EatConfigDeserializer;
+import ru.javarush.kornienko.island.configs.animals.EatConfig;
+import ru.javarush.kornienko.island.configs.animals.MoveConfigDeserializer;
+import ru.javarush.kornienko.island.configs.animals.ReproduceConfigDeserializer;
+import ru.javarush.kornienko.island.configs.animals.ReproduceConfig;
 import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Island;
@@ -20,12 +20,6 @@ import ru.javarush.kornienko.island.services.EatService;
 import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.ReproduceService;
 import ru.javarush.kornienko.island.services.StatisticsService;
-import ru.javarush.kornienko.island.services.impls.CollectClassesServiceImpl;
-import ru.javarush.kornienko.island.services.impls.DieServiceImpl;
-import ru.javarush.kornienko.island.services.impls.EatServiceImpl;
-import ru.javarush.kornienko.island.services.impls.MoveServiceImpl;
-import ru.javarush.kornienko.island.services.impls.ReproduceServiceImpl;
-import ru.javarush.kornienko.island.services.impls.StatisticsServiceImpl;
 
 import java.util.Map;
 import java.util.Properties;
@@ -53,13 +47,13 @@ public class IslandController {
                 Consts.EAT_PROBABILITY_CONFIG_JSON);
         EatConfig[] eatConfigs = eatConfigDeserializer.readEatingProbability();
 
-        MoveProbabilityConfig moveProbabilityConfig = new MoveProbabilityConfig(objectMapper,
+        MoveConfigDeserializer moveConfigDeserializer = new MoveConfigDeserializer(objectMapper,
                 Consts.MOVE_PROBABILITY_CONFIG_JSON);
-        Map<Class<?>, Integer> classToMoveProbability = moveProbabilityConfig.readMoveProbability();
+        Map<Class<?>, Byte> classToMoveProbability = moveConfigDeserializer.readMoveConfig();
 
-        ReproduceProbabilityConfig reproduceProbabilityConfig = new ReproduceProbabilityConfig(objectMapper,
+        ReproduceConfigDeserializer reproduceConfigDeserializer = new ReproduceConfigDeserializer(objectMapper,
                 Consts.REPRODUCE_PROBABILITY_CONFIG_JSON);
-        ReproduceProbabilityEntry[] reproduceProbabilityEntries = reproduceProbabilityConfig.readReproduceProbability();
+        ReproduceConfig[] reproduceProbabilityEntries = reproduceConfigDeserializer.readReproduceProbability();
 
         Island island = getIsland(prototypeFactory);
 
@@ -67,11 +61,11 @@ public class IslandController {
     }
 
     private void startGameCycle(Handler handler, PrototypeFactory prototypeFactory, Island island,
-                                EatConfig[] eatConfigs, Map<Class<?>, Integer> classToMoveProbability,
-                                ReproduceProbabilityEntry[] reproduceProbabilityEntries) {
+                                EatConfig[] eatConfigs, Map<Class<?>, Byte> classToMoveProbability,
+                                ReproduceConfig[] reproduceProbabilityEntries) {
         int cycleCounter = 0;
         do {
-            StatisticsService statisticsService = new StatisticsServiceImpl(prototypeFactory);
+            StatisticsService statisticsService = new StatisticsService(prototypeFactory);
             System.out.println(Consts.LINE_DELIMITER);
             System.out.println();
             System.out.println("ТАКТ " + cycleCounter++ + "\n");
@@ -82,27 +76,27 @@ public class IslandController {
             System.out.println("Выросло " + island.placePlants() + " растений.\n");
 
             // print current organism info
-            CollectClassesService collectClassesService = new CollectClassesServiceImpl(island);
+            CollectClassesService collectClassesService = new CollectClassesService(island);
             Map<Class<? extends Organism>, Long> initialClassesToCount = collectClassesService.getClassesToCountMap();
             statisticsService.printCurrentOrganismInfo(initialClassesToCount);
 
             // eat
-            EatService eatService = new EatServiceImpl(island, eatConfigs);
+            EatService eatService = new EatService(island, eatConfigs);
             Map<Class<? extends Organism>, Long> eatenOrganismClassCount = eatService.eatIslandOrganisms();
             statisticsService.printEatInfo(eatenOrganismClassCount);
 
             // reproduce
-            ReproduceService reproduceService = new ReproduceServiceImpl(island, reproduceProbabilityEntries);
+            ReproduceService reproduceService = new ReproduceService(island, reproduceProbabilityEntries);
             Map<Class<? extends Organism>, Long> newbornAnimalClassToCount = reproduceService.reproduceIslandAnimals();
             statisticsService.printReproduceInfo(newbornAnimalClassToCount);
 
             // move
-            MoveService moveService = new MoveServiceImpl(island, classToMoveProbability);
+            MoveService moveService = new MoveService(island, classToMoveProbability);
             Map<Class<? extends Organism>, Long> movedOrganismClassToCount = moveService.moveIslandAnimals();
             statisticsService.printMoveInfo(movedOrganismClassToCount);
 
             // die if hungry
-            DieService dieService = new DieServiceImpl(island);
+            DieService dieService = new DieService(island);
             Map<Class<? extends Organism>, Long> diedOrganismClassToCount = dieService.killHungryIslandAnimals();
             statisticsService.printDieInfo(diedOrganismClassToCount);
 

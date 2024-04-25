@@ -6,7 +6,7 @@ import ru.javarush.kornienko.island.models.island.Cell;
 
 import java.util.Set;
 
-public interface AnimalAction extends OrganismService {
+public interface AnimalAction {
     /**
      * Try eating once and return if it was successful.
      */

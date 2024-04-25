@@ -1,8 +1,8 @@
 package ru.javarush.kornienko.island.models.herbivores;
 
-import ru.javarush.kornienko.island.configs.Config;
+import ru.javarush.kornienko.island.configs.OrganismConfig;
 
-@Config(fileName = "configs/animals/herbivores/horse.json")
+@OrganismConfig(fileName = "configs/animals/herbivores/horse.json")
 public class Horse extends Herbivore {
     public Horse() {
         super();

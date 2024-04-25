@@ -69,7 +69,7 @@ public class PrototypeFactory {
     }
 
     private Organism createPrototype(Class<? extends Organism> type) {
-        if(!type.isAnnotationPresent(Config.class)) {
+        if(!type.isAnnotationPresent(OrganismConfig.class)) {
             throw new IllegalArgumentException(String.format("Prototype class %s must have @Config annotation", type.getSimpleName()));
         }
         URL resource = getConfigFilePath(type);
@@ -77,8 +77,8 @@ public class PrototypeFactory {
     }
 
     private URL getConfigFilePath(@NotNull Class<? extends Organism> type) {
-        Config config = type.getAnnotation(Config.class);
-        return type.getClassLoader().getResource(config.fileName());
+        OrganismConfig organismConfig = type.getAnnotation(OrganismConfig.class);
+        return type.getClassLoader().getResource(organismConfig.fileName());
     }
 
     private Organism loadObject(URL resource, @NotNull Class<? extends Organism> type) {

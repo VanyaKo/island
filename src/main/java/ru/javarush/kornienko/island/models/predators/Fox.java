@@ -1,8 +1,8 @@
 package ru.javarush.kornienko.island.models.predators;
 
-import ru.javarush.kornienko.island.configs.Config;
+import ru.javarush.kornienko.island.configs.OrganismConfig;
 
-@Config(fileName = "configs/animals/predators/fox.json")
+@OrganismConfig(fileName = "configs/animals/predators/fox.json")
 public class Fox extends Predator {
     public Fox() {
         super();

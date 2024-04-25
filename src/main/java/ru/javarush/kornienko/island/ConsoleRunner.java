@@ -1,5 +1,6 @@
 package ru.javarush.kornienko.island;
 
+import org.jetbrains.annotations.NotNull;
 import ru.javarush.kornienko.island.controllers.IslandController;
 
 import java.util.Scanner;
@@ -7,12 +8,29 @@ import java.util.Scanner;
 public class ConsoleRunner {
 
     public static void main(String[] args) {
-        System.out.println("Выберите одно из следующих условий остановки симуляции:");
-        System.out.println("1. Остались только хищники");
-        System.out.println("2. Закончились все растения");
-        System.out.println("3. Все животные умерли");
-        System.out.print("Введите соответствующую цифру: ");
+        showStartDialog();
         Scanner console = new Scanner(System.in);
+        byte inputNumber = getInputNumber(console);
+        String stopGameCondition = getStopGameCondition(inputNumber);
+        System.out.println("Запуск игры...\n\n");
+
+        IslandController islandController = new IslandController();
+        islandController.run(stopGameCondition);
+    }
+
+    private static @NotNull String getStopGameCondition(byte inputNumber) {
+        String stopGameCondition = "";
+        if(inputNumber == 1) {
+            stopGameCondition = "ONLY_PREDATORS";
+        } else if(inputNumber == 2) {
+            stopGameCondition = "NO_PLANTS";
+        } else {
+            stopGameCondition = "ANIMALS_DIED";
+        }
+        return stopGameCondition;
+    }
+
+    private static byte getInputNumber(Scanner console) {
         byte inputNumber = 0;
         try {
             inputNumber = console.nextByte();
@@ -23,16 +41,14 @@ public class ConsoleRunner {
             System.err.println("Чел... тебе нужно было просто ввести цифру. Мне лень обрабатывать исключения, поэтому запусти игру снова. Пока!");
             System.exit(-1);
         }
-        String condition = "";
-        if(inputNumber == 1) {
-            condition = "ONLY_PREDATORS";
-        } else if(inputNumber == 2) {
-            condition = "NO_PLANTS";
-        } else {
-            condition = "ANIMALS_DIED";
-        }
-        System.out.println("Запуск игры...\n\n");
-        IslandController islandController = new IslandController();
-        islandController.run(condition);
+        return inputNumber;
+    }
+
+    private static void showStartDialog() {
+        System.out.println("Выберите одно из следующих условий остановки симуляции:");
+        System.out.println("1. Остались только хищники");
+        System.out.println("2. Закончились все растения");
+        System.out.println("3. Все животные умерли");
+        System.out.print("Введите соответствующую цифру: ");
     }
 }

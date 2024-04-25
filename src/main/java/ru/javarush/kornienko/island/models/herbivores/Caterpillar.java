@@ -1,8 +1,8 @@
 package ru.javarush.kornienko.island.models.herbivores;
 
-import ru.javarush.kornienko.island.configs.Config;
+import ru.javarush.kornienko.island.configs.OrganismConfig;
 
-@Config(fileName = "configs/animals/herbivores/caterpillar.json")
+@OrganismConfig(fileName = "configs/animals/herbivores/caterpillar.json")
 public class Caterpillar extends Herbivore {
     public Caterpillar() {
         super();

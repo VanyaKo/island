@@ -1,9 +1,9 @@
 package ru.javarush.kornienko.island.models.plants;
 
-import ru.javarush.kornienko.island.configs.Config;
+import ru.javarush.kornienko.island.configs.OrganismConfig;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 
-@Config(fileName = "configs/plants/plants.json")
+@OrganismConfig(fileName = "configs/plants/plants.json")
 public class Plants extends Plant {
     public Plants() {
         super();

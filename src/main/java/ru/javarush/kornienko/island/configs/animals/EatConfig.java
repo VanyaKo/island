@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.configs.action;
+package ru.javarush.kornienko.island.configs.animals;
 
 import java.util.Collections;
 import java.util.Map;
