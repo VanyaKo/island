@@ -35,26 +35,29 @@ public class MoveService {
     }
 
     public Map<Animal, Cell> getAnimalsToMove() {
-        Map<Animal, Cell> animalsToMove = new HashMap<>();
-        for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
-            Cell currentCell = cellOrganismsEntry.getKey();
-            island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue())
-                    .forEach(animal -> animalsToMove.put(animal, currentCell));
+        synchronized(island) {
+            Map<Animal, Cell> animalsToMove = new HashMap<>();
+            for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
+                Cell currentCell = cellOrganismsEntry.getKey();
+                island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue())
+                        .forEach(animal -> animalsToMove.put(animal, currentCell));
+            }
+            return animalsToMove;
         }
-        return animalsToMove;
     }
 
     public synchronized void moveCellAnimalOnCell(Map.Entry<Animal, Cell> animalToCellEntry) {
-        Animal animal = animalToCellEntry.getKey();
-        Cell startCell = animalToCellEntry.getValue();
-        int maxMoveProbability = classToMoveProbability.get(animal.getClass());
+        synchronized(island) {
+            Animal animal = animalToCellEntry.getKey();
+            Cell startCell = animalToCellEntry.getValue();
+            int maxMoveProbability = classToMoveProbability.get(animal.getClass());
 
-        boolean isMoved = false;
-        for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed() + 1); i++) {
-            Map<Cell, Set<Organism>> neighborCells = getNeighborCells(startCell);
-            Set<Cell> availableCells = getAvailableCells(neighborCells);
-            if(!availableCells.isEmpty() && isSuccessMoveProbability(maxMoveProbability)) {
-                synchronized(island) {
+            boolean isMoved = false;
+            for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed() + 1); i++) {
+                Map<Cell, Set<Organism>> neighborCells = getNeighborCells(startCell);
+                Set<Cell> availableCells = getAvailableCells(neighborCells);
+                if(!availableCells.isEmpty() && isSuccessMoveProbability(maxMoveProbability)) {
+
                     Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
                     island.addAnimalToCell(animal, destinationCell);
                     island.removeOrganismFromCell(animal, startCell);
@@ -62,13 +65,13 @@ public class MoveService {
                     isMoved = true;
                 }
             }
-        }
-        if(isMoved) {
-            MapWorker.putDuplicateValueCount(movedOrganismClassToCount, animal.getClass());
+            if(isMoved) {
+                MapWorker.putDuplicateValueCount(movedOrganismClassToCount, animal.getClass());
+            }
         }
     }
 
-    private boolean isSuccessMoveProbability(int maxMoveProbability) {
+    private synchronized boolean isSuccessMoveProbability(int maxMoveProbability) {
         return ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1) <= maxMoveProbability;
     }
 

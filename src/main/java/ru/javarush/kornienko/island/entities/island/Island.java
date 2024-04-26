@@ -2,10 +2,10 @@ package ru.javarush.kornienko.island.entities.island;
 
 import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
-import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.entities.abstracts.Animal;
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
 import ru.javarush.kornienko.island.entities.plants.Plant;
+import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.services.utils.MapWorker;
 
 import java.util.Collection;
@@ -104,7 +104,7 @@ public class Island {
         }
     }
 
-    public void initAnimals(Map<Class<?>, Integer> startAnimalNumConfig) {
+    public synchronized void initAnimals(Map<Class<?>, Integer> startAnimalNumConfig) {
         for(Set<Organism> cellOrganisms : islandMap.values()) {
             long currentOrganisms = countClassesByFilter(cellOrganisms, Animal.class);
             for(Organism prototype : prototypeFactory.getPrototypes()) {

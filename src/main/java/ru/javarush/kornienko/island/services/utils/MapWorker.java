@@ -7,7 +7,7 @@ public class MapWorker {
 
     }
 
-    public static <K> void putDuplicateValueCount(Map<K, Long> organismClassCount, K key) {
+    public static synchronized <K> void putDuplicateValueCount(Map<K, Long> organismClassCount, K key) {
         organismClassCount.putIfAbsent(key, 0L);
         organismClassCount.put(key, organismClassCount.get(key) + 1);
     }

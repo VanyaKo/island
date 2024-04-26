@@ -51,16 +51,18 @@ public class ReproduceService {
     /**
      * Get map with animal class as a key and animal as a value.
      */
-    private Map<Class<? extends Animal>, Animal> getMapFromList(List<Animal> animals) {
-        Map<Class<? extends Animal>, List<Animal>> classAnimals = getClassAnimals(animals);
-        Map<Class<? extends Animal>, Animal> reproducibleClassAnimals = new HashMap<>();
-        for(Map.Entry<Class<? extends Animal>, List<Animal>> classAnimalsEntry : classAnimals.entrySet()) {
-            if(classAnimalsEntry.getValue().size() >= Consts.MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE) {
-                int randomAnimalIndex = ThreadLocalRandom.current().nextInt(classAnimalsEntry.getValue().size());
-                reproducibleClassAnimals.put(classAnimalsEntry.getKey(), classAnimalsEntry.getValue().get(randomAnimalIndex));
+    private synchronized Map<Class<? extends Animal>, Animal> getMapFromList(List<Animal> animals) {
+        synchronized(island) {
+            Map<Class<? extends Animal>, List<Animal>> classAnimals = getClassAnimals(animals);
+            Map<Class<? extends Animal>, Animal> reproducibleClassAnimals = new HashMap<>();
+            for(Map.Entry<Class<? extends Animal>, List<Animal>> classAnimalsEntry : classAnimals.entrySet()) {
+                if(classAnimalsEntry.getValue().size() >= Consts.MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE) {
+                    int randomAnimalIndex = ThreadLocalRandom.current().nextInt(classAnimalsEntry.getValue().size());
+                    reproducibleClassAnimals.put(classAnimalsEntry.getKey(), classAnimalsEntry.getValue().get(randomAnimalIndex));
+                }
             }
+            return reproducibleClassAnimals;
         }
-        return reproducibleClassAnimals;
     }
 
     /**
@@ -87,9 +89,9 @@ public class ReproduceService {
                     for(Animal newborn : newborns) {
                         island.addAnimalToCell(newborn, cell);
                         MapWorker.putDuplicateValueCount(newbornClassToCountMap, newborn.getClass());
-                    }
-                    if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
-                        return;
+                        if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
+                            return;
+                        }
                     }
                 }
             }
