@@ -29,7 +29,7 @@ public abstract class Animal extends Organism implements AnimalAction {
 
     @Override
     public boolean eat(Organism eatableOrganism, byte maxEatingProbability) {
-        int currentEatingProbability = ThreadLocalRandom.current().nextInt(101);
+        int currentEatingProbability = ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1);
         if(currentEatingProbability <= maxEatingProbability) {
             healthPercent += getAddedSaturation(eatableOrganism);
             if(healthPercent > 100) {

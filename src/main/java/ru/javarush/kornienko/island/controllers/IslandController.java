@@ -88,16 +88,16 @@ public class IslandController {
         int millisPerCycle = island.getCycleDuration();
 
         CollectClassesService collectClassesService = new CollectClassesService(island);
+        ReproduceService reproduceService = new ReproduceService(island, reproduceConfigs);
         EatService eatService = new EatService(island, eatConfigs);
         MoveService moveService = new MoveService(island, moveConfig);
-        ReproduceService reproduceService = new ReproduceService(island, reproduceConfigs);
         DieService dieService = new DieService(island);
         StatisticsService statisticsService = new StatisticsService(prototypeFactory);
 
         do {
             ExecutorService growPlantsExecutor = Executors.newSingleThreadExecutor();
-            ExecutorService eatExecutor = Executors.newFixedThreadPool(cellCount);
             ExecutorService reproduceExecutor = Executors.newFixedThreadPool(cellCount);
+            ExecutorService eatExecutor = Executors.newFixedThreadPool(cellCount);
             ExecutorService dieExecutor = Executors.newFixedThreadPool(cellCount);
             ExecutorService moveExecutor = Executors.newSingleThreadExecutor();
 
@@ -109,8 +109,8 @@ public class IslandController {
 
             growPlantsExecutor.submit(island::growPlants);
             for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
-                eatExecutor.submit(() -> eatService.eatCellAnimals(cellToOrganismsEntry));
                 reproduceExecutor.submit(() -> reproduceService.reproduceCellOrganisms(cellToOrganismsEntry));
+                eatExecutor.submit(() -> eatService.eatCellAnimals(cellToOrganismsEntry));
                 dieExecutor.submit(() -> dieService.killCellHungryAnimals(cellToOrganismsEntry));
             }
             for(Map.Entry<Animal, Cell> animalToCellEntry : moveService.getAnimalsToMove().entrySet()) {
@@ -127,15 +127,15 @@ public class IslandController {
             shutdownNow(growPlantsExecutor, eatExecutor, reproduceExecutor, dieExecutor, moveExecutor);
 
             Map<Class<? extends Organism>, Long> grownPlantClassToCount = island.getGrownPlantClassToCount();
-            Map<Class<? extends Organism>, Long> eatenOrganismClassToCount = eatService.getEatenOrganismClassCount();
             Map<Class<? extends Organism>, Long> newbornClassToCountMap = reproduceService.getNewbornClassToCountMap();
+            Map<Class<? extends Organism>, Long> eatenOrganismClassToCount = eatService.getEatenOrganismClassCount();
             Map<Class<? extends Organism>, Long> movedOrganismClassToCount = moveService.getMovedOrganismClassToCount();
             Map<Class<? extends Organism>, Long> diedAnimalToCountMap = dieService.getDiedAnimals();
 
             statisticsService.printLongInfo(initialInfo, LongInfoType.OVERALL_INFO);
             statisticsService.printShortInfo(grownPlantClassToCount, ShortInfoType.GROWN_INFO);
-            statisticsService.printLongInfo(eatenOrganismClassToCount, LongInfoType.EAT_INFO);
             statisticsService.printShortInfo(newbornClassToCountMap, ShortInfoType.REPRODUCE_INFO);
+            statisticsService.printLongInfo(eatenOrganismClassToCount, LongInfoType.EAT_INFO);
             statisticsService.printShortInfo(movedOrganismClassToCount, ShortInfoType.MOVE_INFO);
             statisticsService.printShortInfo(diedAnimalToCountMap, ShortInfoType.DIE_INFO);
             statisticsService.printDifferenceInfo(initialInfo, collectClassesService.getClassesToCountMap());

@@ -34,6 +34,9 @@ public class EatService {
         eatenOrganismClassCount = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Each animal can attempt to eay only once.
+     */
     public synchronized void eatCellAnimals(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry) {
         synchronized(island) {
             Set<Animal> eaters = new HashSet<>();
@@ -43,6 +46,7 @@ public class EatService {
                 if(organism instanceof Animal animal && !eaters.contains(animal) && !eatenOrganisms.contains(animal)) {
                     Map<Class<?>, Byte> eatableClasses = getEatablesByEaterClass(animal.getClass());
                     List<Organism> eatableOrganisms = organisms.stream()
+                            .filter(cellOrganism -> cellOrganism != animal)
                             .filter(cellOrganism -> eatableClasses.containsKey(cellOrganism.getClass()))
                             .filter(cellOrganism -> !eatenOrganisms.contains(cellOrganism))
                             .toList();
@@ -68,7 +72,7 @@ public class EatService {
 
     private synchronized byte getEatingProbabilityByOrganism(Organism organism, Map<Class<?>, Byte> eatableClasses) {
         return eatableClasses.entrySet().stream()
-                .filter(classByteEntry -> classByteEntry.getKey() == organism.getClass())
+                .filter(classToByteEntry -> classToByteEntry.getKey() == organism.getClass())
                 .findAny()
                 .map(Map.Entry::getValue)
                 .orElseThrow(() -> new AppException("Cannot find probability of being eaten for " + organism + " organism."));

@@ -42,7 +42,7 @@ public class ReproduceService {
             List<Animal> animals = island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue());
             int currentAnimalsCount = animals.size();
             if(currentAnimalsCount < island.getMaxAnimalsPerCell()) {
-                Map<Class<? extends Animal>, Animal> classAnimals = getMapFromList(animals);
+                Map<Class<? extends Animal>, Animal> classAnimals = getReproducibleAnimals(animals);
                 reproduceAnimals(classAnimals, cellOrganismsEntry.getKey(), currentAnimalsCount);
             }
         }
@@ -51,11 +51,11 @@ public class ReproduceService {
     /**
      * Get map with animal class as a key and animal as a value.
      */
-    private synchronized Map<Class<? extends Animal>, Animal> getMapFromList(List<Animal> animals) {
+    private synchronized Map<Class<? extends Animal>, Animal> getReproducibleAnimals(List<Animal> animals) {
         Map<Class<? extends Animal>, List<Animal>> classAnimals = getClassAnimals(animals);
         Map<Class<? extends Animal>, Animal> reproducibleClassAnimals = new HashMap<>();
         for(Map.Entry<Class<? extends Animal>, List<Animal>> classAnimalsEntry : classAnimals.entrySet()) {
-            if(classAnimalsEntry.getValue().size() >= Consts.MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE) {
+            if(pairExists(classAnimalsEntry)) {
                 int randomAnimalIndex = ThreadLocalRandom.current().nextInt(classAnimalsEntry.getValue().size());
                 reproducibleClassAnimals.put(classAnimalsEntry.getKey(), classAnimalsEntry.getValue().get(randomAnimalIndex));
             }
@@ -63,17 +63,19 @@ public class ReproduceService {
         return reproducibleClassAnimals;
     }
 
+    private boolean pairExists(Map.Entry<Class<? extends Animal>, List<Animal>> classAnimalsEntry) {
+        return classAnimalsEntry.getValue().size() >= Consts.MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE;
+    }
+
     /**
      * Get map with animal class as a key and list of animals as a value
      */
-    private Map<Class<? extends Animal>, List<Animal>> getClassAnimals(List<Animal> animals) {
+    private synchronized Map<Class<? extends Animal>, List<Animal>> getClassAnimals(List<Animal> animals) {
         Map<Class<? extends Animal>, List<Animal>> classAnimals = new HashMap<>();
         for(Animal animal : animals) {
             Class<? extends Animal> animalClass = animal.getClass();
             classAnimals.putIfAbsent(animalClass, new ArrayList<>());
-            List<Animal> currentClassAnimals = classAnimals.get(animalClass);
-            currentClassAnimals.add(animal);
-            classAnimals.replace(animalClass, currentClassAnimals);
+            classAnimals.get(animalClass).add(animal);
         }
         return classAnimals;
     }
