@@ -1,6 +1,6 @@
-package ru.javarush.kornienko.island.models.herbivores;
+package ru.javarush.kornienko.island.entities.herbivores;
 
-import ru.javarush.kornienko.island.models.abstracts.Animal;
+import ru.javarush.kornienko.island.entities.abstracts.Animal;
 
 public abstract class Herbivore extends Animal {
     protected Herbivore(double weight, int maxCountOnCell, byte maxSpeed, double kilogramsForFullSaturation) {

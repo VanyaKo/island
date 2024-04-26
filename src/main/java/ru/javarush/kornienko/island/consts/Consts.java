@@ -7,9 +7,12 @@ public class Consts {
     public static final String START_ANIMAL_NUM_CONFIG_JSON = "configs/start_animal_num_config.json";
     public static final String ISLAND_CONFIG = "configs/island/island.properties";
     public static final int MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE = 2;
+
     public static final int HUNDRED_PERCENT = 100;
     public static final double PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION = (byte) 20;
+
     public static final String LINE_DELIMITER = "=====================================================".repeat(3);
+    public static final String LIST_PRINT_ITEM = "- ";
 
     private Consts() {
 

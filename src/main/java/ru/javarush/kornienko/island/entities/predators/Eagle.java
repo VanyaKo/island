@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.models.predators;
+package ru.javarush.kornienko.island.entities.predators;
 
 import ru.javarush.kornienko.island.configs.OrganismConfig;
 

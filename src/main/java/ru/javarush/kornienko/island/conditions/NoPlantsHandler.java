@@ -1,7 +1,7 @@
 package ru.javarush.kornienko.island.conditions;
 
-import ru.javarush.kornienko.island.models.island.Island;
-import ru.javarush.kornienko.island.models.plants.Plant;
+import ru.javarush.kornienko.island.entities.island.Island;
+import ru.javarush.kornienko.island.entities.plants.Plant;
 
 public class NoPlantsHandler extends Handler {
     @Override

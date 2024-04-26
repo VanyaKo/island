@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.models.herbivores;
+package ru.javarush.kornienko.island.entities.herbivores;
 
 import ru.javarush.kornienko.island.configs.OrganismConfig;
 

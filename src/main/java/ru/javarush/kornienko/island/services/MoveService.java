@@ -1,10 +1,10 @@
 package ru.javarush.kornienko.island.services;
 
 import ru.javarush.kornienko.island.consts.Consts;
-import ru.javarush.kornienko.island.models.abstracts.Animal;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
-import ru.javarush.kornienko.island.models.island.Cell;
-import ru.javarush.kornienko.island.models.island.Island;
+import ru.javarush.kornienko.island.entities.abstracts.Animal;
+import ru.javarush.kornienko.island.entities.abstracts.Organism;
+import ru.javarush.kornienko.island.entities.island.Cell;
+import ru.javarush.kornienko.island.entities.island.Island;
 import ru.javarush.kornienko.island.services.utils.MapWorker;
 
 import java.util.Collection;
@@ -111,11 +111,11 @@ public class MoveService {
 
 
     private boolean isDifferentCell(Cell neighborCell, Cell currentCell) {
-        return !(neighborCell.getX() == currentCell.getX() && neighborCell.getY() == currentCell.getY());
+        return !(neighborCell.x() == currentCell.x() && neighborCell.y() == currentCell.y());
     }
 
     private boolean isNeighborNonDiagonalCell(Cell neighborCell, Cell currentCell) {
-        return Math.abs(neighborCell.getX() - currentCell.getX()) == 1 && Math.abs(neighborCell.getY() - currentCell.getY()) == 0
-               || Math.abs(neighborCell.getX() - currentCell.getX()) == 0 && Math.abs(neighborCell.getY() - currentCell.getY()) == 1;
+        return Math.abs(neighborCell.x() - currentCell.x()) == 1 && Math.abs(neighborCell.y() - currentCell.y()) == 0
+               || Math.abs(neighborCell.x() - currentCell.x()) == 0 && Math.abs(neighborCell.y() - currentCell.y()) == 1;
     }
 }

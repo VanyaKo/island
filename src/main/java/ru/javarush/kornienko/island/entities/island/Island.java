@@ -1,11 +1,11 @@
-package ru.javarush.kornienko.island.models.island;
+package ru.javarush.kornienko.island.entities.island;
 
 import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
 import ru.javarush.kornienko.island.exceptions.AppException;
-import ru.javarush.kornienko.island.models.abstracts.Animal;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
-import ru.javarush.kornienko.island.models.plants.Plant;
+import ru.javarush.kornienko.island.entities.abstracts.Animal;
+import ru.javarush.kornienko.island.entities.abstracts.Organism;
+import ru.javarush.kornienko.island.entities.plants.Plant;
 import ru.javarush.kornienko.island.services.utils.MapWorker;
 
 import java.util.Collection;

@@ -1,6 +1,6 @@
-package ru.javarush.kornienko.island.models.plants;
+package ru.javarush.kornienko.island.entities.plants;
 
-import ru.javarush.kornienko.island.models.abstracts.Organism;
+import ru.javarush.kornienko.island.entities.abstracts.Organism;
 
 public abstract class Plant extends Organism {
     protected Plant() {

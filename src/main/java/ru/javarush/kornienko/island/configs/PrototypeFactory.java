@@ -3,23 +3,23 @@ package ru.javarush.kornienko.island.configs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
 import ru.javarush.kornienko.island.exceptions.AppException;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
-import ru.javarush.kornienko.island.models.herbivores.Buffalo;
-import ru.javarush.kornienko.island.models.herbivores.Caterpillar;
-import ru.javarush.kornienko.island.models.herbivores.Deer;
-import ru.javarush.kornienko.island.models.herbivores.Duck;
-import ru.javarush.kornienko.island.models.herbivores.Goat;
-import ru.javarush.kornienko.island.models.herbivores.Hog;
-import ru.javarush.kornienko.island.models.herbivores.Horse;
-import ru.javarush.kornienko.island.models.herbivores.Mouse;
-import ru.javarush.kornienko.island.models.herbivores.Rabbit;
-import ru.javarush.kornienko.island.models.herbivores.Sheep;
-import ru.javarush.kornienko.island.models.plants.Grass;
-import ru.javarush.kornienko.island.models.predators.Bear;
-import ru.javarush.kornienko.island.models.predators.Eagle;
-import ru.javarush.kornienko.island.models.predators.Fox;
-import ru.javarush.kornienko.island.models.predators.Python;
-import ru.javarush.kornienko.island.models.predators.Wolf;
+import ru.javarush.kornienko.island.entities.abstracts.Organism;
+import ru.javarush.kornienko.island.entities.herbivores.Buffalo;
+import ru.javarush.kornienko.island.entities.herbivores.Caterpillar;
+import ru.javarush.kornienko.island.entities.herbivores.Deer;
+import ru.javarush.kornienko.island.entities.herbivores.Duck;
+import ru.javarush.kornienko.island.entities.herbivores.Goat;
+import ru.javarush.kornienko.island.entities.herbivores.Hog;
+import ru.javarush.kornienko.island.entities.herbivores.Horse;
+import ru.javarush.kornienko.island.entities.herbivores.Mouse;
+import ru.javarush.kornienko.island.entities.herbivores.Rabbit;
+import ru.javarush.kornienko.island.entities.herbivores.Sheep;
+import ru.javarush.kornienko.island.entities.plants.Grass;
+import ru.javarush.kornienko.island.entities.predators.Bear;
+import ru.javarush.kornienko.island.entities.predators.Eagle;
+import ru.javarush.kornienko.island.entities.predators.Fox;
+import ru.javarush.kornienko.island.entities.predators.Python;
+import ru.javarush.kornienko.island.entities.predators.Wolf;
 
 import java.io.IOException;
 import java.net.URL;
@@ -71,7 +71,7 @@ public class PrototypeFactory {
 
     private Organism createPrototype(Class<? extends Organism> type) {
         if(!type.isAnnotationPresent(OrganismConfig.class)) {
-            throw new IllegalArgumentException(String.format("Prototype class %s must have @Config annotation", type.getSimpleName()));
+            throw new IllegalArgumentException(String.format("Prototype class %s must have @%s annotation", OrganismConfig.class.getSimpleName(), type.getSimpleName()));
         }
         URL resource = getConfigFilePath(type);
         return loadObject(resource, type);
@@ -83,29 +83,14 @@ public class PrototypeFactory {
     }
 
     private Organism loadObject(URL resource, @NotNull Class<? extends Organism> type) {
-        Organism organism;
         try {
-            organism = objectMapper.readValue(resource, type);
+            return objectMapper.readValue(resource, type);
         } catch(IOException e) {
             throw new AppException(e);
         }
-        return organism;
     }
 
     public Collection<Organism> getPrototypes() {
         return prototypes.values();
-    }
-
-    public Map<Class<? extends Organism>, Organism> getPrototypesMap() {
-        return prototypes;
-    }
-
-    public Organism getPrototype(@NotNull Class<? extends Organism> type) {
-        if(prototypes.containsKey(type)) {
-            return prototypes.get(type);
-        }
-        Organism organism = createPrototype(type);
-        prototypes.put(type, organism);
-        return organism;
     }
 }

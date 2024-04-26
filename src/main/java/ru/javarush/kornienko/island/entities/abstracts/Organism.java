@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.models.abstracts;
+package ru.javarush.kornienko.island.entities.abstracts;
 
 import java.io.Serializable;
 

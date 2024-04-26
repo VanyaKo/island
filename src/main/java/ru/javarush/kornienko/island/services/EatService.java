@@ -2,10 +2,10 @@ package ru.javarush.kornienko.island.services;
 
 import ru.javarush.kornienko.island.configs.animals.EatConfig;
 import ru.javarush.kornienko.island.exceptions.AppException;
-import ru.javarush.kornienko.island.models.abstracts.Animal;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
-import ru.javarush.kornienko.island.models.island.Cell;
-import ru.javarush.kornienko.island.models.island.Island;
+import ru.javarush.kornienko.island.entities.abstracts.Animal;
+import ru.javarush.kornienko.island.entities.abstracts.Organism;
+import ru.javarush.kornienko.island.entities.island.Cell;
+import ru.javarush.kornienko.island.entities.island.Island;
 import ru.javarush.kornienko.island.services.utils.MapWorker;
 
 import java.util.HashSet;

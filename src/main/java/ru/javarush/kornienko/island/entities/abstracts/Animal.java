@@ -1,8 +1,8 @@
-package ru.javarush.kornienko.island.models.abstracts;
+package ru.javarush.kornienko.island.entities.abstracts;
 
 import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.exceptions.AppException;
-import ru.javarush.kornienko.island.models.island.Cell;
+import ru.javarush.kornienko.island.entities.island.Cell;
 import ru.javarush.kornienko.island.services.AnimalAction;
 
 import java.util.HashSet;
@@ -44,7 +44,6 @@ public abstract class Animal extends Organism implements AnimalAction {
         return eatableOrganism.weight * Consts.HUNDRED_PERCENT / kilogramsForFullSaturation;
     }
 
-
     @Override
     public Set<Animal> reproduce(int maxCubs) {
         try {
@@ -59,9 +58,6 @@ public abstract class Animal extends Organism implements AnimalAction {
         }
     }
 
-    /**
-     * Move to random cell from parameters and return it
-     */
     @Override
     public synchronized Cell move(Cell[] cells) {
         return cells[ThreadLocalRandom.current().nextInt(cells.length)];

@@ -1,7 +1,7 @@
-package ru.javarush.kornienko.island.models.predators;
+package ru.javarush.kornienko.island.entities.predators;
 
 import ru.javarush.kornienko.island.configs.OrganismConfig;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
+import ru.javarush.kornienko.island.entities.abstracts.Organism;
 
 @OrganismConfig(fileName = "configs/animals/predators/wolf.json")
 public class Wolf extends Predator {

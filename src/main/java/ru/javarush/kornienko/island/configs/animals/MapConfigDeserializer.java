@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import ru.javarush.kornienko.island.exceptions.AppException;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,7 +20,7 @@ public class MapConfigDeserializer extends StdDeserializer<Map<Class<?>, Integer
 
     @SuppressWarnings("unchecked")
     public Map<Class<?>, Integer> readMoveConfig(ObjectMapper objectMapper, String pathToJson) {
-        URL resource = Organism.class.getClassLoader().getResource(pathToJson);
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(pathToJson);
         try {
             SimpleModule module = new SimpleModule();
             module.addDeserializer(Map.class, this);

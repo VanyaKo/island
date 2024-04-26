@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import ru.javarush.kornienko.island.exceptions.AppException;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
+import ru.javarush.kornienko.island.entities.abstracts.Organism;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +31,7 @@ public class EatConfigDeserializer extends StdDeserializer<EatConfig[]> {
     }
 
     public EatConfig[] readEatConfig() {
-        URL resource = Organism.class.getClassLoader().getResource(pathToJson);
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(pathToJson);
         try {
             SimpleModule module = new SimpleModule();
             module.addDeserializer(EatConfig[].class, this);
@@ -50,7 +50,8 @@ public class EatConfigDeserializer extends StdDeserializer<EatConfig[]> {
         try {
             for(JsonNode jsonNode : node) {
                 Class<?> eater = Class.forName(jsonNode.get("eater").asText());
-                Map<Class<?>, Byte> eatables = objectMapper.convertValue(jsonNode.get("eatables"), new TypeReference<>() {});
+                Map<Class<?>, Byte> eatables = objectMapper.convertValue(jsonNode.get("eatables"), new TypeReference<>() {
+                });
                 eatConfigs.add(new EatConfig(eater, eatables));
             }
             return eatConfigs.toArray(new EatConfig[0]);

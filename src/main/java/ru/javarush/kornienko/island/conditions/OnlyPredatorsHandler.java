@@ -1,11 +1,9 @@
 package ru.javarush.kornienko.island.conditions;
 
-import ru.javarush.kornienko.island.models.abstracts.Organism;
-import ru.javarush.kornienko.island.models.island.Island;
-import ru.javarush.kornienko.island.models.predators.Predator;
+import ru.javarush.kornienko.island.entities.island.Island;
+import ru.javarush.kornienko.island.entities.predators.Predator;
 
 import java.util.Collection;
-import java.util.Set;
 
 public class OnlyPredatorsHandler extends Handler {
     @Override

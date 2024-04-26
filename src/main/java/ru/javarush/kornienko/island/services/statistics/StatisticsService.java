@@ -2,10 +2,11 @@ package ru.javarush.kornienko.island.services.statistics;
 
 import org.jetbrains.annotations.NotNull;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
+import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.exceptions.AppException;
-import ru.javarush.kornienko.island.models.abstracts.Animal;
-import ru.javarush.kornienko.island.models.abstracts.Organism;
-import ru.javarush.kornienko.island.models.plants.Plant;
+import ru.javarush.kornienko.island.entities.abstracts.Animal;
+import ru.javarush.kornienko.island.entities.abstracts.Organism;
+import ru.javarush.kornienko.island.entities.plants.Plant;
 
 import java.util.Collection;
 import java.util.Map;
@@ -13,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StatisticsService {
-    public static final String LIST_PRINT_ITEM = "- ";
     private final PrototypeFactory prototypeFactory;
 
     public StatisticsService(PrototypeFactory prototypeFactory) {
@@ -50,14 +50,13 @@ public class StatisticsService {
     private void printOrganismsByClass(long organismCount, boolean isOverallInfoType, String overallString,
                                        String eatString, Map<Class<? extends Organism>, Long> organismClassCount) {
         if(organismCount > 0) {
-            System.out.print(LIST_PRINT_ITEM + (isOverallInfoType ? overallString : eatString) + ": ");
+            System.out.print(Consts.LIST_PRINT_ITEM + (isOverallInfoType ? overallString : eatString) + ": ");
             printUnicodes(organismClassCount.entrySet());
         }
     }
 
-
     /**
-     * print reproduce, move, or die info dependent on input
+     * Print reproduce, move, or die info dependent on input.
      */
     public void printShortInfo(Map<Class<? extends Organism>, Long> organismClassesToCount, ShortInfoType shortInfoType) {
         long animalCount = getValueCount(organismClassesToCount.values());
@@ -66,7 +65,7 @@ public class StatisticsService {
             return;
         }
         System.out.printf("Всего %s %d %s.%n", shortInfoType.getAction(), animalCount, shortInfoType.getOrganismType());
-        System.out.print(LIST_PRINT_ITEM + shortInfoType.getDescriptive() + ": ");
+        System.out.print(Consts.LIST_PRINT_ITEM + shortInfoType.getDescriptive() + ": ");
         printUnicodes(organismClassesToCount.entrySet());
         System.out.println();
     }
@@ -78,12 +77,12 @@ public class StatisticsService {
 
         long initialPlantCount = getValueCount(filterBySuperclass(initialClassesToCount, Plant.class).values());
         long currentPlantCount = getValueCount(filterBySuperclass(currentClassesToCount, Plant.class).values());
-        System.out.print(LIST_PRINT_ITEM);
+        System.out.print(Consts.LIST_PRINT_ITEM);
         printDifference("Растений", initialPlantCount, currentPlantCount, "");
 
         long initialAnimalCount = getValueCount(filterBySuperclass(initialClassesToCount, Animal.class).values());
         long currentAnimalCount = getValueCount(filterBySuperclass(currentClassesToCount, Animal.class).values());
-        System.out.print(LIST_PRINT_ITEM);
+        System.out.print(Consts.LIST_PRINT_ITEM);
         printDifference("Животных", initialAnimalCount, currentAnimalCount, "");
 
         System.out.println();

@@ -1,90 +1,90 @@
 [
   {
-    "reproducer": "ru.javarush.kornienko.island.models.predators.Wolf",
+    "reproducer": "ru.javarush.kornienko.island.entities.predators.Wolf",
     "couplingProbability": 100,
     "birthProbability": 86,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.predators.Python",
+    "reproducer": "ru.javarush.kornienko.island.entities.predators.Python",
     "couplingProbability": 99,
     "birthProbability": 87,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.predators.Fox",
+    "reproducer": "ru.javarush.kornienko.island.entities.predators.Fox",
     "couplingProbability": 98,
     "birthProbability": 88,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.predators.Bear",
+    "reproducer": "ru.javarush.kornienko.island.entities.predators.Bear",
     "couplingProbability": 97,
     "birthProbability": 89,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.predators.Eagle",
+    "reproducer": "ru.javarush.kornienko.island.entities.predators.Eagle",
     "couplingProbability": 96,
     "birthProbability": 90,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Horse",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Horse",
     "couplingProbability": 95,
     "birthProbability": 91,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Deer",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Deer",
     "couplingProbability": 94,
     "birthProbability": 92,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Rabbit",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Rabbit",
     "couplingProbability": 93,
     "birthProbability": 93,
     "maxCubs": 2
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Mouse",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Mouse",
     "couplingProbability": 92,
     "birthProbability": 94,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Goat",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Goat",
     "couplingProbability": 91,
     "birthProbability": 95,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Sheep",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Sheep",
     "couplingProbability": 90,
     "birthProbability": 96,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Hog",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Hog",
     "couplingProbability": 89,
     "birthProbability": 97,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Buffalo",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Buffalo",
     "couplingProbability": 88,
     "birthProbability": 98,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Duck",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Duck",
     "couplingProbability": 87,
     "birthProbability": 99,
     "maxCubs": 1
   },
   {
-    "reproducer": "ru.javarush.kornienko.island.models.herbivores.Caterpillar",
+    "reproducer": "ru.javarush.kornienko.island.entities.herbivores.Caterpillar",
     "couplingProbability": 86,
     "birthProbability": 100,
     "maxCubs": 1
