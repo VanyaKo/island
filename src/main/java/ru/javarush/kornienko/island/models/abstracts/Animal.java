@@ -28,7 +28,7 @@ public abstract class Animal extends Organism implements AnimalAction {
     }
 
     @Override
-    public boolean eat(Organism eatableOrganism, byte maxEatingProbability) {
+    public synchronized boolean eat(Organism eatableOrganism, byte maxEatingProbability) {
         int currentEatingProbability = ThreadLocalRandom.current().nextInt(101);
         if(currentEatingProbability <= maxEatingProbability) {
             healthPercent += getAddedSaturation(eatableOrganism);
@@ -40,7 +40,7 @@ public abstract class Animal extends Organism implements AnimalAction {
         return false;
     }
 
-    private double getAddedSaturation(Organism eatableOrganism) {
+    private synchronized double getAddedSaturation(Organism eatableOrganism) {
         return eatableOrganism.weight * Consts.HUNDRED_PERCENT / kilogramsForFullSaturation;
     }
 
@@ -63,7 +63,7 @@ public abstract class Animal extends Organism implements AnimalAction {
      * Move to random cell from parameters and return it
      */
     @Override
-    public Cell move(Cell[] cells) {
+    public synchronized Cell move(Cell[] cells) {
         return cells[ThreadLocalRandom.current().nextInt(cells.length)];
     }
 }

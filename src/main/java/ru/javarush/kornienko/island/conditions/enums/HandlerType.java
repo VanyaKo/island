@@ -7,15 +7,13 @@ import ru.javarush.kornienko.island.conditions.OnlyPredatorsHandler;
 import ru.javarush.kornienko.island.exceptions.AppException;
 
 public enum HandlerType {
-    ONLY_PREDATORS("ONLY_PREDATORS", new OnlyPredatorsHandler()),
-    NO_PLANTS("NO_PLANTS", new NoPlantsHandler()),
-    ANIMALS_DIED("ANIMALS_DIED", new AnimalsDiedHandler());
+    ONLY_PREDATORS(new OnlyPredatorsHandler()),
+    NO_PLANTS(new NoPlantsHandler()),
+    ANIMALS_DIED(new AnimalsDiedHandler());
 
-    private final String name;
     private final Handler handler;
 
-    HandlerType(String name, Handler handler) {
-        this.name = name;
+    HandlerType(Handler handler) {
         this.handler = handler;
     }
 

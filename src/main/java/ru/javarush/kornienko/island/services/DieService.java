@@ -37,19 +37,23 @@ public class DieService {
         return diedOrganismClassToCountMap;
     }
 
-    public void killCellHungryAnimals(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry) {
-        Set<Organism> survivedOrganisms = new HashSet<>();
-        for(Organism organism : cellToOrganismsEntry.getValue()) {
-            if(organism instanceof Animal animal && hasNoHealth(animal)) {
-                MapWorker.putDuplicateValueCount(diedOrganismClassToCountMap, animal.getClass());
-            } else {
-                survivedOrganisms.add(organism);
+    public synchronized void killCellHungryAnimals(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry) {
+        synchronized(island) {
+            Set<Organism> survivedOrganisms = new HashSet<>();
+            for(Organism organism : cellToOrganismsEntry.getValue()) {
+                if(organism instanceof Animal animal && hasNoHealth(animal)) {
+                    MapWorker.putDuplicateValueCount(diedOrganismClassToCountMap, animal.getClass());
+                } else {
+                    survivedOrganisms.add(organism);
+                }
             }
+            cellToSurvivedAnimalsMap.put(cellToOrganismsEntry.getKey(), survivedOrganisms);
         }
-        cellToSurvivedAnimalsMap.put(cellToOrganismsEntry.getKey(), survivedOrganisms);
     }
 
-    private boolean hasNoHealth(Animal animal) {
-        return animal.decreaseHealth(Consts.PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION) <= 0;
+    private synchronized boolean hasNoHealth(Animal animal) {
+        synchronized(island) {
+            return animal.decreaseHealth(Consts.PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION) <= 0;
+        }
     }
 }

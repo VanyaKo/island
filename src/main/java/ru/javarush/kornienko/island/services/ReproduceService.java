@@ -37,12 +37,14 @@ public class ReproduceService {
         newbornClassToCountMap = new ConcurrentHashMap<>();
     }
 
-    public void reproduceCellOrganisms(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry) {
-        List<Animal> animals = island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue());
-        int currentAnimalsCount = animals.size();
-        if(currentAnimalsCount < island.getMaxAnimalsPerCell()) {
-            Map<Class<? extends Animal>, Animal> classAnimals = getMapFromList(animals);
-            reproduceAnimals(classAnimals, cellOrganismsEntry.getKey(), currentAnimalsCount);
+    public synchronized void reproduceCellOrganisms(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry) {
+        synchronized(island) {
+            List<Animal> animals = island.getAnimalListFromOrganisms(cellOrganismsEntry.getValue());
+            int currentAnimalsCount = animals.size();
+            if(currentAnimalsCount < island.getMaxAnimalsPerCell()) {
+                Map<Class<? extends Animal>, Animal> classAnimals = getMapFromList(animals);
+                reproduceAnimals(classAnimals, cellOrganismsEntry.getKey(), currentAnimalsCount);
+            }
         }
     }
 
@@ -76,32 +78,34 @@ public class ReproduceService {
         return classAnimals;
     }
 
-    private void reproduceAnimals(Map<Class<? extends Animal>, Animal> classAnimals, Cell cell, int currentAnimalCount) {
-        for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
-            ReproduceConfig reproduceConfig = getEntryByClass(classAnimalEntry.getKey());
-            if(isSuccessProbabilityToReproduce(reproduceConfig)) {
-                Set<Animal> newborns = classAnimalEntry.getValue().reproduce(reproduceConfig.getMaxCubs());
-                for(Animal newborn : newborns) {
-                    island.addAnimalToCell(newborn, cell);
-                    MapWorker.putDuplicateValueCount(newbornClassToCountMap, newborn.getClass());
-                }
-                if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
-                    return;
+    private synchronized void reproduceAnimals(Map<Class<? extends Animal>, Animal> classAnimals, Cell cell, int currentAnimalCount) {
+        synchronized(island) {
+            for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
+                ReproduceConfig reproduceConfig = getEntryByClass(classAnimalEntry.getKey());
+                if(isSuccessProbabilityToReproduce(reproduceConfig)) {
+                    Set<Animal> newborns = classAnimalEntry.getValue().reproduce(reproduceConfig.maxCubs());
+                    for(Animal newborn : newborns) {
+                        island.addAnimalToCell(newborn, cell);
+                        MapWorker.putDuplicateValueCount(newbornClassToCountMap, newborn.getClass());
+                    }
+                    if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
+                        return;
+                    }
                 }
             }
         }
     }
 
-    private boolean isSuccessProbabilityToReproduce(ReproduceConfig reproduceConfig) {
+    private synchronized boolean isSuccessProbabilityToReproduce(ReproduceConfig reproduceConfig) {
         int currentCouplingProbability = ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1);
         int currentBirthProbability = ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1);
-        return currentCouplingProbability <= reproduceConfig.getCouplingProbability()
-               && currentBirthProbability <= reproduceConfig.getBirthProbability();
+        return currentCouplingProbability <= reproduceConfig.couplingProbability()
+               && currentBirthProbability <= reproduceConfig.birthProbability();
     }
 
-    private ReproduceConfig getEntryByClass(Class<? extends Animal> clazz) {
+    private synchronized ReproduceConfig getEntryByClass(Class<? extends Animal> clazz) {
         return Arrays.stream(reproduceProbabilityEntries)
-                .filter(entry -> entry.getReproducer() == clazz)
+                .filter(entry -> entry.reproducer() == clazz)
                 .findAny()
                 .orElseThrow(() -> new AppException("No reproducer for " + clazz + " class"));
     }

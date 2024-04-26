@@ -9,6 +9,7 @@ import ru.javarush.kornienko.island.models.plants.Plant;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +45,11 @@ public class Island {
     /**
      * Get copy of a map.
      */
-    public Map<Cell, Set<Organism>> getIslandMap() {
-        return new ConcurrentHashMap<>(islandMap);
+    public synchronized Map<Cell, Set<Organism>> getIslandMap() {
+        return new HashMap<>(islandMap);
     }
 
-    public void setIslandMap(ConcurrentMap<Cell, Set<Organism>> islandMap) {
+    public synchronized void setIslandMap(ConcurrentMap<Cell, Set<Organism>> islandMap) {
         this.islandMap = islandMap;
     }
 
@@ -75,46 +76,56 @@ public class Island {
         }
     }
 
-    public long growPlants() {
+    public synchronized long growPlants() {
         long organismCount = 0;
         for(Set<Organism> cellOrganisms : islandMap.values()) {
-            organismCount += placeOrganismsOnCell(cellOrganisms, Plant.class, maxPlantsPerCell, Collections.emptyMap());
+            long currentOrganisms = getFilterClassesCount(cellOrganisms, Plant.class);
+            for(Organism prototype : prototypeFactory.getPrototypes()) {
+                if(Plant.class.isAssignableFrom(prototype.getClass())) {
+                    int prototypesToAdd = getPrototypesToAdd(Collections.emptyMap(), prototype);
+                    if(currentOrganisms + prototypesToAdd > maxPlantsPerCell) {
+                        break;
+                    }
+                    fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
+                    currentOrganisms += prototypesToAdd;
+                }
+            }
+            organismCount += currentOrganisms;
         }
         return organismCount;
     }
 
     public void initAnimals(Map<Class<?>, Integer> startAnimalNumConfig) {
         for(Set<Organism> cellOrganisms : islandMap.values()) {
-            placeOrganismsOnCell(cellOrganisms, Animal.class, maxAnimalsPerCell, startAnimalNumConfig);
-        }
-    }
-
-    private int placeOrganismsOnCell(Set<Organism> cellOrganisms, Class<? extends Organism> clazz, int maxOrganismsPerCell, Map<Class<?>, Integer> startAnimalNumConfig) {
-        int currentOrganisms = getCurrentOrganismsOnCell(cellOrganisms, clazz);
-        for(Organism prototype : prototypeFactory.getPrototypes()) {
-            if(clazz.isAssignableFrom(prototype.getClass())) {
-                int prototypesToAdd;
-                if(startAnimalNumConfig.isEmpty()) {
-                    prototypesToAdd = ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
-                } else {
-                    prototypesToAdd = startAnimalNumConfig.get(prototype.getClass());
+            long currentOrganisms = getFilterClassesCount(cellOrganisms, Animal.class);
+            for(Organism prototype : prototypeFactory.getPrototypes()) {
+                if(Animal.class.isAssignableFrom(prototype.getClass())) {
+                    int prototypesToAdd = getPrototypesToAdd(startAnimalNumConfig, prototype);
+                    if(currentOrganisms + prototypesToAdd > maxAnimalsPerCell) {
+                        break;
+                    }
+                    fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
+                    currentOrganisms += prototypesToAdd;
                 }
-                if(currentOrganisms + prototypesToAdd > maxOrganismsPerCell) {
-                    break;
-                }
-                fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
-                currentOrganisms += prototypesToAdd;
             }
         }
-        return currentOrganisms;
     }
 
-    private int getCurrentOrganismsOnCell(Set<Organism> cellOrganisms, Class<? extends Organism> targetClass) {
-        return (int) cellOrganisms.stream()
-                .filter(organism -> organism.getClass() == targetClass).count();
+    private synchronized int getPrototypesToAdd(Map<Class<?>, Integer> startAnimalNumConfig, Organism prototype) {
+        if(startAnimalNumConfig.isEmpty()) {
+            return ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
+        } else {
+            return startAnimalNumConfig.get(prototype.getClass());
+        }
     }
 
-    private void fillCellWithOrganisms(Set<Organism> cellOrganisms, Organism prototype, int prototypesPerCell) {
+    private synchronized long getFilterClassesCount(Set<Organism> cellOrganisms, Class<? extends Organism> targetClass) {
+        return cellOrganisms.stream()
+                .filter( organism -> targetClass.isAssignableFrom(organism.getClass()))
+                .count();
+    }
+
+    private synchronized void fillCellWithOrganisms(Set<Organism> cellOrganisms, Organism prototype, int prototypesPerCell) {
         for(int i = 0; i < prototypesPerCell; i++) {
             try {
                 cellOrganisms.add((Organism) prototype.clone());
@@ -124,15 +135,15 @@ public class Island {
         }
     }
 
-    public void addAnimalToCell(Animal animal, Cell cell) {
+    public synchronized void addAnimalToCell(Animal animal, Cell cell) {
         islandMap.get(cell).add(animal);
     }
 
-    public void removeOrganismFromCell(Organism organism, Cell cell) {
+    public synchronized void removeOrganismFromCell(Organism organism, Cell cell) {
         islandMap.get(cell).remove(organism);
     }
 
-    public List<Animal> getAnimalListFromOrganisms(Collection<Organism> organisms) {
+    public synchronized List<Animal> getAnimalListFromOrganisms(Collection<Organism> organisms) {
         return organisms.stream()
                 .filter(Animal.class::isInstance)
                 .map(Animal.class::cast)
@@ -141,5 +152,13 @@ public class Island {
 
     public int getCycleDuration() {
         return cycleDuration;
+    }
+
+    public long countPlants() {
+        long plantCount = islandMap.values().stream()
+                .flatMap(Collection::stream)
+                .filter(organism -> Plant.class.isAssignableFrom(organism.getClass()))
+                .count();
+        return plantCount;
     }
 }

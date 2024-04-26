@@ -34,7 +34,7 @@ public class EatService {
         eatenOrganismClassCount = new ConcurrentHashMap<>();
     }
 
-    public void eatCellAnimals(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry) {
+    public synchronized void eatCellAnimals(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry) {
         Set<Animal> eaters = new HashSet<>();
         Set<Organism> eatenOrganisms = new HashSet<>();
         Set<Organism> organisms = cellToOrganismsEntry.getValue();
@@ -57,14 +57,16 @@ public class EatService {
                 }
             }
         }
-        eatenOrganisms.forEach(organism -> island.removeOrganismFromCell(organism, cellToOrganismsEntry.getKey()));
+        synchronized(island) {
+            eatenOrganisms.forEach(organism -> island.removeOrganismFromCell(organism, cellToOrganismsEntry.getKey()));
+        }
     }
 
-    private Organism getRandomEatableOrganism(List<Organism> eatableOrganisms) {
+    private synchronized Organism getRandomEatableOrganism(List<Organism> eatableOrganisms) {
         return eatableOrganisms.get(ThreadLocalRandom.current().nextInt(eatableOrganisms.size()));
     }
 
-    private byte getEatingProbabilityByOrganism(Organism organism, Map<Class<?>, Byte> eatableClasses) {
+    private synchronized byte getEatingProbabilityByOrganism(Organism organism, Map<Class<?>, Byte> eatableClasses) {
         return eatableClasses.entrySet().stream()
                 .filter(classByteEntry -> classByteEntry.getKey() == organism.getClass())
                 .findAny()
@@ -72,7 +74,7 @@ public class EatService {
                 .orElseThrow(() -> new AppException("Cannot find probability of being eaten for " + organism + " organism."));
     }
 
-    private Map<Class<?>, Byte> getEatablesByEaterClass(Class<? extends Animal> eaterClass) {
+    private synchronized Map<Class<?>, Byte> getEatablesByEaterClass(Class<? extends Animal> eaterClass) {
         for(EatConfig eatConfig : eatConfigs) {
             if(eatConfig.eater() == eaterClass) {
                 return eatConfig.eatables();

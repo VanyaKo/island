@@ -3,6 +3,7 @@ package ru.javarush.kornienko.island.conditions;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.island.Island;
 
+import java.util.Collection;
 import java.util.Set;
 
 public abstract class Handler {
@@ -11,13 +12,8 @@ public abstract class Handler {
     public abstract String getConditionTrueMessage();
 
     protected boolean ifIslandHasType(Island island, Class<? extends Organism> clazz) {
-        for(Set<Organism> organisms : island.getIslandMap().values()) {
-            for(Organism organism : organisms) {
-                if(clazz.isAssignableFrom(organism.getClass())) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return island.getIslandMap().values().stream()
+                .flatMap(Collection::stream)
+                .noneMatch(organism -> clazz.isAssignableFrom(organism.getClass()));
     }
 }

@@ -2,6 +2,7 @@ package ru.javarush.kornienko.island.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
+import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.herbivores.Buffalo;
 import ru.javarush.kornienko.island.models.herbivores.Caterpillar;
@@ -86,8 +87,7 @@ public class PrototypeFactory {
         try {
             organism = objectMapper.readValue(resource, type);
         } catch(IOException e) {
-            throw new RuntimeException(e);
-//            throw new RuntimeException(String.format("Cannot find config file %s for class %s", resource.getFile(), type));
+            throw new AppException(e);
         }
         return organism;
     }

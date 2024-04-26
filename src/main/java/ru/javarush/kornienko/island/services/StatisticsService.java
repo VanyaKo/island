@@ -56,7 +56,7 @@ public class StatisticsService {
         long eatenAnimalCount = getValueCount(animalClassCount.values());
 
         if(eatenOrganismCount <= 0) {
-            System.out.println("Никого не съели.");
+            System.out.println("Никого не съели.\n");
             return;
         }
         System.out.println("Всего съедено " + eatenOrganismCount + " организмов: "
@@ -75,7 +75,7 @@ public class StatisticsService {
     public void printReproduceInfo(Map<Class<? extends Organism>, Long> organismClassesToCount) {
         long newbornAnimalCount = getValueCount(organismClassesToCount.values());
         if(newbornAnimalCount <= 0) {
-            System.out.println("Никто не размножился.");
+            System.out.println("Никто не размножился.\n");
             return;
         }
         System.out.println("Всего размножилось " + newbornAnimalCount + " животных.");
@@ -87,7 +87,7 @@ public class StatisticsService {
     public void printMoveInfo(Map<Class<? extends Organism>, Long> organismClassesToCount) {
         long movedAnimalCount = getValueCount(organismClassesToCount.values());
         if(movedAnimalCount <= 0) {
-            System.out.println("Никто никуда не перемещался.");
+            System.out.println("Никто никуда не перемещался.\n");
             return;
         }
         System.out.println("Всего переместилось " + movedAnimalCount + " животных.");
@@ -124,10 +124,10 @@ public class StatisticsService {
     private void printDifference(String object, long initialCount, long currentCount, String suffix) {
         long difference = initialCount - currentCount;
         if(difference == 0) {
-            System.out.println("Количество " + object.toLowerCase() + " не изменилось");
+            System.out.println("Количество " + object.toLowerCase() + " не изменилось.");
             return;
         }
-        System.out.println(object + " стало " + (difference > 0 ? "меньше" : "больше") + " на " + difference + suffix);
+        System.out.println(object + " стало " + (difference > 0 ? "меньше" : "больше") + " на " + Math.abs(difference) + suffix);
     }
 
     private @NotNull <V> Map<Class<? extends Organism>, V> filterBySuperclass(Map<Class<? extends Organism>, V> classMap, Class<? extends Organism> clazz) {
