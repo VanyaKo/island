@@ -22,12 +22,15 @@ import ru.javarush.kornienko.island.services.DieService;
 import ru.javarush.kornienko.island.services.EatService;
 import ru.javarush.kornienko.island.services.MoveService;
 import ru.javarush.kornienko.island.services.ReproduceService;
-import ru.javarush.kornienko.island.services.StatisticsService;
+import ru.javarush.kornienko.island.services.statistics.LongInfoType;
+import ru.javarush.kornienko.island.services.statistics.ShortInfoType;
+import ru.javarush.kornienko.island.services.statistics.StatisticsService;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -70,72 +73,70 @@ public class IslandController {
                                 ReproduceConfig[] reproduceConfigs) {
         int cycleCounter = 0;
         int cellCount = island.getCellCount();
-        int cycleSeconds = island.getCycleDuration();
+        int millisPerCycle = island.getCycleDuration();
 
         CollectClassesService collectClassesService = new CollectClassesService(island);
-        StatisticsService statisticsService = new StatisticsService(prototypeFactory);
         EatService eatService = new EatService(island, eatConfigs);
         MoveService moveService = new MoveService(island, moveConfig);
         ReproduceService reproduceService = new ReproduceService(island, reproduceConfigs);
         DieService dieService = new DieService(island);
+        StatisticsService statisticsService = new StatisticsService(prototypeFactory);
 
-        ExecutorService growPlantsExecutor = Executors.newSingleThreadExecutor();
-        ExecutorService eatExecutor = Executors.newFixedThreadPool(cellCount);
-        ExecutorService reproduceExecutor = Executors.newFixedThreadPool(cellCount);
-        ExecutorService dieExecutor = Executors.newFixedThreadPool(cellCount);
-        ExecutorService moveExecutor = Executors.newSingleThreadExecutor();
         do {
-            System.out.println(Consts.LINE_DELIMITER + "\n");
-            System.out.println("ТАКТ " + ++cycleCounter + "\n");
+            ExecutorService growPlantsExecutor = Executors.newSingleThreadExecutor();
+            ExecutorService eatExecutor = Executors.newFixedThreadPool(cellCount);
+            ExecutorService reproduceExecutor = Executors.newFixedThreadPool(cellCount);
+            ExecutorService dieExecutor = Executors.newFixedThreadPool(cellCount);
+            ExecutorService moveExecutor = Executors.newSingleThreadExecutor();
 
+            System.out.println(Consts.LINE_DELIMITER + "\n");
+            System.out.println("Выполняется такт " + ++cycleCounter + "...\n");
+
+            island.resetGrownOrganismsMap();
             eatService.resetEatenOrganismsMap();
             moveService.resetMovedOrganismsMap();
             reproduceService.resetNewbornClassToCountMap();
             dieService.resetDiedAndSurvivedOrganisms();
             long startPlantCount = island.countPlants();
 
-            // submit tasks
-            island.growPlants();
             growPlantsExecutor.submit(island::growPlants);
-//            for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
-//                eatExecutor.submit(() -> eatService.eatCellAnimals(cellToOrganismsEntry));
-//                reproduceExecutor.submit(() -> reproduceService.reproduceCellOrganisms(cellToOrganismsEntry));
-//                dieExecutor.submit(() -> dieService.killCellHungryAnimals(cellToOrganismsEntry));
-//            }
-//            for(Map.Entry<Animal, Cell> animalToCellEntry : moveService.getAnimalsToMove().entrySet()) {
-//                moveExecutor.submit(() -> moveService.moveCellAnimals(animalToCellEntry));
-//            }
-
+            for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
+                eatExecutor.submit(() -> eatService.eatCellAnimals(cellToOrganismsEntry));
+                reproduceExecutor.submit(() -> reproduceService.reproduceCellOrganisms(cellToOrganismsEntry));
+                dieExecutor.submit(() -> dieService.killCellHungryAnimals(cellToOrganismsEntry));
+            }
+            for(Map.Entry<Animal, Cell> animalToCellEntry : moveService.getAnimalsToMove().entrySet()) {
+                moveExecutor.submit(() -> moveService.moveCellAnimals(animalToCellEntry));
+            }
 
             try {
-                Thread.sleep(cycleSeconds * 1_000L);
+                Thread.sleep(millisPerCycle);
             } catch(InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new AppException(e);
             }
 
-            // collect results
+            shutdownNow(growPlantsExecutor, eatExecutor, reproduceExecutor, dieExecutor, moveExecutor);
+
+            Map<Class<? extends Organism>, Long> grownPlantClassToCount = island.getGrownPlantClassToCount();
             Map<Class<? extends Organism>, Long> initialInfo = collectClassesService.getClassesToCountMap();
             Map<Class<? extends Organism>, Long> eatenOrganismClassToCount = eatService.getEatenOrganismClassCount();
             Map<Class<? extends Organism>, Long> movedOrganismClassToCount = moveService.getMovedOrganismClassToCount();
             Map<Class<? extends Organism>, Long> newbornClassToCountMap = reproduceService.getNewbornClassToCountMap();
             Map<Class<? extends Organism>, Long> diedAnimalToCountMap = dieService.getDiedAnimals();
-
-            // print statistics
-            statisticsService.printCurrentOrganismInfo(initialInfo);
-            statisticsService.printPlantsGrownInfo(island.countPlants() - startPlantCount);
-            statisticsService.printEatInfo(eatenOrganismClassToCount);
-            statisticsService.printMoveInfo(movedOrganismClassToCount);
-            statisticsService.printReproduceInfo(newbornClassToCountMap);
-            statisticsService.printDieInfo(diedAnimalToCountMap);
+            statisticsService.printLongInfo(initialInfo, LongInfoType.OVERALL_INFO);
+            statisticsService.printLongInfo(eatenOrganismClassToCount, LongInfoType.EAT_INFO);
+            statisticsService.printShortInfo(movedOrganismClassToCount, ShortInfoType.MOVE_INFO);
+            statisticsService.printShortInfo(newbornClassToCountMap, ShortInfoType.REPRODUCE_INFO);
+            statisticsService.printShortInfo(diedAnimalToCountMap, ShortInfoType.DIE_INFO);
+            statisticsService.printShortInfo(grownPlantClassToCount, ShortInfoType.GROWN_INFO);
             statisticsService.printDifferenceInfo(initialInfo, collectClassesService.getClassesToCountMap());
-        } while(!handler.isConditionSatisfied(island));
 
-        shutdownNow(growPlantsExecutor, eatExecutor, reproduceExecutor, dieExecutor, moveExecutor);
+        } while(!handler.isConditionSatisfied(island));
 
         System.out.println("\n" + Consts.LINE_DELIMITER + "\n");
         System.out.println(handler.getConditionTrueMessage());
-        System.out.println("Симуляция \uD83C\uDFDD\uFE0F завершена!");
+        System.out.println("Симуляция \uD83C\uDFDD️ завершена!");
     }
 
     private void shutdownNow(ExecutorService... executorServices) {

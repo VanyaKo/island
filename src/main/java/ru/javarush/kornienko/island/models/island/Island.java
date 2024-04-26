@@ -6,6 +6,7 @@ import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.models.abstracts.Animal;
 import ru.javarush.kornienko.island.models.abstracts.Organism;
 import ru.javarush.kornienko.island.models.plants.Plant;
+import ru.javarush.kornienko.island.services.utils.MapWorker;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class Island {
     private static final int DEFAULT_PROPERTY_VALUE = -1;
@@ -28,6 +30,7 @@ public class Island {
     private int maxPlantsPerCell = DEFAULT_PROPERTY_VALUE;
     private int maxAnimalsPerCell = DEFAULT_PROPERTY_VALUE;
     private int cycleDuration = DEFAULT_PROPERTY_VALUE;
+    private Map<Class<? extends Organism>, Long> grownPlantClassToCount;
 
     public Island(IslandConfig islandConfig, PrototypeFactory prototypeFactory) {
         this.islandConfig = islandConfig;
@@ -56,6 +59,7 @@ public class Island {
     public void initEmptyIsland() {
         extractProperties();
         initEmptyMap();
+        resetGrownOrganismsMap();
     }
 
     private void extractProperties() {
@@ -76,35 +80,40 @@ public class Island {
         }
     }
 
-    public synchronized long growPlants() {
-        long organismCount = 0;
+    public Map<Class<? extends Organism>, Long> getGrownPlantClassToCount() {
+        return new HashMap<>(grownPlantClassToCount);
+    }
+
+    public void resetGrownOrganismsMap() {
+        grownPlantClassToCount = new ConcurrentHashMap<>();
+    }
+
+    public synchronized void growPlants() {
         for(Set<Organism> cellOrganisms : islandMap.values()) {
-            long currentOrganisms = getFilterClassesCount(cellOrganisms, Plant.class);
+            long currentOrganisms = countClassesByFilter(cellOrganisms, Plant.class);
             for(Organism prototype : prototypeFactory.getPrototypes()) {
                 if(Plant.class.isAssignableFrom(prototype.getClass())) {
                     int prototypesToAdd = getPrototypesToAdd(Collections.emptyMap(), prototype);
                     if(currentOrganisms + prototypesToAdd > maxPlantsPerCell) {
                         break;
                     }
-                    fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
+                    fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd, Plant.class);
                     currentOrganisms += prototypesToAdd;
                 }
             }
-            organismCount += currentOrganisms;
         }
-        return organismCount;
     }
 
     public void initAnimals(Map<Class<?>, Integer> startAnimalNumConfig) {
         for(Set<Organism> cellOrganisms : islandMap.values()) {
-            long currentOrganisms = getFilterClassesCount(cellOrganisms, Animal.class);
+            long currentOrganisms = countClassesByFilter(cellOrganisms, Animal.class);
             for(Organism prototype : prototypeFactory.getPrototypes()) {
                 if(Animal.class.isAssignableFrom(prototype.getClass())) {
                     int prototypesToAdd = getPrototypesToAdd(startAnimalNumConfig, prototype);
                     if(currentOrganisms + prototypesToAdd > maxAnimalsPerCell) {
                         break;
                     }
-                    fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd);
+                    fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd, Animal.class);
                     currentOrganisms += prototypesToAdd;
                 }
             }
@@ -119,16 +128,19 @@ public class Island {
         }
     }
 
-    private synchronized long getFilterClassesCount(Set<Organism> cellOrganisms, Class<? extends Organism> targetClass) {
+    private synchronized long countClassesByFilter(Set<Organism> cellOrganisms, Class<? extends Organism> targetClass) {
         return cellOrganisms.stream()
-                .filter( organism -> targetClass.isAssignableFrom(organism.getClass()))
+                .filter(organism -> targetClass.isAssignableFrom(organism.getClass()))
                 .count();
     }
 
-    private synchronized void fillCellWithOrganisms(Set<Organism> cellOrganisms, Organism prototype, int prototypesPerCell) {
+    private synchronized void fillCellWithOrganisms(Set<Organism> cellOrganisms, Organism prototype, int prototypesPerCell, Class<? extends Organism> clazz) {
         for(int i = 0; i < prototypesPerCell; i++) {
             try {
                 cellOrganisms.add((Organism) prototype.clone());
+                if(clazz == Plant.class) {
+                    MapWorker.putDuplicateValueCount(grownPlantClassToCount, prototype.getClass());
+                }
             } catch(CloneNotSupportedException e) {
                 throw new AppException(e);
             }
@@ -154,11 +166,9 @@ public class Island {
         return cycleDuration;
     }
 
-    public long countPlants() {
-        long plantCount = islandMap.values().stream()
+    public synchronized long countPlants() {
+        return countClassesByFilter(islandMap.values().stream()
                 .flatMap(Collection::stream)
-                .filter(organism -> Plant.class.isAssignableFrom(organism.getClass()))
-                .count();
-        return plantCount;
+                .collect(Collectors.toSet()), Plant.class);
     }
 }
