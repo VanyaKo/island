@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.services;
+package ru.javarush.kornienko.island.services.actions;
 
 import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.entities.abstracts.Animal;
@@ -44,17 +44,13 @@ public class MoveService {
         return animalsToMove;
     }
 
-    public synchronized void moveCellAnimals(Map.Entry<Animal, Cell> animalToCellEntry) {
+    public synchronized void moveCellAnimalOnCell(Map.Entry<Animal, Cell> animalToCellEntry) {
         Animal animal = animalToCellEntry.getKey();
         Cell startCell = animalToCellEntry.getValue();
         int maxMoveProbability = classToMoveProbability.get(animal.getClass());
-        moveAnimal(animal, startCell, maxMoveProbability);
-    }
 
-    private synchronized void moveAnimal(Animal animal, Cell startCell, int maxMoveProbability) {
         boolean isMoved = false;
         for(int i = 0; i <= ThreadLocalRandom.current().nextInt(animal.getMaxSpeed() + 1); i++) {
-
             Map<Cell, Set<Organism>> neighborCells = getNeighborCells(startCell);
             Set<Cell> availableCells = getAvailableCells(neighborCells);
             if(!availableCells.isEmpty() && isSuccessMoveProbability(maxMoveProbability)) {
@@ -67,7 +63,6 @@ public class MoveService {
                 }
             }
         }
-
         if(isMoved) {
             MapWorker.putDuplicateValueCount(movedOrganismClassToCount, animal.getClass());
         }

@@ -3,7 +3,7 @@ package ru.javarush.kornienko.island.entities.abstracts;
 import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.entities.island.Cell;
-import ru.javarush.kornienko.island.services.AnimalAction;
+import ru.javarush.kornienko.island.services.actions.AnimalAction;
 
 import java.util.HashSet;
 import java.util.Set;

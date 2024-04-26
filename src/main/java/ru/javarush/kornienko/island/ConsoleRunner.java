@@ -38,7 +38,8 @@ public class ConsoleRunner {
                 throw new IllegalArgumentException();
             }
         } catch(Exception e) {
-            System.err.println("Чел... тебе нужно было просто ввести цифру. Мне лень обрабатывать исключения, поэтому запусти игру снова. Пока!");
+            System.err.println("\nЧел... тебе нужно было просто ввести цифру...");
+            System.err.println("Короче, я кое-как написал этот проект и в благородство играть не буду: запустишь игру снова - и мы в расчете.");
             System.exit(-1);
         }
         return inputNumber;

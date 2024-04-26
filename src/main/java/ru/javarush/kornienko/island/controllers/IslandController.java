@@ -12,16 +12,18 @@ import ru.javarush.kornienko.island.configs.animals.MapConfigDeserializer;
 import ru.javarush.kornienko.island.configs.animals.ReproduceConfig;
 import ru.javarush.kornienko.island.configs.animals.ReproduceConfigDeserializer;
 import ru.javarush.kornienko.island.consts.Consts;
-import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.entities.abstracts.Animal;
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
 import ru.javarush.kornienko.island.entities.island.Cell;
 import ru.javarush.kornienko.island.entities.island.Island;
-import ru.javarush.kornienko.island.services.CollectClassesService;
-import ru.javarush.kornienko.island.services.DieService;
-import ru.javarush.kornienko.island.services.EatService;
-import ru.javarush.kornienko.island.services.MoveService;
-import ru.javarush.kornienko.island.services.ReproduceService;
+import ru.javarush.kornienko.island.exceptions.AppException;
+import ru.javarush.kornienko.island.services.FileService;
+import ru.javarush.kornienko.island.services.Logger;
+import ru.javarush.kornienko.island.services.actions.CollectClassesService;
+import ru.javarush.kornienko.island.services.actions.DieService;
+import ru.javarush.kornienko.island.services.actions.EatService;
+import ru.javarush.kornienko.island.services.actions.MoveService;
+import ru.javarush.kornienko.island.services.actions.ReproduceService;
 import ru.javarush.kornienko.island.services.statistics.LongInfoType;
 import ru.javarush.kornienko.island.services.statistics.ShortInfoType;
 import ru.javarush.kornienko.island.services.statistics.StatisticsService;
@@ -41,30 +43,41 @@ public class IslandController {
     }
 
     public void run(String condition) {
-        Handler handler = HandlerType.getHandlerByName(condition);
+        try {
+            Handler handler = HandlerType.getHandlerByName(condition);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
+            ObjectMapper objectMapper = new ObjectMapper();
+            PrototypeFactory prototypeFactory = new PrototypeFactory(objectMapper);
 
-        EatConfigDeserializer eatConfigDeserializer = new EatConfigDeserializer(objectMapper,
-                Consts.EAT_CONFIG_JSON);
-        MapConfigDeserializer mapConfigDeserializer = new MapConfigDeserializer();
-        ReproduceConfigDeserializer reproduceConfigDeserializer = new ReproduceConfigDeserializer(objectMapper,
-                Consts.REPRODUCE_CONFIG_JSON);
+            EatConfigDeserializer eatConfigDeserializer = new EatConfigDeserializer(objectMapper,
+                    Consts.EAT_CONFIG_JSON);
+            MapConfigDeserializer mapConfigDeserializer = new MapConfigDeserializer();
+            ReproduceConfigDeserializer reproduceConfigDeserializer = new ReproduceConfigDeserializer(objectMapper,
+                    Consts.REPRODUCE_CONFIG_JSON);
 
-        EatConfig[] eatConfigs = eatConfigDeserializer.readEatConfig();
-        Map<Class<?>, Integer> moveConfig = mapConfigDeserializer.readMoveConfig(objectMapper,
-                Consts.MOVE_CONFIG_JSON);
-        Map<Class<?>, Integer> startAnimalNumConfig = mapConfigDeserializer.readMoveConfig(objectMapper,
-                Consts.START_ANIMAL_NUM_CONFIG_JSON);
-        ReproduceConfig[] reproduceConfigs = reproduceConfigDeserializer.readReproduceConfig();
+            EatConfig[] eatConfigs = eatConfigDeserializer.readEatConfig();
+            Map<Class<?>, Integer> moveConfig = mapConfigDeserializer.readMoveConfig(objectMapper,
+                    Consts.MOVE_CONFIG_JSON);
+            Map<Class<?>, Integer> startAnimalNumConfig = mapConfigDeserializer.readMoveConfig(objectMapper,
+                    Consts.START_ANIMAL_NUM_CONFIG_JSON);
+            ReproduceConfig[] reproduceConfigs = reproduceConfigDeserializer.readReproduceConfig();
 
+            Island island = initIsland(prototypeFactory, startAnimalNumConfig);
+            startGameCycle(handler, prototypeFactory, island, eatConfigs, moveConfig, reproduceConfigs);
+        } catch(Exception e) {
+            FileService fileService = new FileService();
+            Logger logger = new Logger(fileService);
+            logger.logException(e);
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+    private @NotNull Island initIsland(PrototypeFactory prototypeFactory, Map<Class<?>, Integer> startAnimalNumConfig) {
         Island island = getIsland(prototypeFactory);
         island.initEmptyIsland();
         island.growPlants();
         island.initAnimals(startAnimalNumConfig);
-
-        startGameCycle(handler, prototypeFactory, island, eatConfigs, moveConfig, reproduceConfigs);
+        return island;
     }
 
     private void startGameCycle(Handler handler, PrototypeFactory prototypeFactory, Island island,
@@ -96,7 +109,6 @@ public class IslandController {
             moveService.resetMovedOrganismsMap();
             reproduceService.resetNewbornClassToCountMap();
             dieService.resetDiedAndSurvivedOrganisms();
-            long startPlantCount = island.countPlants();
 
             growPlantsExecutor.submit(island::growPlants);
             for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
@@ -105,7 +117,7 @@ public class IslandController {
                 dieExecutor.submit(() -> dieService.killCellHungryAnimals(cellToOrganismsEntry));
             }
             for(Map.Entry<Animal, Cell> animalToCellEntry : moveService.getAnimalsToMove().entrySet()) {
-                moveExecutor.submit(() -> moveService.moveCellAnimals(animalToCellEntry));
+                moveExecutor.submit(() -> moveService.moveCellAnimalOnCell(animalToCellEntry));
             }
 
             try {

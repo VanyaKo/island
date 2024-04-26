@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.services;
+package ru.javarush.kornienko.island.services.actions;
 
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
 import ru.javarush.kornienko.island.entities.island.Cell;

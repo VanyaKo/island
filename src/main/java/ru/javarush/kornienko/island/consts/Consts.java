@@ -8,6 +8,9 @@ public class Consts {
     public static final String ISLAND_CONFIG = "configs/island/island.properties";
     public static final int MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE = 2;
 
+    public static final String PATH_TO_LOG_DIR = "logs";
+    public static final String PATH_TO_LOG_FILE = PATH_TO_LOG_DIR + "/%s.log";
+
     public static final int HUNDRED_PERCENT = 100;
     public static final double PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION = (byte) 20;
 

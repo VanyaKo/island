@@ -1,4 +1,4 @@
-package ru.javarush.kornienko.island.services;
+package ru.javarush.kornienko.island.services.actions;
 
 import ru.javarush.kornienko.island.configs.animals.ReproduceConfig;
 import ru.javarush.kornienko.island.consts.Consts;
