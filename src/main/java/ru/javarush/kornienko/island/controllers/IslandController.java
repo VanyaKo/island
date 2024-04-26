@@ -104,11 +104,8 @@ public class IslandController {
             System.out.println(Consts.LINE_DELIMITER + "\n");
             System.out.println("Выполняется такт " + ++cycleCounter + "...\n");
 
-            island.resetGrownOrganismsMap();
-            eatService.resetEatenOrganismsMap();
-            moveService.resetMovedOrganismsMap();
-            reproduceService.resetNewbornClassToCountMap();
-            dieService.resetDiedAndSurvivedOrganisms();
+            Map<Class<? extends Organism>, Long> initialInfo = collectClassesService.getClassesToCountMap();
+            resetChangeRecord(island, eatService, moveService, reproduceService, dieService);
 
             growPlantsExecutor.submit(island::growPlants);
             for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
@@ -129,7 +126,6 @@ public class IslandController {
 
             shutdownNow(growPlantsExecutor, eatExecutor, reproduceExecutor, dieExecutor, moveExecutor);
 
-            Map<Class<? extends Organism>, Long> initialInfo = collectClassesService.getClassesToCountMap();
             Map<Class<? extends Organism>, Long> eatenOrganismClassToCount = eatService.getEatenOrganismClassCount();
             Map<Class<? extends Organism>, Long> newbornClassToCountMap = reproduceService.getNewbornClassToCountMap();
             Map<Class<? extends Organism>, Long> movedOrganismClassToCount = moveService.getMovedOrganismClassToCount();
@@ -149,6 +145,14 @@ public class IslandController {
         System.out.println("\n" + Consts.LINE_DELIMITER + "\n");
         System.out.println(handler.getConditionTrueMessage());
         System.out.println("Симуляция \uD83C\uDFDD️ завершена!");
+    }
+
+    private void resetChangeRecord(Island island, EatService eatService, MoveService moveService, ReproduceService reproduceService, DieService dieService) {
+        island.resetGrownOrganismsMap();
+        eatService.resetEatenOrganismsMap();
+        moveService.resetMovedOrganismsMap();
+        reproduceService.resetNewbornClassToCountMap();
+        dieService.resetDiedAndSurvivedOrganisms();
     }
 
     private void shutdownNow(ExecutorService... executorServices) {

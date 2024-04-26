@@ -63,29 +63,23 @@ public class EatService {
     }
 
     private synchronized Organism getRandomEatableOrganism(List<Organism> eatableOrganisms) {
-        synchronized(island) {
-            return eatableOrganisms.get(ThreadLocalRandom.current().nextInt(eatableOrganisms.size()));
-        }
+        return eatableOrganisms.get(ThreadLocalRandom.current().nextInt(eatableOrganisms.size()));
     }
 
     private synchronized byte getEatingProbabilityByOrganism(Organism organism, Map<Class<?>, Byte> eatableClasses) {
-        synchronized(island) {
-            return eatableClasses.entrySet().stream()
-                    .filter(classByteEntry -> classByteEntry.getKey() == organism.getClass())
-                    .findAny()
-                    .map(Map.Entry::getValue)
-                    .orElseThrow(() -> new AppException("Cannot find probability of being eaten for " + organism + " organism."));
-        }
+        return eatableClasses.entrySet().stream()
+                .filter(classByteEntry -> classByteEntry.getKey() == organism.getClass())
+                .findAny()
+                .map(Map.Entry::getValue)
+                .orElseThrow(() -> new AppException("Cannot find probability of being eaten for " + organism + " organism."));
     }
 
     private synchronized Map<Class<?>, Byte> getEatablesByEaterClass(Class<? extends Animal> eaterClass) {
-        synchronized(island) {
-            for(EatConfig eatConfig : eatConfigs) {
-                if(eatConfig.eater() == eaterClass) {
-                    return eatConfig.eatables();
-                }
+        for(EatConfig eatConfig : eatConfigs) {
+            if(eatConfig.eater() == eaterClass) {
+                return eatConfig.eatables();
             }
-            throw new AppException(eaterClass + "is not eater");
         }
+        throw new AppException(eaterClass + "is not eater");
     }
 }

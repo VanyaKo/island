@@ -51,8 +51,6 @@ public class DieService {
     }
 
     private synchronized boolean hasNoHealth(Animal animal) {
-        synchronized(island) {
-            return animal.decreaseHealth(Consts.PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION) <= 0;
-        }
+        return animal.decreaseHealth(Consts.PERCENT_TO_DECREASE_FROM_ANIMAL_STARVATION) <= 0;
     }
 }

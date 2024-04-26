@@ -3,10 +3,10 @@ package ru.javarush.kornienko.island.services.statistics;
 import org.jetbrains.annotations.NotNull;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
 import ru.javarush.kornienko.island.consts.Consts;
-import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.entities.abstracts.Animal;
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
 import ru.javarush.kornienko.island.entities.plants.Plant;
+import ru.javarush.kornienko.island.exceptions.AppException;
 
 import java.util.Collection;
 import java.util.Map;

@@ -19,7 +19,7 @@ public class ConsoleRunner {
     }
 
     private static @NotNull String getStopGameCondition(byte inputNumber) {
-        String stopGameCondition = "";
+        String stopGameCondition;
         if(inputNumber == 1) {
             stopGameCondition = "ONLY_PREDATORS";
         } else if(inputNumber == 2) {
@@ -38,11 +38,15 @@ public class ConsoleRunner {
                 throw new IllegalArgumentException();
             }
         } catch(Exception e) {
-            System.err.println("\nЧел... тебе нужно было просто ввести цифру...");
-            System.err.println("Короче, я кое-как написал этот проект и в благородство играть не буду: запустишь игру снова - и мы в расчете.");
+            printDisrespect();
             System.exit(-1);
         }
         return inputNumber;
+    }
+
+    private static void printDisrespect() {
+        System.err.println("\nЧел... тебе нужно было просто ввести цифру...");
+        System.err.println("Короче, я кое-как написал этот проект и в благородство играть не буду: запустишь игру снова - и мы в расчете.");
     }
 
     private static void showStartDialog() {

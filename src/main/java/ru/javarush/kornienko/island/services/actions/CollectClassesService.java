@@ -17,14 +17,12 @@ public class CollectClassesService {
     }
 
     public Map<Class<? extends Organism>, Long> getClassesToCountMap() {
-        synchronized(island) {
-            Map<Class<? extends Organism>, Long> organismClassesToCount = new HashMap<>();
-            for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
-                for(Organism organism : cellToOrganismsEntry.getValue()) {
-                    MapWorker.putDuplicateValueCount(organismClassesToCount, organism.getClass());
-                }
+        Map<Class<? extends Organism>, Long> organismClassesToCount = new HashMap<>();
+        for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
+            for(Organism organism : cellToOrganismsEntry.getValue()) {
+                MapWorker.putDuplicateValueCount(organismClassesToCount, organism.getClass());
             }
-            return organismClassesToCount;
         }
+        return organismClassesToCount;
     }
 }

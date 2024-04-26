@@ -71,21 +71,19 @@ public class MoveService {
         }
     }
 
-    private synchronized boolean isSuccessMoveProbability(int maxMoveProbability) {
+    private boolean isSuccessMoveProbability(int maxMoveProbability) {
         return ThreadLocalRandom.current().nextInt(Consts.HUNDRED_PERCENT + 1) <= maxMoveProbability;
     }
 
     private synchronized Map<Cell, Set<Organism>> getNeighborCells(Cell currentCell) {
-        synchronized(island) {
-            Map<Cell, Set<Organism>> neighborCells = new HashMap<>();
-            for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
-                Cell neighborCell = cellOrganismsEntry.getKey();
-                if(isDifferentCell(neighborCell, currentCell) && isNeighborNonDiagonalCell(neighborCell, currentCell)) {
-                    neighborCells.put(neighborCell, cellOrganismsEntry.getValue());
-                }
+        Map<Cell, Set<Organism>> neighborCells = new HashMap<>();
+        for(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry : island.getIslandMap().entrySet()) {
+            Cell neighborCell = cellOrganismsEntry.getKey();
+            if(isDifferentCell(neighborCell, currentCell) && isNeighborNonDiagonalCell(neighborCell, currentCell)) {
+                neighborCells.put(neighborCell, cellOrganismsEntry.getValue());
             }
-            return neighborCells;
         }
+        return neighborCells;
     }
 
     /**
@@ -93,12 +91,10 @@ public class MoveService {
      * @return cells with free spaces for animals
      */
     private synchronized Set<Cell> getAvailableCells(Map<Cell, Set<Organism>> neighborCells) {
-        synchronized(island) {
-            return neighborCells.entrySet().stream()
-                    .filter(entry -> getAnimalCount(entry.getValue()) < island.getMaxAnimalsPerCell())
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-                    .keySet();
-        }
+        return neighborCells.entrySet().stream()
+                .filter(entry -> getAnimalCount(entry.getValue()) < island.getMaxAnimalsPerCell())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                .keySet();
     }
 
     private int getAnimalCount(Collection<Organism> organisms) {

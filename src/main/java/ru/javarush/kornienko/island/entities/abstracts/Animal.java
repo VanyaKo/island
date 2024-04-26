@@ -1,8 +1,8 @@
 package ru.javarush.kornienko.island.entities.abstracts;
 
 import ru.javarush.kornienko.island.consts.Consts;
-import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.entities.island.Cell;
+import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.services.actions.AnimalAction;
 
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public abstract class Animal extends Organism implements AnimalAction {
     }
 
     @Override
-    public synchronized boolean eat(Organism eatableOrganism, byte maxEatingProbability) {
+    public boolean eat(Organism eatableOrganism, byte maxEatingProbability) {
         int currentEatingProbability = ThreadLocalRandom.current().nextInt(101);
         if(currentEatingProbability <= maxEatingProbability) {
             healthPercent += getAddedSaturation(eatableOrganism);

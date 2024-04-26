@@ -2,7 +2,6 @@ package ru.javarush.kornienko.island.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
-import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
 import ru.javarush.kornienko.island.entities.herbivores.Buffalo;
 import ru.javarush.kornienko.island.entities.herbivores.Caterpillar;
@@ -20,6 +19,7 @@ import ru.javarush.kornienko.island.entities.predators.Eagle;
 import ru.javarush.kornienko.island.entities.predators.Fox;
 import ru.javarush.kornienko.island.entities.predators.Python;
 import ru.javarush.kornienko.island.entities.predators.Wolf;
+import ru.javarush.kornienko.island.exceptions.AppException;
 
 import java.io.IOException;
 import java.net.URL;

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import ru.javarush.kornienko.island.exceptions.AppException;
-import ru.javarush.kornienko.island.entities.abstracts.Organism;
 
 import java.io.IOException;
 import java.net.URL;

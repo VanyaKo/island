@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 public class Island {
     private static final int DEFAULT_PROPERTY_VALUE = -1;
@@ -30,7 +29,7 @@ public class Island {
     private int maxPlantsPerCell = DEFAULT_PROPERTY_VALUE;
     private int maxAnimalsPerCell = DEFAULT_PROPERTY_VALUE;
     private int cycleDuration = DEFAULT_PROPERTY_VALUE;
-    private Map<Class<? extends Organism>, Long> grownPlantClassToCount;
+    private ConcurrentMap<Class<? extends Organism>, Long> grownPlantClassToCount;
 
     public Island(IslandConfig islandConfig, PrototypeFactory prototypeFactory) {
         this.islandConfig = islandConfig;
@@ -88,17 +87,19 @@ public class Island {
         grownPlantClassToCount = new ConcurrentHashMap<>();
     }
 
-    public synchronized void growPlants() {
-        for(Set<Organism> cellOrganisms : islandMap.values()) {
-            long currentOrganisms = countClassesByFilter(cellOrganisms, Plant.class);
-            for(Organism prototype : prototypeFactory.getPrototypes()) {
-                if(Plant.class.isAssignableFrom(prototype.getClass())) {
-                    int prototypesToAdd = getPrototypesToAdd(Collections.emptyMap(), prototype);
-                    if(currentOrganisms + prototypesToAdd > maxPlantsPerCell) {
-                        break;
+    public void growPlants() {
+        synchronized(islandMap.values()) {
+            for(Set<Organism> cellOrganisms : islandMap.values()) {
+                long currentOrganisms = countClassesByFilter(cellOrganisms, Plant.class);
+                for(Organism prototype : prototypeFactory.getPrototypes()) {
+                    if(Plant.class.isAssignableFrom(prototype.getClass())) {
+                        int prototypesToAdd = getPrototypesToAdd(Collections.emptyMap(), prototype);
+                        if(currentOrganisms + prototypesToAdd > maxPlantsPerCell) {
+                            break;
+                        }
+                        fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd, Plant.class);
+                        currentOrganisms += prototypesToAdd;
                     }
-                    fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd, Plant.class);
-                    currentOrganisms += prototypesToAdd;
                 }
             }
         }
@@ -120,7 +121,7 @@ public class Island {
         }
     }
 
-    private synchronized int getPrototypesToAdd(Map<Class<?>, Integer> startAnimalNumConfig, Organism prototype) {
+    private int getPrototypesToAdd(Map<Class<?>, Integer> startAnimalNumConfig, Organism prototype) {
         if(startAnimalNumConfig.isEmpty()) {
             return ThreadLocalRandom.current().nextInt(prototype.getMaxCountOnCell());
         } else {
@@ -164,11 +165,5 @@ public class Island {
 
     public int getCycleDuration() {
         return cycleDuration;
-    }
-
-    public synchronized long countPlants() {
-        return countClassesByFilter(islandMap.values().stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet()), Plant.class);
     }
 }

@@ -2,11 +2,11 @@ package ru.javarush.kornienko.island.services.actions;
 
 import ru.javarush.kornienko.island.configs.animals.ReproduceConfig;
 import ru.javarush.kornienko.island.consts.Consts;
-import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.entities.abstracts.Animal;
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
 import ru.javarush.kornienko.island.entities.island.Cell;
 import ru.javarush.kornienko.island.entities.island.Island;
+import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.services.utils.MapWorker;
 
 import java.util.ArrayList;
@@ -52,17 +52,15 @@ public class ReproduceService {
      * Get map with animal class as a key and animal as a value.
      */
     private synchronized Map<Class<? extends Animal>, Animal> getMapFromList(List<Animal> animals) {
-        synchronized(island) {
-            Map<Class<? extends Animal>, List<Animal>> classAnimals = getClassAnimals(animals);
-            Map<Class<? extends Animal>, Animal> reproducibleClassAnimals = new HashMap<>();
-            for(Map.Entry<Class<? extends Animal>, List<Animal>> classAnimalsEntry : classAnimals.entrySet()) {
-                if(classAnimalsEntry.getValue().size() >= Consts.MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE) {
-                    int randomAnimalIndex = ThreadLocalRandom.current().nextInt(classAnimalsEntry.getValue().size());
-                    reproducibleClassAnimals.put(classAnimalsEntry.getKey(), classAnimalsEntry.getValue().get(randomAnimalIndex));
-                }
+        Map<Class<? extends Animal>, List<Animal>> classAnimals = getClassAnimals(animals);
+        Map<Class<? extends Animal>, Animal> reproducibleClassAnimals = new HashMap<>();
+        for(Map.Entry<Class<? extends Animal>, List<Animal>> classAnimalsEntry : classAnimals.entrySet()) {
+            if(classAnimalsEntry.getValue().size() >= Consts.MIN_NUMBER_OF_ANIMALS_TO_REPRODUCE) {
+                int randomAnimalIndex = ThreadLocalRandom.current().nextInt(classAnimalsEntry.getValue().size());
+                reproducibleClassAnimals.put(classAnimalsEntry.getKey(), classAnimalsEntry.getValue().get(randomAnimalIndex));
             }
-            return reproducibleClassAnimals;
         }
+        return reproducibleClassAnimals;
     }
 
     /**
@@ -81,17 +79,15 @@ public class ReproduceService {
     }
 
     private synchronized void reproduceAnimals(Map<Class<? extends Animal>, Animal> classAnimals, Cell cell, int currentAnimalCount) {
-        synchronized(island) {
-            for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
-                ReproduceConfig reproduceConfig = getEntryByClass(classAnimalEntry.getKey());
-                if(isSuccessProbabilityToReproduce(reproduceConfig)) {
-                    Set<Animal> newborns = classAnimalEntry.getValue().reproduce(reproduceConfig.maxCubs());
-                    for(Animal newborn : newborns) {
-                        island.addAnimalToCell(newborn, cell);
-                        MapWorker.putDuplicateValueCount(newbornClassToCountMap, newborn.getClass());
-                        if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
-                            return;
-                        }
+        for(Map.Entry<Class<? extends Animal>, Animal> classAnimalEntry : classAnimals.entrySet()) {
+            ReproduceConfig reproduceConfig = getEntryByClass(classAnimalEntry.getKey());
+            if(isSuccessProbabilityToReproduce(reproduceConfig)) {
+                Set<Animal> newborns = classAnimalEntry.getValue().reproduce(reproduceConfig.maxCubs());
+                for(Animal newborn : newborns) {
+                    island.addAnimalToCell(newborn, cell);
+                    MapWorker.putDuplicateValueCount(newbornClassToCountMap, newborn.getClass());
+                    if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
+                        return;
                     }
                 }
             }
