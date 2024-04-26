@@ -54,7 +54,7 @@ public class EatService {
                     if(animal.eat(randomEatableOrganism, eatingProbability)) {
                         eaters.add(animal);
                         eatenOrganisms.add(randomEatableOrganism);
-                        MapWorker.putDuplicateValueCount(eatenOrganismClassCount, randomEatableOrganism.getClass());
+                        MapWorker.putDuplicateValueToCountEntry(eatenOrganismClassCount, randomEatableOrganism.getClass());
                     }
                 }
             }

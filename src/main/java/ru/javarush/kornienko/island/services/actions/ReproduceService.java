@@ -85,7 +85,7 @@ public class ReproduceService {
                 Set<Animal> newborns = classAnimalEntry.getValue().reproduce(reproduceConfig.maxCubs());
                 for(Animal newborn : newborns) {
                     island.addAnimalToCell(newborn, cell);
-                    MapWorker.putDuplicateValueCount(newbornClassToCountMap, newborn.getClass());
+                    MapWorker.putDuplicateValueToCountEntry(newbornClassToCountMap, newborn.getClass());
                     if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
                         return;
                     }

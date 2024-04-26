@@ -57,7 +57,6 @@ public class MoveService {
                 Map<Cell, Set<Organism>> neighborCells = getNeighborCells(startCell);
                 Set<Cell> availableCells = getAvailableCells(neighborCells);
                 if(!availableCells.isEmpty() && isSuccessMoveProbability(maxMoveProbability)) {
-
                     Cell destinationCell = animal.move(availableCells.toArray(new Cell[0]));
                     island.addAnimalToCell(animal, destinationCell);
                     island.removeOrganismFromCell(animal, startCell);
@@ -66,7 +65,7 @@ public class MoveService {
                 }
             }
             if(isMoved) {
-                MapWorker.putDuplicateValueCount(movedOrganismClassToCount, animal.getClass());
+                MapWorker.putDuplicateValueToCountEntry(movedOrganismClassToCount, animal.getClass());
             }
         }
     }

@@ -126,18 +126,18 @@ public class IslandController {
 
             shutdownNow(growPlantsExecutor, eatExecutor, reproduceExecutor, dieExecutor, moveExecutor);
 
+            Map<Class<? extends Organism>, Long> grownPlantClassToCount = island.getGrownPlantClassToCount();
             Map<Class<? extends Organism>, Long> eatenOrganismClassToCount = eatService.getEatenOrganismClassCount();
             Map<Class<? extends Organism>, Long> newbornClassToCountMap = reproduceService.getNewbornClassToCountMap();
             Map<Class<? extends Organism>, Long> movedOrganismClassToCount = moveService.getMovedOrganismClassToCount();
             Map<Class<? extends Organism>, Long> diedAnimalToCountMap = dieService.getDiedAnimals();
-            Map<Class<? extends Organism>, Long> grownPlantClassToCount = island.getGrownPlantClassToCount();
 
             statisticsService.printLongInfo(initialInfo, LongInfoType.OVERALL_INFO);
+            statisticsService.printShortInfo(grownPlantClassToCount, ShortInfoType.GROWN_INFO);
             statisticsService.printLongInfo(eatenOrganismClassToCount, LongInfoType.EAT_INFO);
             statisticsService.printShortInfo(newbornClassToCountMap, ShortInfoType.REPRODUCE_INFO);
             statisticsService.printShortInfo(movedOrganismClassToCount, ShortInfoType.MOVE_INFO);
             statisticsService.printShortInfo(diedAnimalToCountMap, ShortInfoType.DIE_INFO);
-            statisticsService.printShortInfo(grownPlantClassToCount, ShortInfoType.GROWN_INFO);
             statisticsService.printDifferenceInfo(initialInfo, collectClassesService.getClassesToCountMap());
 
         } while(!handler.isConditionSatisfied(island));

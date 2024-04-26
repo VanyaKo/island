@@ -16,13 +16,15 @@ public class CollectClassesService {
         this.island = island;
     }
 
-    public Map<Class<? extends Organism>, Long> getClassesToCountMap() {
-        Map<Class<? extends Organism>, Long> organismClassesToCount = new HashMap<>();
-        for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
-            for(Organism organism : cellToOrganismsEntry.getValue()) {
-                MapWorker.putDuplicateValueCount(organismClassesToCount, organism.getClass());
+    public synchronized Map<Class<? extends Organism>, Long> getClassesToCountMap() {
+        synchronized(island) {
+            Map<Class<? extends Organism>, Long> organismClassesToCount = new HashMap<>();
+            for(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry : island.getIslandMap().entrySet()) {
+                for(Organism organism : cellToOrganismsEntry.getValue()) {
+                    MapWorker.putDuplicateValueToCountEntry(organismClassesToCount, organism.getClass());
+                }
             }
+            return organismClassesToCount;
         }
-        return organismClassesToCount;
     }
 }

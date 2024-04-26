@@ -87,7 +87,7 @@ public class Island {
         grownPlantClassToCount = new ConcurrentHashMap<>();
     }
 
-    public void growPlants() {
+    public synchronized void growPlants() {
         synchronized(islandMap.values()) {
             for(Set<Organism> cellOrganisms : islandMap.values()) {
                 long currentOrganisms = countClassesByFilter(cellOrganisms, Plant.class);
@@ -140,7 +140,7 @@ public class Island {
             try {
                 cellOrganisms.add((Organism) prototype.clone());
                 if(clazz == Plant.class) {
-                    MapWorker.putDuplicateValueCount(grownPlantClassToCount, prototype.getClass());
+                    MapWorker.putDuplicateValueToCountEntry(grownPlantClassToCount, prototype.getClass());
                 }
             } catch(CloneNotSupportedException e) {
                 throw new AppException(e);
