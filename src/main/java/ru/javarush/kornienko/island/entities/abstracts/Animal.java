@@ -12,16 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public abstract class Animal extends Organism implements AnimalAction {
     private double healthPercent;
 
-    protected Animal(double weight, int maxCountOnCell, byte maxSpeed, double kilogramsForFullSaturation) {
-        super(weight, maxCountOnCell, maxSpeed, kilogramsForFullSaturation);
-        this.healthPercent = 100;
-    }
-
-    protected Animal() {
-        super();
-        this.healthPercent = 100;
-    }
-
     public double decreaseHealth(double amount) {
         healthPercent -= amount;
         return healthPercent;

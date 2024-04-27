@@ -12,26 +12,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class EatService {
+public class EatService extends ActionService {
     private final Island island;
     private final EatConfig[] eatConfigs;
-    private ConcurrentMap<Class<? extends Organism>, Long> eatenOrganismClassCount;
 
     public EatService(Island island, EatConfig[] eatConfigs) {
         this.island = island;
         this.eatConfigs = eatConfigs;
-    }
-
-    public ConcurrentMap<Class<? extends Organism>, Long> getEatenOrganismClassCount() {
-        return new ConcurrentHashMap<>(eatenOrganismClassCount);
-    }
-
-    public void resetEatenOrganismsMap() {
-        eatenOrganismClassCount = new ConcurrentHashMap<>();
     }
 
     /**
@@ -58,7 +47,7 @@ public class EatService {
                     if(animal.eat(randomEatableOrganism, eatingProbability)) {
                         eaters.add(animal);
                         eatenOrganisms.add(randomEatableOrganism);
-                        MapWorker.putDuplicateValueToCountEntry(eatenOrganismClassCount, randomEatableOrganism.getClass());
+                        MapWorker.putDuplicateValueToCountEntry(organismClassCountMap, randomEatableOrganism.getClass());
                     }
                 }
             }

@@ -7,28 +7,15 @@ import ru.javarush.kornienko.island.entities.island.Cell;
 import ru.javarush.kornienko.island.entities.island.Island;
 import ru.javarush.kornienko.island.services.utils.MapWorker;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class DieService {
+public class DieService extends ActionService {
     private final Island island;
-    private Map<Class<? extends Organism>, Long> diedOrganismClassToCountMap;
 
     public DieService(Island island) {
         this.island = island;
-    }
-
-    public void resetDiedAndSurvivedOrganisms() {
-        diedOrganismClassToCountMap = new HashMap<>();
-    }
-
-    /**
-     * Remove died animals from island and return them.
-     */
-    public Map<Class<? extends Organism>, Long> getDiedAnimals() {
-        return diedOrganismClassToCountMap;
     }
 
     public synchronized void killCellHungryAnimals(Map.Entry<Cell, Set<Organism>> cellToOrganismsEntry) {
@@ -36,7 +23,7 @@ public class DieService {
             Set<Organism> killedOrganisms = new HashSet<>();
             for(Organism organism : cellToOrganismsEntry.getValue()) {
                 if(organism instanceof Animal animal && hasNoHealth(animal)) {
-                    MapWorker.putDuplicateValueToCountEntry(diedOrganismClassToCountMap, animal.getClass());
+                    MapWorker.putDuplicateValueToCountEntry(organismClassCountMap, animal.getClass());
                     killedOrganisms.add(animal);
                 }
             }

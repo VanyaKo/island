@@ -16,6 +16,7 @@ public class Consts {
 
     public static final String LINE_DELIMITER = "=====================================================".repeat(3);
     public static final String LIST_PRINT_ITEM = "- ";
+    public static final int DEFAULT_NUMBER_PROPERTY_VALUE = -1;
 
     private Consts() {
 

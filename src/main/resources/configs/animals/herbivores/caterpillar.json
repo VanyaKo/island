@@ -2,5 +2,6 @@
   "weight": 0.01,
   "maxCountOnCell": 1000,
   "maxSpeed": 0,
-  "kilogramsForFullSaturation": 0
+  "kilogramsForFullSaturation": 0,
+  "unicode": "\uD83D\uDC1B"
 }

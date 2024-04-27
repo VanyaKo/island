@@ -2,6 +2,7 @@ package ru.javarush.kornienko.island.entities.island;
 
 import ru.javarush.kornienko.island.configs.IslandConfig;
 import ru.javarush.kornienko.island.configs.PrototypeFactory;
+import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.entities.abstracts.Animal;
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
 import ru.javarush.kornienko.island.entities.plants.Plant;
@@ -20,15 +21,14 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Island {
-    private static final int DEFAULT_PROPERTY_VALUE = -1;
     private final IslandConfig islandConfig;
     private final PrototypeFactory prototypeFactory;
     private ConcurrentMap<Cell, Set<Organism>> islandMap;
-    private int width = DEFAULT_PROPERTY_VALUE;
-    private int height = DEFAULT_PROPERTY_VALUE;
-    private int maxPlantsPerCell = DEFAULT_PROPERTY_VALUE;
-    private int maxAnimalsPerCell = DEFAULT_PROPERTY_VALUE;
-    private int cycleDuration = DEFAULT_PROPERTY_VALUE;
+    private int width = Consts.DEFAULT_NUMBER_PROPERTY_VALUE;
+    private int height = Consts.DEFAULT_NUMBER_PROPERTY_VALUE;
+    private int maxPlantsPerCell = Consts.DEFAULT_NUMBER_PROPERTY_VALUE;
+    private int maxAnimalsPerCell = Consts.DEFAULT_NUMBER_PROPERTY_VALUE;
+    private int cycleDuration = Consts.DEFAULT_NUMBER_PROPERTY_VALUE;
     private ConcurrentMap<Class<? extends Organism>, Long> grownPlantClassToCount;
 
     public Island(IslandConfig islandConfig, PrototypeFactory prototypeFactory) {
@@ -49,10 +49,6 @@ public class Island {
      */
     public synchronized Map<Cell, Set<Organism>> getIslandMap() {
         return new HashMap<>(islandMap);
-    }
-
-    public synchronized void setIslandMap(ConcurrentMap<Cell, Set<Organism>> islandMap) {
-        this.islandMap = islandMap;
     }
 
     public void initEmptyIsland() {

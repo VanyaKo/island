@@ -11,27 +11,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-public class MoveService {
+public class MoveService extends ActionService {
     private final Island island;
     private final Map<Class<?>, Integer> classToMoveProbability;
-    private ConcurrentMap<Class<? extends Organism>, Long> movedOrganismClassToCount;
 
     public MoveService(Island island, Map<Class<?>, Integer> classToMoveProbability) {
         this.island = island;
         this.classToMoveProbability = classToMoveProbability;
-    }
-
-    public Map<Class<? extends Organism>, Long> getMovedOrganismClassToCount() {
-        return new HashMap<>(movedOrganismClassToCount);
-    }
-
-    public void resetMovedOrganismsMap() {
-        movedOrganismClassToCount = new ConcurrentHashMap<>();
     }
 
     public Map<Animal, Cell> getAnimalsToMove() {
@@ -65,7 +54,7 @@ public class MoveService {
                 }
             }
             if(isMoved) {
-                MapWorker.putDuplicateValueToCountEntry(movedOrganismClassToCount, animal.getClass());
+                MapWorker.putDuplicateValueToCountEntry(organismClassCountMap, animal.getClass());
             }
         }
     }

@@ -19,6 +19,7 @@ import ru.javarush.kornienko.island.entities.island.Island;
 import ru.javarush.kornienko.island.exceptions.AppException;
 import ru.javarush.kornienko.island.services.FileService;
 import ru.javarush.kornienko.island.services.Logger;
+import ru.javarush.kornienko.island.services.actions.ActionService;
 import ru.javarush.kornienko.island.services.actions.CollectClassesService;
 import ru.javarush.kornienko.island.services.actions.DieService;
 import ru.javarush.kornienko.island.services.actions.EatService;
@@ -127,10 +128,10 @@ public class IslandController {
             shutdownNow(growPlantsExecutor, eatExecutor, reproduceExecutor, dieExecutor, moveExecutor);
 
             Map<Class<? extends Organism>, Long> grownPlantClassToCount = island.getGrownPlantClassToCount();
-            Map<Class<? extends Organism>, Long> newbornClassToCountMap = reproduceService.getNewbornClassToCountMap();
-            Map<Class<? extends Organism>, Long> eatenOrganismClassToCount = eatService.getEatenOrganismClassCount();
-            Map<Class<? extends Organism>, Long> movedOrganismClassToCount = moveService.getMovedOrganismClassToCount();
-            Map<Class<? extends Organism>, Long> diedAnimalToCountMap = dieService.getDiedAnimals();
+            Map<Class<? extends Organism>, Long> newbornClassToCountMap = reproduceService.getOrganismClassCountMap();
+            Map<Class<? extends Organism>, Long> eatenOrganismClassToCount = eatService.getOrganismClassCountMap();
+            Map<Class<? extends Organism>, Long> movedOrganismClassToCount = moveService.getOrganismClassCountMap();
+            Map<Class<? extends Organism>, Long> diedAnimalToCountMap = dieService.getOrganismClassCountMap();
 
             statisticsService.printLongInfo(initialInfo, LongInfoType.OVERALL_INFO);
             statisticsService.printShortInfo(grownPlantClassToCount, ShortInfoType.GROWN_INFO);
@@ -147,12 +148,9 @@ public class IslandController {
         System.out.println("Симуляция \uD83C\uDFDD️ завершена!");
     }
 
-    private void resetChangeRecord(Island island, EatService eatService, MoveService moveService, ReproduceService reproduceService, DieService dieService) {
+    private void resetChangeRecord(Island island, ActionService... actionServices) {
         island.resetGrownOrganismsMap();
-        eatService.resetEatenOrganismsMap();
-        moveService.resetMovedOrganismsMap();
-        reproduceService.resetNewbornClassToCountMap();
-        dieService.resetDiedAndSurvivedOrganisms();
+        Arrays.stream(actionServices).forEach(ActionService::resetOrganismClassToCountMap);
     }
 
     private void shutdownNow(ExecutorService... executorServices) {

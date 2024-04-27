@@ -3,24 +3,11 @@ package ru.javarush.kornienko.island.entities.abstracts;
 import java.io.Serializable;
 
 public abstract class Organism implements Serializable, Cloneable {
-    protected final double weight;
-    protected final int maxCountOnCell;
-    protected final byte maxSpeed;
-    protected final double kilogramsForFullSaturation;
-
-    protected Organism() {
-        this.weight = -1;
-        this.maxCountOnCell = -1;
-        this.maxSpeed = -1;
-        this.kilogramsForFullSaturation = -1;
-    }
-
-    protected Organism(double weight, int maxCountOnCell, byte maxSpeed, double kilogramsForFullSaturation) {
-        this.weight = weight;
-        this.maxCountOnCell = maxCountOnCell;
-        this.maxSpeed = maxSpeed;
-        this.kilogramsForFullSaturation = kilogramsForFullSaturation;
-    }
+    protected double weight;
+    protected int maxCountOnCell;
+    protected byte maxSpeed;
+    protected double kilogramsForFullSaturation;
+    protected String unicode;
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -41,5 +28,9 @@ public abstract class Organism implements Serializable, Cloneable {
 
     public double getKilogramsForFullSaturation() {
         return kilogramsForFullSaturation;
+    }
+
+    public String getUnicode() {
+        return unicode;
     }
 }

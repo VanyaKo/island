@@ -15,26 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ReproduceService {
+public class ReproduceService extends ActionService {
     private final Island island;
     private final ReproduceConfig[] reproduceProbabilityEntries;
-    private ConcurrentMap<Class<? extends Organism>, Long> newbornClassToCountMap;
 
     public ReproduceService(Island island, ReproduceConfig[] reproduceProbabilityEntries) {
         this.island = island;
         this.reproduceProbabilityEntries = reproduceProbabilityEntries;
-    }
-
-    public ConcurrentMap<Class<? extends Organism>, Long> getNewbornClassToCountMap() {
-        return new ConcurrentHashMap<>(newbornClassToCountMap);
-    }
-
-    public void resetNewbornClassToCountMap() {
-        newbornClassToCountMap = new ConcurrentHashMap<>();
     }
 
     public synchronized void reproduceCellOrganisms(Map.Entry<Cell, Set<Organism>> cellOrganismsEntry) {
@@ -87,7 +76,7 @@ public class ReproduceService {
                 Set<Animal> newborns = classAnimalEntry.getValue().reproduce(reproduceConfig.maxCubs());
                 for(Animal newborn : newborns) {
                     island.addAnimalToCell(newborn, cell);
-                    MapWorker.putDuplicateValueToCountEntry(newbornClassToCountMap, newborn.getClass());
+                    MapWorker.putDuplicateValueToCountEntry(organismClassCountMap, newborn.getClass());
                     if(++currentAnimalCount >= island.getMaxAnimalsPerCell()) {
                         return;
                     }
