@@ -2,30 +2,20 @@ package ru.javarush.kornienko.island.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
+import ru.javarush.kornienko.island.consts.Consts;
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
-import ru.javarush.kornienko.island.entities.herbivores.Buffalo;
-import ru.javarush.kornienko.island.entities.herbivores.Caterpillar;
-import ru.javarush.kornienko.island.entities.herbivores.Deer;
-import ru.javarush.kornienko.island.entities.herbivores.Duck;
-import ru.javarush.kornienko.island.entities.herbivores.Goat;
-import ru.javarush.kornienko.island.entities.herbivores.Hog;
-import ru.javarush.kornienko.island.entities.herbivores.Horse;
-import ru.javarush.kornienko.island.entities.herbivores.Mouse;
-import ru.javarush.kornienko.island.entities.herbivores.Rabbit;
-import ru.javarush.kornienko.island.entities.herbivores.Sheep;
-import ru.javarush.kornienko.island.entities.plants.Grass;
-import ru.javarush.kornienko.island.entities.predators.Bear;
-import ru.javarush.kornienko.island.entities.predators.Eagle;
-import ru.javarush.kornienko.island.entities.predators.Fox;
-import ru.javarush.kornienko.island.entities.predators.Python;
-import ru.javarush.kornienko.island.entities.predators.Wolf;
+import ru.javarush.kornienko.island.entities.annotations.ConcreteOrganism;
 import ru.javarush.kornienko.island.exceptions.AppException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,26 +28,77 @@ public class PrototypeFactory {
         this.objectMapper = objectMapper;
         types = new HashSet<>();
         prototypes = new HashMap<>();
-        types.add(Wolf.class);
-        types.add(Python.class);
-        types.add(Fox.class);
-        types.add(Bear.class);
-        types.add(Eagle.class);
-        types.add(Horse.class);
-        types.add(Deer.class);
-        types.add(Rabbit.class);
-        types.add(Mouse.class);
-        types.add(Goat.class);
-        types.add(Sheep.class);
-        types.add(Hog.class);
-        types.add(Buffalo.class);
-        types.add(Duck.class);
-        types.add(Caterpillar.class);
-        types.add(Grass.class);
-        init();
+        initTypes();
+        initPrototypes();
     }
 
-    private void init() {
+    public Collection<Organism> getPrototypes() {
+        return prototypes.values();
+    }
+
+    public String getUnicodeByClass(Class<? extends Organism> clazz) {
+        return prototypes.get(clazz).getUnicode();
+    }
+
+    private void initTypes() {
+        try {
+            types.addAll(getClasses(Consts.ENTITIES_DIRECTORY));
+        } catch(ClassNotFoundException | IOException e) {
+            throw new AppException(e);
+        }
+    }
+
+    /**
+     * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
+     * @param packageName A base package.
+     */
+    private Set<Class<? extends Organism>> getClasses(String packageName)
+            throws ClassNotFoundException, IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        assert classLoader != null;
+        String path = packageName.replace('.', '/');
+        Enumeration<URL> resources = classLoader.getResources(path);
+        List<File> dirs = new ArrayList<>();
+        while(resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            dirs.add(new File(resource.getFile()));
+        }
+        Set<Class<? extends Organism>> classes = new HashSet<>();
+        for(File directory : dirs) {
+            classes.addAll(findClasses(directory, packageName));
+        }
+        return classes;
+    }
+
+    /**
+     * Recursive method used to find all classes in a given directory and subdirectories.
+     *
+     * @param directory   The base directory
+     * @param packageName The package name for classes found inside the base directory
+     * @return The classes
+     */
+    private Set<Class<? extends Organism>> findClasses(File directory, String packageName) throws ClassNotFoundException {
+        Set<Class<? extends Organism>> classes = new HashSet<>();
+        if(!directory.exists()) {
+            return classes;
+        }
+        File[] files = directory.listFiles();
+        assert files != null;
+        for(File file : files) {
+            if(file.isDirectory()) {
+                assert !file.getName().contains(".");
+                classes.addAll(findClasses(file, packageName + "." + file.getName()));
+            } else if(file.getName().endsWith(".class")) {
+                Class<?> clazz = Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6));
+                if(clazz.isAnnotationPresent(ConcreteOrganism.class)) {
+                    classes.add((Class<? extends Organism>) clazz);
+                }
+            }
+        }
+        return classes;
+    }
+
+    private void initPrototypes() {
         for(Class<? extends Organism> type : types) {
             Organism organism = createPrototype(type);
             prototypes.put(type, organism);
@@ -83,13 +124,5 @@ public class PrototypeFactory {
         } catch(IOException e) {
             throw new AppException(e);
         }
-    }
-
-    public Collection<Organism> getPrototypes() {
-        return prototypes.values();
-    }
-
-    public String getUnicodeByClass(Class<? extends Organism> clazz) {
-        return prototypes.get(clazz).getUnicode();
     }
 }

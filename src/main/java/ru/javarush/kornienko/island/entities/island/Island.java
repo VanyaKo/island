@@ -57,24 +57,6 @@ public class Island {
         resetGrownOrganismsMap();
     }
 
-    private void extractProperties() {
-        width = islandConfig.getProperty("width");
-        height = islandConfig.getProperty("height");
-        maxPlantsPerCell = islandConfig.getProperty("maxPlantsPerCell");
-        maxAnimalsPerCell = islandConfig.getProperty("maxAnimalsPerCell");
-        cycleDuration = islandConfig.getProperty("cycleDuration");
-    }
-
-    private void initEmptyMap() {
-        islandMap = new ConcurrentHashMap<>();
-        for(int i = 0; i < width; i++) {
-            for(int j = 0; j < height; j++) {
-                Cell cell = new Cell(i, j);
-                islandMap.put(cell, new HashSet<>());
-            }
-        }
-    }
-
     public Map<Class<? extends Organism>, Long> getGrownPlantClassToCount() {
         return new HashMap<>(grownPlantClassToCount);
     }
@@ -84,18 +66,16 @@ public class Island {
     }
 
     public synchronized void growPlants() {
-        synchronized(islandMap.values()) {
-            for(Set<Organism> cellOrganisms : islandMap.values()) {
-                long currentOrganisms = countClassesByFilter(cellOrganisms, Plant.class);
-                for(Organism prototype : prototypeFactory.getPrototypes()) {
-                    if(Plant.class.isAssignableFrom(prototype.getClass())) {
-                        int prototypesToAdd = getPrototypesToAdd(Collections.emptyMap(), prototype);
-                        if(currentOrganisms + prototypesToAdd > maxPlantsPerCell) {
-                            break;
-                        }
-                        fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd, Plant.class);
-                        currentOrganisms += prototypesToAdd;
+        for(Set<Organism> cellOrganisms : islandMap.values()) {
+            long currentOrganisms = countClassesByFilter(cellOrganisms, Plant.class);
+            for(Organism prototype : prototypeFactory.getPrototypes()) {
+                if(Plant.class.isAssignableFrom(prototype.getClass())) {
+                    int prototypesToAdd = getPrototypesToAdd(Collections.emptyMap(), prototype);
+                    if(currentOrganisms + prototypesToAdd > maxPlantsPerCell) {
+                        break;
                     }
+                    fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd, Plant.class);
+                    currentOrganisms += prototypesToAdd;
                 }
             }
         }
@@ -113,6 +93,43 @@ public class Island {
                     fillCellWithOrganisms(cellOrganisms, prototype, prototypesToAdd, Animal.class);
                     currentOrganisms += prototypesToAdd;
                 }
+            }
+        }
+    }
+
+    public synchronized void addAnimalToCell(Animal animal, Cell cell) {
+        islandMap.get(cell).add(animal);
+    }
+
+    public synchronized void removeOrganismFromCell(Organism organism, Cell cell) {
+        islandMap.get(cell).remove(organism);
+    }
+
+    public synchronized List<Animal> getAnimalListFromOrganisms(Collection<Organism> organisms) {
+        return organisms.stream()
+                .filter(Animal.class::isInstance)
+                .map(Animal.class::cast)
+                .toList();
+    }
+
+    public int getCycleDuration() {
+        return cycleDuration;
+    }
+
+    private void extractProperties() {
+        width = islandConfig.getProperty("width");
+        height = islandConfig.getProperty("height");
+        maxPlantsPerCell = islandConfig.getProperty("maxPlantsPerCell");
+        maxAnimalsPerCell = islandConfig.getProperty("maxAnimalsPerCell");
+        cycleDuration = islandConfig.getProperty("cycleDuration");
+    }
+
+    private void initEmptyMap() {
+        islandMap = new ConcurrentHashMap<>();
+        for(int i = 0; i < width; i++) {
+            for(int j = 0; j < height; j++) {
+                Cell cell = new Cell(i, j);
+                islandMap.put(cell, new HashSet<>());
             }
         }
     }
@@ -142,24 +159,5 @@ public class Island {
                 throw new AppException(e);
             }
         }
-    }
-
-    public synchronized void addAnimalToCell(Animal animal, Cell cell) {
-        islandMap.get(cell).add(animal);
-    }
-
-    public synchronized void removeOrganismFromCell(Organism organism, Cell cell) {
-        islandMap.get(cell).remove(organism);
-    }
-
-    public synchronized List<Animal> getAnimalListFromOrganisms(Collection<Organism> organisms) {
-        return organisms.stream()
-                .filter(Animal.class::isInstance)
-                .map(Animal.class::cast)
-                .toList();
-    }
-
-    public int getCycleDuration() {
-        return cycleDuration;
     }
 }

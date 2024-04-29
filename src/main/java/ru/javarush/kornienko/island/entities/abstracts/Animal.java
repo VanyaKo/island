@@ -30,10 +30,6 @@ public abstract class Animal extends Organism implements AnimalAction {
         return false;
     }
 
-    private synchronized double getAddedSaturation(Organism eatableOrganism) {
-        return eatableOrganism.weight * Consts.HUNDRED_PERCENT / kilogramsForFullSaturation;
-    }
-
     @Override
     public Set<Animal> reproduce(int maxCubs) {
         try {
@@ -51,5 +47,9 @@ public abstract class Animal extends Organism implements AnimalAction {
     @Override
     public synchronized Cell move(Cell[] cells) {
         return cells[ThreadLocalRandom.current().nextInt(cells.length)];
+    }
+
+    private synchronized double getAddedSaturation(Organism eatableOrganism) {
+        return eatableOrganism.weight * Consts.HUNDRED_PERCENT / kilogramsForFullSaturation;
     }
 }

@@ -1,6 +1,8 @@
 package ru.javarush.kornienko.island.consts;
 
 public class Consts {
+    public static final String ENTITIES_DIRECTORY = "ru.javarush.kornienko.island.entities";
+
     public static final String EAT_CONFIG_JSON = "configs/eat_config.json";
     public static final String MOVE_CONFIG_JSON = "configs/move_config.json";
     public static final String REPRODUCE_CONFIG_JSON = "configs/reproduce_config.json";

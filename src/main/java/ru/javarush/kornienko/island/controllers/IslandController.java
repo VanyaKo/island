@@ -37,12 +37,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class IslandController {
-    private @NotNull Island getIsland(PrototypeFactory prototypeFactory) {
-        Properties properties = new Properties();
-        IslandConfig islandConfig = new IslandConfig(properties, Consts.ISLAND_CONFIG);
-        return new Island(islandConfig, prototypeFactory);
-    }
-
     public void run(String condition) {
         try {
             Handler handler = HandlerType.getHandlerByName(condition);
@@ -71,6 +65,12 @@ public class IslandController {
             logger.logException(e);
             System.out.println(e.getLocalizedMessage());
         }
+    }
+
+    private @NotNull Island getIsland(PrototypeFactory prototypeFactory) {
+        Properties properties = new Properties();
+        IslandConfig islandConfig = new IslandConfig(properties, Consts.ISLAND_CONFIG);
+        return new Island(islandConfig, prototypeFactory);
     }
 
     private @NotNull Island initIsland(PrototypeFactory prototypeFactory, Map<Class<?>, Integer> startAnimalNumConfig) {

@@ -47,14 +47,6 @@ public class StatisticsService {
         System.out.println();
     }
 
-    private void printOrganismsByClass(long organismCount, boolean isOverallInfoType, String overallString,
-                                       String eatString, Map<Class<? extends Organism>, Long> organismClassCount) {
-        if(organismCount > 0) {
-            System.out.print(Consts.LIST_PRINT_ITEM + (isOverallInfoType ? overallString : eatString) + ": ");
-            printUnicodes(organismClassCount.entrySet());
-        }
-    }
-
     /**
      * Print reproduce, move, or die info dependent on input.
      */
@@ -86,6 +78,14 @@ public class StatisticsService {
         printDifference("Животных", initialAnimalCount, currentAnimalCount, "");
 
         System.out.println();
+    }
+
+    private void printOrganismsByClass(long organismCount, boolean isOverallInfoType, String overallString,
+                                       String eatString, Map<Class<? extends Organism>, Long> organismClassCount) {
+        if(organismCount > 0) {
+            System.out.print(Consts.LIST_PRINT_ITEM + (isOverallInfoType ? overallString : eatString) + ": ");
+            printUnicodes(organismClassCount.entrySet());
+        }
     }
 
     private void printDifference(String object, long initialCount, long currentCount, String suffix) {
