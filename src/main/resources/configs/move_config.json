@@ -1,0 +1,17 @@
+{
+  "ru.javarush.kornienko.island.entities.predators.Wolf": 100,
+  "ru.javarush.kornienko.island.entities.predators.Python": 99,
+  "ru.javarush.kornienko.island.entities.predators.Fox": 98,
+  "ru.javarush.kornienko.island.entities.predators.Bear": 97,
+  "ru.javarush.kornienko.island.entities.predators.Eagle": 96,
+  "ru.javarush.kornienko.island.entities.herbivores.Horse": 95,
+  "ru.javarush.kornienko.island.entities.herbivores.Deer": 94,
+  "ru.javarush.kornienko.island.entities.herbivores.Rabbit": 93,
+  "ru.javarush.kornienko.island.entities.herbivores.Mouse": 92,
+  "ru.javarush.kornienko.island.entities.herbivores.Goat": 91,
+  "ru.javarush.kornienko.island.entities.herbivores.Sheep": 90,
+  "ru.javarush.kornienko.island.entities.herbivores.Hog": 89,
+  "ru.javarush.kornienko.island.entities.herbivores.Buffalo": 88,
+  "ru.javarush.kornienko.island.entities.herbivores.Duck": 87,
+  "ru.javarush.kornienko.island.entities.herbivores.Caterpillar": 86
+}

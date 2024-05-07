@@ -1,0 +1,7 @@
+{
+  "weight": 500,
+  "maxCountOnCell": 5,
+  "maxSpeed": 2,
+  "kilogramsForFullSaturation": 80,
+  "unicode": "\uD83D\uDC3B"
+}
