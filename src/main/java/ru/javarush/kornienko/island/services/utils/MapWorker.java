@@ -7,8 +7,7 @@ public class MapWorker {
 
     }
 
-    public static synchronized <K> void putDuplicateValueToCountEntry(Map<K, Long> organismClassCount, K key) {
-        organismClassCount.putIfAbsent(key, 0L);
-        organismClassCount.put(key, organismClassCount.get(key) + 1);
+    public static synchronized <K> void putDuplicateValueToCountEntry(Map<K, Long> map, K key) {
+        map.merge(key, 1L, Long::sum);
     }
 }
