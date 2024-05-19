@@ -2,6 +2,8 @@ package ru.javarush.kornienko.island.services.actions;
 
 import ru.javarush.kornienko.island.entities.abstracts.Organism;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -12,7 +14,7 @@ public abstract class ActionService {
         this.organismClassCountMap = new ConcurrentHashMap<>();
     }
 
-    public ConcurrentMap<Class<? extends Organism>, Long> getOrganismClassCountMap() {
-        return new ConcurrentHashMap<>(organismClassCountMap);
+    public Map<Class<? extends Organism>, Long> getOrganismClassCountMap() {
+        return Collections.unmodifiableMap(organismClassCountMap);
     }
 }

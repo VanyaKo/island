@@ -11,7 +11,6 @@ import ru.javarush.kornienko.island.services.utils.MapWorker;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,7 @@ public class Island {
      * Get copy of a map.
      */
     public synchronized Map<Cell, Set<Organism>> getIslandMap() {
-        return new HashMap<>(islandMap);
+        return Collections.unmodifiableMap(islandMap);
     }
 
     public void initEmptyIsland() {
@@ -58,7 +57,7 @@ public class Island {
     }
 
     public Map<Class<? extends Organism>, Long> getGrownPlantClassToCount() {
-        return new HashMap<>(grownPlantClassToCount);
+        return Collections.unmodifiableMap(grownPlantClassToCount);
     }
 
     public void resetGrownOrganismsMap() {
